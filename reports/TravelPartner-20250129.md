@@ -28,10 +28,12 @@
 - Empty for first week.
   
 ### Progress and issues
-- 
+- Helped out with brainstorming mainly for communication within part 5 and 6, Helped out with half of the milestones within the Schedule. Also completed the External Feedback portion of part 6.
+- Individual tasks, such as the use cases (Goal, Actors, Triggers, etc)
   
 ### Goals for next week
-- 
+- Implement basic UI and overall foundation of the application
+- Identify coding practices and code scalability.
  
 ## Rui
 ### Goals for this week
