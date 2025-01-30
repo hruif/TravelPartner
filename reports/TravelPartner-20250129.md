@@ -54,6 +54,8 @@
 - I set up a Notion teamspace for shared notes and resources. 
   
 ### Goals for next week
+- Sketch app layout and UI. Share with group. 
+- Read through and understand code setup.
 - Revise and extend living doc.
 
 ## Iliya
