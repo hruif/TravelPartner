@@ -40,10 +40,11 @@
 - Empty for first week.
   
 ### Progress and issues
-- 
+- Set up the GitHub repository and project dashboard for the team. Helped in writing the last half of the requirements and development plan.
   
 ### Goals for next week
-- 
+- Get familiar with tools (NestJS, SQL).
+- Help establish a good foundation for our codebase to make future work more efficient.
 
 ## Chloë
 ### Goals for this week
