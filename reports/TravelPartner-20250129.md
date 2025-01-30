@@ -18,10 +18,12 @@
 - Empty for first week.
   
 ### Progress and issues
-- 
+- Set up intial README and weekly template status report. Wrote up the second half of our milestones.
+- Completed individual tasks (i.e. use case role justification).
   
 ### Goals for next week
-- 
+- Have a decently organized git so that each section is clearly assigned.
+- Begin work on app foundation and basic UI.
 
 ## Mateo
 ### Goals for this week
