@@ -87,7 +87,8 @@
 - I set up a Notion teamspace for shared notes and resources.
 
 ### Goals for next week
-
+- Sketch app layout and UI. Share with group. 
+- Read through and understand code setup.
 - Revise and extend living doc.
 
   
@@ -99,14 +100,12 @@
 - Empty for first week.
 
 ### Progress and issues
-
--
-
-### Goals for next week
-
--
-
+- Discussed and planned general toolset for overall project.
+- Planned what part each team member will play in project and role distribution.
+- Potential issue is where to store image files 
   
+### Goals for next week
+- Plan out CI/CD and how that will interop with our testing frameworks 
 
 ## Nathan
 
@@ -115,9 +114,8 @@
 - Empty for first week.
 
 ### Progress and issues
-
--
-
+- Completed a use case and added a description for my role
+  
 ### Goals for next week
-
--
+- Help design and implement the main UI and structure of the app
+- Familiarize with intended software toolset
