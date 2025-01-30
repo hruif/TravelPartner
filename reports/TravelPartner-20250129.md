@@ -71,7 +71,8 @@
 - Empty for first week.
   
 ### Progress and issues
-- 
+- Completed a use case and added a description for my role
   
 ### Goals for next week
--     
+- Help design and implement the main UI and structure of the app
+- Familiarize with intended software toolset
