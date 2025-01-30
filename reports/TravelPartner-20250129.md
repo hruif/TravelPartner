@@ -61,10 +61,12 @@
 - Empty for first week.
   
 ### Progress and issues
-- 
+- Discussed and planned general toolset for overall project.
+- Planned what part each team member will play in project and role distribution.
+- Potential issue is where to store image files 
   
 ### Goals for next week
-- 
+- Plan out CI/CD and how that will interop with our testing frameworks 
 
 ## Nathan
 ### Goals for this week
