@@ -1,0 +1,13 @@
+# Use the official PostgreSQL image
+FROM postgres:16
+
+# Set environment variables (override in docker-compose if needed)
+ENV POSTGRES_USER=devuser
+ENV POSTGRES_PASSWORD=devpassword
+ENV POSTGRES_DB=devdb
+
+# Copy schema.sql to the container’s init directory
+COPY schema.sql /docker-entrypoint-initdb.d/
+
+# Expose the default PostgreSQL port
+EXPOSE 5432
