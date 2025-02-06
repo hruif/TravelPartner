@@ -22,12 +22,13 @@ Thank you, Celestine!
 # Individual Progress and Plans
 ## Kam
 ### Goals for this week
-  
+- Get front-end React Native completely set up and begin familiarizing myself with it.
+- Brain-storm and start deciding on how we want our actual UI to look like.
 ### Progress and issues
-- 
-  
+- Drew up the UI/UX Diagram and proposed a diagram for the Map component.
+- Started going through React Native tutorials as well as looking into getting it setup.
 ### Goals for next week
-- 
+- Have a basic UI for the map screen and try to get it properly connected with the back-end.
 
 ## Mateo
 ### Goals for this week
