@@ -49,12 +49,14 @@
 
 ## Iliya
 ### Goals for this week
-  
+- Setup the backend including the database with docker
 ### Progress and issues
-- 
-  
+- Setup the basics of the backend including nestJS and a database.
+- Wrote a document to help other team members understand the general workflow
+- Do parts 1 and 2 in the living document regarding general architecture
 ### Goals for next week
-- 
+- Plan out CI/CD and how that will interop with our testing frameworks
+- Setup CI in a way to also report code coverage and not allow pushes if below certain threshold.
 
 ## Nathan
 ### Goals for this week
