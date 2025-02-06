@@ -14,4 +14,8 @@ Our target customers are travelers. Our app offers solutions for 2 problems trav
 # Living Document
 https://docs.google.com/document/d/1QPL-KpL8HGXZmXVWRMLAcBoYqu4GowHgW0gimDIc_YU/edit?usp=sharing 
 
-
+# Style Guides
+- TypeScript: https://ts.dev/style/. Automated linter: ESLint with a TypeScript configuration (@typescript-eslint).
+- TypeScript in NestJS built on ESLint (automatic linter/formatter): https://awesome-nestjs.com/components-and-libraries/lint.html. 
+- Python: https://peps.python.org/pep-0008/. Automated linter: flake8. Automated formatter: Black.
+- SQL: https://docs.telemetry.mozilla.org/concepts/sql_style.html. Automated formatting: https://sqlfluff.com/.
