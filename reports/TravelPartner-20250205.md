@@ -80,9 +80,11 @@ Thank you, Celestine!
 
 ## Nathan
 ### Goals for this week
-  
+- Help design and implement the main UI and structure of the app
+- Familiarize with intended software toolset
 ### Progress and issues
-- 
+- Helping write and revise the living document
   
 ### Goals for next week
--     
+- Learn React Native and NestJS
+- Begin implementing the UI and app structure
