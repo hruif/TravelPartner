@@ -9,7 +9,8 @@
 - Initialized codebase for backend.
   
 ## Goals for next week
-- 
+- Implement functioning basic map
+- Finish testing and continuous integration parts of the living document.
 
 # Individual Progress and Plans
 ## Kam
@@ -30,12 +31,14 @@
  
 ## Rui
 ### Goals for this week
+- Get familiar with tools (NestJS, SQL).
+- Help establish a good foundation for our codebase to make future work more efficient.
   
 ### Progress and issues
-- 
+- Helped to finish architecture and design parts of the living document.
   
 ### Goals for next week
-- 
+- Set up the backend for the map
 
 ## Chloë
 ### Goals for this week
