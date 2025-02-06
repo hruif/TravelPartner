@@ -1,9 +1,15 @@
 # Project Status
 ## Goals for this week
-  
+- Decide on and set up basic app system and layout. (No big feature implementation yet.)
+- Start on basic features like UI.
+- Understand how we will make the (front end and back end) code scalable. 
+
 ## Progress and issues
+- Finished Architecture and design parts of the living document.
+- Initialized codebase for backend.
   
 ## Goals for next week
+- 
 
 # Individual Progress and Plans
 ## Kam
