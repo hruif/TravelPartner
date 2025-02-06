@@ -24,10 +24,13 @@
 
 ## Mateo
 ### Goals for this week
-  
+- Worth with backend to implement basic features and learn NestJS and Postgress
+- Mess around with google map API and other notable features.
 ### Progress and issues
-  
+- Helped out making Software Architecture and Design, implemented E.R Diagram for the database and other notable diagrams for features.
 ### Goals for next week
+- Implement google API map into a beta stage.
+- Work with frontend to implement key features.
  
 ## Rui
 ### Goals for this week
