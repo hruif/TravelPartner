@@ -26,6 +26,10 @@ Additionally, you will need to install the MikroORM CLI using the following comm
 ```bash
 npm install @mikro-orm/cli
 ```
+You should also build the nestJS app after cloning using this command before running docker:
+```
+npx run build
+```
 
 
 ## Swagger
@@ -61,4 +65,22 @@ docker exec -it postgres_db psql -U devuser -d devdb
 
 ## Structure
 This is a whole another topic which will be covered in the [structure](./structure.md) file. This will cover the structure of the backend, along with the different layers and how they interact with each other.
+
+
+## Common Setup issues:
+If you are having trouble with the nestjs_app restarting and not loading, one of the issues could be the result of not building the application. You should only have to do this once when you clone the repo. To build the application simply cd into the backend and use this command:
+```bash
+npm run build
+```
+
+In order to install the dependencies in the right place, cd into the backend folder with this command:
+```bash
+cd backend
+```
+
+
+When you have installed *ALL* of the dependencies, ensure that you build the nestJS app by running this command in the backend folder (You should be here already).
+```bash
+npx run build
+```
 
