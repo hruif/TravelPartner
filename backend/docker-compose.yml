@@ -13,9 +13,6 @@ services:
       - DATABASE_URL=postgresql://devuser:devpassword@postgres:5432/devdb
     ports:
       - "3000:3000"
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
 
   postgres:
     build:
