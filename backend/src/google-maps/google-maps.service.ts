@@ -7,7 +7,7 @@ export class GoogleMapsService {
 
   constructor() {
     this.client = createClient({
-      key: 'AIzaSyAhNfKERtruky0y7w9K2TjNSufRqxcWBWc',
+      key: 'testing123',
       Promise: Promise,
     });
   }
