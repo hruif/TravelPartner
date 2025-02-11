@@ -1,5 +1,5 @@
-# TravelPartner
-(WIP - Missing layout info. Description and goals from living doc, definitely subject to change.)
+# Globe Gram
+(WIP - layout info.)
 
 We are a social travel-planning app. Users planning a trip can be inspired by other travelers’ diaries around that destination, filtering the map according to their budget. Travelers may upload and tag their photos with ease, receive a comprehensive travel diary in return, and share their diary on the map to inspire others. 
 
