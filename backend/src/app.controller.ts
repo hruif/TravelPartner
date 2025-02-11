@@ -19,6 +19,6 @@ export class AppController {
   @Public()
   @Get()
   getHello(): string {
-    return 'very nice!';
+    return 'Very!';
   }
 }
