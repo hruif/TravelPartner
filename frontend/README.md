@@ -6,7 +6,7 @@ This project is built using React Native and Expo. Follow the steps below to set
 
 Before you begin, ensure you have met the following requirements:
 - You have installed [Node.js](https://nodejs.org/en/download/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-- You have installed [Expo CLI](https://docs.expo.dev/get-started/installation/).
+- You have installed [Expo CLI](https://docs.expo.dev/more/expo-cli/).
 
 ## Setup
 

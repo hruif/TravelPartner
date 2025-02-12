@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "test": "echo \"No tests available\" && exit 0"
   },
   "dependencies": {
     "expo": "~52.0.31",
