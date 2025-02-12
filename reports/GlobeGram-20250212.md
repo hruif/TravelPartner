@@ -29,11 +29,14 @@ Thank you, Celestine!
 
 ## Mateo
 ### Goals for this week
-  
+  - Implemented google maps for the backend, along with a simple implmentation of a specific location in the frontend where the user can interact with according to their devices make (e.g iphone, android) through react-native-maps currently but will be switched over to google-maps shortly.
+  - created a README file for the frontend to explain setup of the frontend for ease of use.
 ### Progress and issues
-  
+  - We found an issue with docker where it wouldn't install/run the build for the backend for nestjs but was able to fix it during the following days after finding out.
+  - implemented a basic map with no search functionality.
 ### Goals for next week
- 
+- For next week I will have google maps fully implemented along with hopefully the search functionailty.
+- Implementing the markers that showcase the most popular destinations locally.
 ## Rui
 ### Goals for this week
   
