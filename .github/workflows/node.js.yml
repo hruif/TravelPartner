@@ -17,13 +17,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Use Node.js ${{ matrix.node-version }}
+      # Install & cache dependencies for Backend
+      - name: Use Node.js ${{ matrix.node-version }} (Backend)
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
+          cache-dependency-path: backend/package-lock.json # Specify the backend lock file
 
-      # Install dependencies and build in the backend folder
       - name: Install dependencies (Backend)
         working-directory: backend
         run: npm ci
@@ -36,7 +37,14 @@ jobs:
         working-directory: backend
         run: npm test
 
-      # Install dependencies and build in the frontend folder
+      # Install & cache dependencies for Frontend
+      - name: Use Node.js ${{ matrix.node-version }} (Frontend)
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json # Specify the frontend lock file
+
       - name: Install dependencies (Frontend)
         working-directory: frontend
         run: npm ci
