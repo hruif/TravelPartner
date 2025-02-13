@@ -76,9 +76,12 @@ Thank you, Celestine!
 
 ## Nathan
 ### Goals for this week
-  
+- Learn React Native and NestJS
+- Begin implementing the UI and app structure
 ### Progress and issues
-- 
+- Familiarized with software tools and started on building app's UI and core components
+- Still needing API key for Google Maps services 
   
 ### Goals for next week
--     
+- Implement search functionality on Google Maps element
+- Continue working on UI
