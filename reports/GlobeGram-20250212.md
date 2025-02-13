@@ -40,12 +40,13 @@ Thank you, Celestine!
 - Implementing the markers that showcase the most popular destinations locally.
 ## Rui
 ### Goals for this week
-  
+- Set up the backend for the map
 ### Progress and issues
-- 
-  
+- Explored testing frameworks for backend.
+- Researched potential CI/CD tools.
 ### Goals for next week
-- 
+- Add marker functionalities to map.
+- Utilize Google Maps API to implement search/recommendations.
 
 ## Chloë
 ### Goals for this week
