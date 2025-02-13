@@ -29,13 +29,12 @@ const GoogleMapComponent = () => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: '100%',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+    height: 1000,
+    width: '100%',
+    paddingTop: 100,
   },
 });
 

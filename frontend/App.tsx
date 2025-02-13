@@ -8,8 +8,8 @@ export default function App() {
     <>
       <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <Text style={styles.title}>GlobeGram</Text>
       <GoogleMapComponent />
+      <Text style={styles.title}>GlobeGram</Text>
       </SafeAreaView>
     </>
   );
@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 800,
   },
 });
