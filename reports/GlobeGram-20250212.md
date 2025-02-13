@@ -20,12 +20,13 @@ Thank you, Celestine!
 # Individual Progress and Plans
 ## Kam
 ### Goals for this week
-  
+- Assist with making sure the CI and testing works properly.
+- Finish React Native tutorials and work on getting a basic UI up.
 ### Progress and issues
-- 
-  
+- Integrated Node.js CI and Jest along with adding some other minor backend dependencies/fixes.
+- Worked through some React Native tutorials and using ExpoGo with it.
 ### Goals for next week
-- 
+- Make sure we have a useable basic UI for the upcoming beta that works with the backend Google Maps API.
 
 ## Mateo
 ### Goals for this week
