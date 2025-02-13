@@ -62,12 +62,15 @@ Thank you, Celestine!
 
 ## Iliya
 ### Goals for this week
+- Plan out CI/CD and how that will interop with our testing frameworks
+- Setup CI in a way to also report code coverage and not allow pushes if below certain threshold.
   
 ### Progress and issues
-- 
+- The CI wouldn't can't properly start the backend to test it.
+- The docker container used the users local files which could result in error if not built.
   
 ### Goals for next week
-- 
+- Implement user accounts along with proper security handling and password storing
 
 ## Nathan
 ### Goals for this week
