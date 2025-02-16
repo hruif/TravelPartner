@@ -7,7 +7,7 @@ export class GoogleMapsService {
 
   constructor() {
     this.client = createClient({
-      key: 'testing123',
+      key: process.env.GOOGLE_PLACES_API_KEY || '',
       Promise: Promise,
     });
   }
@@ -15,7 +15,7 @@ export class GoogleMapsService {
   /*
   * This method will take an address and return the geocode of that address.
   * @param address: string
-  */  
+  */
   async geocode(address: string) {
     const response = await this.client.geocode({ address }).asPromise();
     return response.json.results;
@@ -41,5 +41,18 @@ export class GoogleMapsService {
       destinations,
     }).asPromise();
     return response.json.rows;
+  }
+
+  /*
+  * This method will perform a text-based search for places matching a given query.
+  * Example: "Spicy Vegetarian Food in Sydney, Australia"
+  * @param query: string
+  */
+  async searchPlaces(query: string) {
+    const response = await this.client.places({
+      query,
+    }).asPromise();
+
+    return response.json.results;
   }
 }
