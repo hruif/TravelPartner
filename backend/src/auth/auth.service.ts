@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UserDto } from './dto/user.dto';
 import { EntityManager, MikroORM } from '@mikro-orm/postgresql';
 import { User } from '../users/user.entity';
 
@@ -40,12 +40,12 @@ export class AuthService {
   /**
    * Authenticates a user and returns an access token.
    *
-   * @param {CreateUserDto} userDto - The login credentials (email and password).
+   * @param {UserDto} userDto - The login credentials (email and password).
    * @returns {Promise<{ access_token: string }>} A JWT access token.
    * @throws {NotFoundException} If the user with the given email is not found.
    * @throws {UnauthorizedException} If the password is incorrect.
    */
-  async login(userDto: CreateUserDto): Promise<{ access_token: string }> {
+  async login(userDto: UserDto): Promise<{ access_token: string }> {
     const { email, password } = userDto;
 
     // Find user by email
@@ -68,12 +68,12 @@ export class AuthService {
   /**
    * Registers a new user and returns an access token.
    *
-   * @param {CreateUserDto} createUserDto - The user's registration details.
+   * @param {UserDto} createUserDto - The user's registration details.
    * @returns {Promise<{ access_token: string }>} A JWT access token upon successful registration.
    * @throws {ConflictException} If a user with the same email already exists.
    */
   async signup(
-    createUserDto: CreateUserDto,
+    createUserDto: UserDto,
   ): Promise<{ access_token: string }> {
     const existingUser = await this.em.findOne(User, {
       email: createUserDto.email,

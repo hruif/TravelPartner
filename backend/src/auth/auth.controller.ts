@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { Public } from './constants';
-import { CreateUserDto } from './dto/create-user.dto';
+import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
 
 /**
@@ -19,7 +19,7 @@ export class AuthController {
   @Public()
   @Post('signup')
   async signup(
-    @Body() createUserDto: CreateUserDto,
+    @Body() createUserDto: UserDto,
   ): Promise<{ access_token: string }> {
     return this.authService.signup(createUserDto);
   }
@@ -34,7 +34,7 @@ export class AuthController {
   @Public()
   @Post('login')
   async login(
-    @Body() createUserDto: CreateUserDto,
+    @Body() createUserDto: UserDto,
   ): Promise<{ access_token: string }> {
     return this.authService.login(createUserDto);
   }
