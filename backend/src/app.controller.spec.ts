@@ -9,7 +9,7 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService, { provide: AuthService, useValue: {} },],
+      providers: [AppService, { provide: AuthService, useValue: {} }],
     }).compile();
 
     appController = app.get<AppController>(AppController);

@@ -10,7 +10,12 @@ import config from './mikro-orm.config';
 import { GoogleMapsModule } from './google-maps/google-maps.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, MikroOrmModule.forRoot(config), GoogleMapsModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    MikroOrmModule.forRoot(config),
+    GoogleMapsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

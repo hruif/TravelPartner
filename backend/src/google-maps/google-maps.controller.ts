@@ -27,6 +27,9 @@ export class GoogleMapsController {
   ) {
     const originsArray = origins.split(',');
     const destinationsArray = destinations.split(',');
-    return this.googleMapsService.calculateDistance(originsArray, destinationsArray);
+    return this.googleMapsService.calculateDistance(
+      originsArray,
+      destinationsArray,
+    );
   }
 }
