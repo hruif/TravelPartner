@@ -14,13 +14,6 @@ export class User {
   uuid = v4();
 
   /**
-   * The username of the user.
-   * @type {string}
-   */
-  @Property({ unique: true })
-  username: string;
-
-  /**
    * The email address of the user.
    * @type {string}
    * @example johndoe@email.com
@@ -38,12 +31,10 @@ export class User {
   /**
    * Creates a new User instance.
    *
-   * @param {string} username - The username of the user.
    * @param {string} email - The email address of the user.
    * @param {string} password - The hashed password of the user.
    */
-  constructor(username: string, email: string, password: string) {
-    this.username = username;
+  constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
   }
