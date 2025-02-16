@@ -10,6 +10,11 @@ export class GoogleMapsController {
     return this.googleMapsService.geocode(address);
   }
 
+  @Get('search')
+  async search(@Query('query') query: string) {
+    return this.googleMapsService.searchPlaces(query);
+  }
+
   @Get('place-details')
   async getPlaceDetails(@Query('placeId') placeId: string) {
     return this.googleMapsService.getPlaceDetails(placeId);

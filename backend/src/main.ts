@@ -2,10 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { config as dotenvConfig } from 'dotenv';
 
 declare const module: any;
 
 async function bootstrap() {
+  dotenvConfig(); // Load .env before anything else
+
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
