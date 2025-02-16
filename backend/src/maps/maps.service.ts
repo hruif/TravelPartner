@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { createClient, Client } from '@google/maps';
 
 @Injectable()
-export class GoogleMapsService {
+export class MapsService {
   private client: Client;
 
   constructor() {

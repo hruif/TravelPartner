@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import config from './mikro-orm.config';
 import { GoogleMapsModule } from './google-maps/google-maps.module';
+import { MapsModule } from './maps/maps.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { GoogleMapsModule } from './google-maps/google-maps.module';
     UsersModule,
     MikroOrmModule.forRoot(config),
     GoogleMapsModule,
+    MapsModule,
   ],
   controllers: [AppController],
   providers: [
