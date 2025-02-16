@@ -72,9 +72,7 @@ export class AuthService {
    * @returns {Promise<{ access_token: string }>} A JWT access token upon successful registration.
    * @throws {ConflictException} If a user with the same email already exists.
    */
-  async signup(
-    createUserDto: UserDto,
-  ): Promise<{ access_token: string }> {
+  async signup(createUserDto: UserDto): Promise<{ access_token: string }> {
     const existingUser = await this.em.findOne(User, {
       email: createUserDto.email,
     });
