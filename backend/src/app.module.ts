@@ -7,10 +7,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import config from './mikro-orm.config';
-import { GoogleMapsModule } from './google-maps/google-maps.module';
+import { MapsModule } from './maps/maps.module';
 
 @Module({
-  imports: [AuthModule, UsersModule, MikroOrmModule.forRoot(config), GoogleMapsModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    MikroOrmModule.forRoot(config),
+    MapsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

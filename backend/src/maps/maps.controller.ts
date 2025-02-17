@@ -1,23 +1,23 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { GoogleMapsService } from './google-maps.service';
+import { MapsService } from './maps.service';
 
-@Controller('google-maps')
-export class GoogleMapsController {
-  constructor(private readonly googleMapsService: GoogleMapsService) {}
+@Controller('maps')
+export class MapsController {
+  constructor(private readonly mapsService: MapsService) {}
 
   @Get('geocode')
   async geocode(@Query('address') address: string) {
-    return this.googleMapsService.geocode(address);
+    return this.mapsService.geocode(address);
   }
 
   @Get('search')
   async search(@Query('query') query: string) {
-    return this.googleMapsService.searchPlaces(query);
+    return this.mapsService.searchPlaces(query);
   }
 
   @Get('place-details')
   async getPlaceDetails(@Query('placeId') placeId: string) {
-    return this.googleMapsService.getPlaceDetails(placeId);
+    return this.mapsService.getPlaceDetails(placeId);
   }
 
   @Get('distance')
@@ -27,6 +27,6 @@ export class GoogleMapsController {
   ) {
     const originsArray = origins.split(',');
     const destinationsArray = destinations.split(',');
-    return this.googleMapsService.calculateDistance(originsArray, destinationsArray);
+    return this.mapsService.calculateDistance(originsArray, destinationsArray);
   }
 }

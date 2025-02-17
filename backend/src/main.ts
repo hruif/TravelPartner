@@ -18,7 +18,6 @@ async function bootstrap() {
     .setTitle('GlobeGram')
     .setDescription('A social travel planner')
     .setVersion('1.0')
-    .addTag('cats')
     .addBearerAuth(
       {
         type: 'http',
