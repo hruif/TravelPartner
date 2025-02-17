@@ -1,21 +1,86 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TextInput} from 'react-native';
 import GoogleMapComponent from './google-map';
-
+import React, { useState } from 'react';
 
 export default function App() {
+  const [searchText, setSearchText] = useState('');
+
+  interface Region {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+  };
+  const [region, setRegion] = useState<Region | null>(null);
+
+  // Geocoding function using backend endpoint
+  const getCoordinates = async (address: string) => {
+    // hardcode from swagger
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzM5Nzg2MjE3LCJleHAiOjE3Mzk3ODYyNzd9.hMPFioeEqqIrDVjwgKZl1GTLxG7B8DKNqF8SstP0Ya8";
+    // endpoint to send request to
+    const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
+  
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) { // debug
+        console.error("Fetch failed with status:", response.status);
+        return null;
+      }
+      const coordinates = await response.json();
+      console.log("Response data:", coordinates);
+      if (coordinates.length > 0) {
+        // use first result
+        const location = coordinates[0].geometry.location;
+        console.log("Extracted location:", location);
+        return location;
+      } else {
+        console.log("No results found.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching location data from backend", error);
+      return null;
+    }
+  };
+
+  const handleSearch = async () => {
+    const location = await getCoordinates(searchText);
+    console.log("Coordinates for address:", searchText, location);
+    if (location) {
+      console.log("location: ", location);
+      setRegion({
+        latitude: location.lat,
+        longitude: location.lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    } else {
+      alert("Location not found!");
+      setRegion(null);
+    }
+  };
+
   return (
     <>
       <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <View style={styles.titleContainer}>
-        <Text style={styles.title}>GlobeGram</Text>
-        <TextInput style={styles.searchBar}
-          placeholder="Search location..."
-          placeholderTextColor="#aaa"
-        />
-      </View>  
-      <GoogleMapComponent/>
+        <StatusBar style="auto" />
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>GlobeGram</Text>
+          <TextInput style={styles.searchBar}
+            placeholder="Search location..."
+            placeholderTextColor="#aaa"
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearch}
+          />
+        </View>  
+        <GoogleMapComponent region={region}/>
       </SafeAreaView>
     </>
   );

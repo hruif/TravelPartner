@@ -2,8 +2,17 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
-const GoogleMapComponent = () => {
-  const initialRegion = {
+interface GoogleMapComponentProps {
+  region: {
+    latitude: number;
+    longitude: number;
+    latitudeDelta: number;
+    longitudeDelta: number;
+  } | null;
+}
+
+const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({ region }) => {
+  const defaultRegion = {
     latitude: -3.745,
     longitude: -38.523,
     latitudeDelta: 0.0922,
@@ -15,13 +24,13 @@ const GoogleMapComponent = () => {
       <View style={styles.mapContainer}>
         <MapView
           style={styles.map}
-          initialRegion={initialRegion}
+          region={region || defaultRegion}
         >
-          <Marker
-            coordinate={{ latitude: -3.745, longitude: -38.523 }}
-            title="Marker Title"
-            description="Marker Description"
-          />
+        <Marker
+          coordinate={{ latitude: -3.745, longitude: -38.523 }}
+          title="Marker Title"
+          description="Marker Description"
+        />
         </MapView>
       </View>  
     </View>
