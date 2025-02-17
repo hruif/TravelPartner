@@ -12,16 +12,18 @@ const GoogleMapComponent = () => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-      >
-        <Marker
-          coordinate={{ latitude: -3.745, longitude: -38.523 }}
-          title="Marker Title"
-          description="Marker Description"
-        />
-      </MapView>
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          initialRegion={initialRegion}
+        >
+          <Marker
+            coordinate={{ latitude: -3.745, longitude: -38.523 }}
+            title="Marker Title"
+            description="Marker Description"
+          />
+        </MapView>
+      </View>  
     </View>
   );
 };
@@ -29,13 +31,19 @@ const GoogleMapComponent = () => {
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    height: 400,
-    width: '100%',
-    justifyContent: 'flex-end',
+    flex: 1,
+    backgroundColor: '#25292e',
     alignItems: 'center',
+    justifyContent: 'flex-end', 
+  },
+  mapContainer: {
+    width: '100%',
+    height: 675,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
+    flex: 1, 
+    borderRadius: 9, 
   },
 });
 
