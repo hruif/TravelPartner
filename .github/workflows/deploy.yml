@@ -1,0 +1,34 @@
+name: CI/CD Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy API via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          script: |
+            cd /root/TravelPartner
+            git pull origin main
+            cd backend
+            
+            # Stop and remove PostgreSQL container if it exists
+            docker ps -q --filter "name=postgres_db" | grep -q . && docker stop postgres_db && docker rm postgres_db || echo "Postgres container not found"
+
+            # (Optional) Remove PostgreSQL volume (uncomment if needed)
+            docker volume rm postgres_data || echo "No volume found"
+
+            # Rebuild and restart services
+            docker compose build --force-rm --no-cache --compress
+            docker compose up -d
