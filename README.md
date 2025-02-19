@@ -63,11 +63,13 @@ npm  install  @mikro-orm/cli
 
 ## Quick Start
 
-Start Docker and in [/backend](../main/backend), run:
+Start Docker, then open a terminal and run the following commands:
 
+1) **Navigate to the backend directory and start the backend.**
 ```bash
 
-docker-compose  up  --build
+cd backend
+docker-compose up --build
 
 ```
 
@@ -75,10 +77,11 @@ You can then access the app at **[http://localhost:3000/api](http://localhost:30
 
 Most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you to access all the endpoints.
 
-Then in [/frontend](../main/frontend), run:
+2) **Navigate to the frontend directory and start the frontend**:
 
 ```bash
 
+cd ../frontend
 npm  install
 npm  start
 
