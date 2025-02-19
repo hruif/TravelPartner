@@ -49,9 +49,11 @@ export default function App() {
     }
   };
 
+  // Process search query
   const handleSearch = async () => {
     const location = await getCoordinates(searchText);
     console.log("Coordinates for address:", searchText, location);
+    // moves camera to search location
     if (location) {
       console.log("location: ", location);
       setRegion({
