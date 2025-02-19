@@ -10,6 +10,9 @@ Our target customers are travelers. Our app offers solutions for 2 problems trav
 
 2) During a trip, days are full of adventure, so there remains little time to preserve these moments’ details in writing, for example. Given photos and tags, our app will return a travel diary. Optionally, users can share these to inspire others.
 
+Operational use cases:
+- search for nearby experiences/accommodations on the map.
+
 
 # Living Document
 https://docs.google.com/document/d/1QPL-KpL8HGXZmXVWRMLAcBoYqu4GowHgW0gimDIc_YU/edit?usp=sharing 
