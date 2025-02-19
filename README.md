@@ -96,7 +96,16 @@ npm  start
 
 Now scan the QR code displayed in the terminal or the browser with the Expo Go app.
 
+3) **Get authentication token**:
+
+Currently, to access the search function, you will need to manually generate and paste an authentication token into [App.tsx](../frontend/App.tsx):
+- Go to http://146.190.151.248:3000/api#/Auth/AuthController_signup.
+- Enter any valid email and password into the field and hit "Execute".
+- Paste the outputted access token on line 20 in [App.tsx](../frontend/App.tsx).
+- The search function should work 
+
 If you prefer to run the app on an iOS or Android simulator, check [here](../main/frontend/README.md#running-on-a-simulator).
+
   
 
 ## More Information
