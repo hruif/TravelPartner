@@ -1,7 +1,7 @@
 
 # Globe Gram
 
-**Current Release:** [`v0.2`](https://github.com/your-repo/releases/tag/v0.2)
+**Current Release:** `v0.2`
 
 (WIP - layout info.)
 
