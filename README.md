@@ -101,3 +101,14 @@ If you prefer to run the app on an iOS or Android simulator, check [here](../mai
 
 ## More Information
 Check out [\backend's](../main/backend/README.md) and [\frontend's](../main/frontend/README.md) READMEs to learn more.
+
+
+# Testing & Continuous Integration
+
+We use **GitHub Actions** to automatically verify that the project builds correctly on each push and pull request.
+
+## CI Pipeline:
+- **Build Verification:** Ensures the backend and frontend compile successfully.
+- **Automated Checks:** Runs on each push to `main` and for all pull requests.
+
+You can view the latest runs and logs in the [GitHub Actions tab](https://github.com/hruif/TravelPartner/actions).
