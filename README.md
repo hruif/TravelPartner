@@ -123,3 +123,8 @@ We use **GitHub Actions** to automatically verify that the project builds correc
 - **Automated Checks:** Runs on each push to `main` and for all pull requests.
 
 You can view the latest runs and logs in the [GitHub Actions tab](https://github.com/hruif/TravelPartner/actions).
+
+
+# Bug Tracking
+
+**GitHub Issues** are used to keep track of bugs and issues to fix and features to implement. You can view current issues on the [project backlog](https://github.com/users/hruif/projects/1/views/1).
