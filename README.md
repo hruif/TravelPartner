@@ -1,8 +1,6 @@
 
 # Globe Gram
 
-**Current Release:** `v0.2`
-
 (WIP - layout info.)
 
 We are a social travel-planning app. Users planning a trip can be inspired by other travelers’ diaries around that destination, filtering the map according to their budget. Travelers may upload and tag their photos with ease, receive a comprehensive travel diary in return, and share their diary on the map to inspire others.
@@ -31,6 +29,13 @@ https://docs.google.com/document/d/1QPL-KpL8HGXZmXVWRMLAcBoYqu4GowHgW0gimDIc_YU/
 - Python: https://peps.python.org/pep-0008/. Automated linter: flake8. Automated formatter: Black.
 
 - SQL: https://docs.telemetry.mozilla.org/concepts/sql_style.html. Automated formatting: https://sqlfluff.com/.
+
+
+# Functional Use Cases
+
+- Exploring recommendations on map.
+	- The user can explore a map of the world and potential travel locations.
+	- Recommendations appear as markers which users can tap to learn more about.
 
 
 # Getting It Running
