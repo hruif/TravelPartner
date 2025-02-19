@@ -65,7 +65,11 @@ You will need the following dependencies to run the app
 
 - [Docker](https://docs.docker.com/compose/install/)
 
-- [Expo CLI](https://docs.expo.dev/more/expo-cli/).
+- [Expo CLI](https://docs.expo.dev/more/expo-cli/)
+
+- Install Expo Go on your mobile device:
+	- For Android: [Expo Go on Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
+	- For iOS: [Expo Go on the App Store](https://apps.apple.com/us/app/expo-go/id982107779)
 
   
 
@@ -81,7 +85,7 @@ npm  install  @mikro-orm/cli
 
 ## Quick Start
 
-In [I'm a relative reference to a repository file](../main/frontend), run:
+In [/backend](../main/backend), run:
 
 ```bash
 
@@ -89,71 +93,18 @@ docker-compose  up  --build
 
 ```
 
-You can then access the app at **[http://localhost:3000](http://localhost:3000)**
-
-  
-  
-
-## Swagger
-
-The app will be documented using Swagger. This will let you see all the endpoints and their parameters, along with a easy way to test them. You can access the Swagger UI at
-
-**[http://localhost:3000/api](http://localhost:3000/api)**
-
-  
+You can then access the app at **[http://localhost:3000/api](http://localhost:3000/api)**
 
 Most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you to access all the endpoints.
 
-  
-  
-
-## Database
-
-We are using a **PostgreSQL** database, along with **MikroORM** as the ORM. This will allow us to easily interact with the database using TypeScript without having to write raw SQL queries. The database automatically spins up when you run the app using [quick start](#quick-start).
-
-  
-
-Whenever you make changes to the entities, you will need to update the schema. This can be done by running the following command:
+Then in [/frontend](../main/frontend), run:
 
 ```bash
 
-npx  mikro-orm  schema:create  --dump  # Dumps create schema SQL
-
-npx  mikro-orm  schema:update  --dump  # Dumps update schema SQL
-
-npx  mikro-orm  schema:drop  --dump  # Dumps drop schema SQL
+npm install
+npm start
 
 ```
+Now scan the QR code displayed in the terminal or the browser with the Expo Go app.
 
-This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with.
-
-  
-
-**Docker WILL keep the old database**, so you will need to remove the old database using the following commands:
-
-```bash
-
-docker-compose  down  ## If the app is running
-
-docker  volume  rm $(docker  volume  ls  -q | grep  postgres_data)
-
-```
-
-You can then run the app again using `docker-compose up --build`.
-
-  
-
-Finally, if you want to access the database yourself you can use the following command:
-
-```bash
-
-docker  exec  -it  postgres_db  psql  -U  devuser  -d  devdb
-
-```
-
-  
-  
-
-## Structure
-
-This is a whole another topic which will be covered in the [structure](./structure.md) file. This will cover the structure of the backend, along with the different layers and how they interact with each other.
+If you prefer to run the app on an iOS or Android simulator, check [here](../main/frontend/README.md#running-on-a-simulator).
