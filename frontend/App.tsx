@@ -17,7 +17,7 @@ export default function App() {
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
     // hardcode from swagger
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzM5Nzg2MjE3LCJleHAiOjE3Mzk3ODYyNzd9.hMPFioeEqqIrDVjwgKZl1GTLxG7B8DKNqF8SstP0Ya8";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTM5NjU1LCJleHAiOjE3NDAxNDAyNTV9.g0HP6VPSvhY5LycieaaW3zToVOYjZ-sBos7LYU9OWXI";
     // endpoint to send request to
     const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
   
@@ -74,12 +74,14 @@ export default function App() {
         <StatusBar style="auto" />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>GlobeGram</Text>
+        </View>
+        <View style={styles.searchContainer}>
           <TextInput style={styles.searchBar}
-            placeholder="Search location..."
-            placeholderTextColor="#aaa"
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearch}
+              placeholder="Search location..."
+              placeholderTextColor="#aaa"
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
           />
         </View>  
         <GoogleMapComponent region={region}/>
@@ -93,22 +95,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   titleContainer: {
+    width: '50%',
+    height: '7%',
+    alignItems: 'center',
+    paddingVertical: 10,
+    zIndex: 2,
+    elevation: 2,
+    borderRadius: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  },
+  searchContainer: {
     width: '100%',
     alignItems: 'center',
-    paddingVertical: 5,
+    paddingVertical: 8,
     zIndex: 2,
     elevation: 2,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'gray',
+    color: 'white',
     fontStyle: 'normal',
     letterSpacing: 2,
-    marginBottom: 20,
   },
   searchBar: {
     width: '90%',

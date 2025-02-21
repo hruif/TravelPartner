@@ -44,15 +44,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#25292e',
     alignItems: 'center',
     justifyContent: 'flex-end', 
+    paddingBottom: 80,
   },
   mapContainer: {
     width: '100%',
-    height: 675,
+    height: '100%',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     flex: 1, 
-    borderRadius: 9, 
   },
 });
 
