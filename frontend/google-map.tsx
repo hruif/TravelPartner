@@ -9,9 +9,13 @@ interface GoogleMapComponentProps {
     latitudeDelta: number;
     longitudeDelta: number;
   } | null;
+  marker: {
+    latitude: number;
+    longitude: number;
+  } | null;
 }
 
-const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({ region }) => {
+const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({ region, marker }) => {
   const defaultRegion = {
     latitude: -3.745,
     longitude: -38.523,
@@ -26,16 +30,19 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({ region }) => {
           style={styles.map}
           region={region || defaultRegion}
         >
-        <Marker
-          coordinate={{ latitude: -3.745, longitude: -38.523 }}
-          title="Marker Title"
-          description="Marker Description"
-        />
+          {marker && (
+            <Marker
+              coordinate={marker}
+              title={"Location"}
+              description={"This is the location you searched for."}
+            />
+          )}
         </MapView>
       </View>  
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -44,15 +51,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#25292e',
     alignItems: 'center',
     justifyContent: 'flex-end', 
+    paddingBottom: '25%',
   },
   mapContainer: {
     width: '100%',
-    height: 675,
+    height: '100%',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
     flex: 1, 
-    borderRadius: 9, 
   },
 });
 
