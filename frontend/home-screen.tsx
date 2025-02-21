@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
 
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU4MzgzLCJleHAiOjE3NDAxNTg5ODN9.AGW--mhg3wjlO1qEuUkXD9c-v_BrNICjfTieLC6m810";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTYwNTQ4LCJleHAiOjE3NDAxNjExNDh9.maChGePj5QLt3nAcwd3szSDMQyoYKME0P3F9EWk3aLw";
     const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
 
     try {
@@ -90,7 +90,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   const getPlaceDetails = async (placeId: string) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU4MzgzLCJleHAiOjE3NDAxNTg5ODN9.AGW--mhg3wjlO1qEuUkXD9c-v_BrNICjfTieLC6m810";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTYwNTQ4LCJleHAiOjE3NDAxNjExNDh9.maChGePj5QLt3nAcwd3szSDMQyoYKME0P3F9EWk3aLw";
     const url = `http://146.190.151.248:3000/maps/place-details?placeId=${encodeURIComponent(placeId)}`;
     try {
       const response = await fetch(url, {
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   showDetailsButton: {
     position: 'absolute',
-    top: '21%',
+    top: '21.5%',
     right: 5,
     backgroundColor: '#007BFF',
     padding: 10,
