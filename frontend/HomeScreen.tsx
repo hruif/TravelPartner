@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image, ScrollView} from 'react-native';
 import GoogleMapComponent from './google-map';
 import React, { useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -13,6 +13,11 @@ type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({navigation}: HomeScreenProps) {
   const [searchText, setSearchText] = useState('');
+  const [region, setRegion] = useState<Region | null>(null);
+  const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationDetails, setLocationDetails] = useState<any>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   interface Region {
     latitude: number;
@@ -20,7 +25,6 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
     latitudeDelta: number;
     longitudeDelta: number;
   };
-  const [region, setRegion] = useState<Region | null>(null);
 
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
@@ -43,10 +47,13 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       const coordinates = await response.json();
       console.log("Response data:", coordinates);
       if (coordinates.length > 0) {
-        // use first result
         const location = coordinates[0].geometry.location;
-        console.log("Extracted location:", location);
-        return location;
+        const placeId = coordinates[0].place_id;
+        return {
+          lat: location.lat, 
+          lng: location.lng,
+          place_id: placeId
+        };
       } else {
         console.log("No results found.");
         return null;
@@ -60,19 +67,50 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   // Process search query
   const handleSearch = async () => {
     const location = await getCoordinates(searchText);
-    console.log("Coordinates for address:", searchText, location);
-    // moves camera to search location
     if (location) {
-      console.log("location: ", location);
+      const details = await getPlaceDetails(location.place_id);
+      setLocationDetails(details);
       setRegion({
         latitude: location.lat,
         longitude: location.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
+      setMarker({
+        latitude: location.lat,
+        longitude: location.lng,
+      });
+      setShowDetails(true);
+      setSearchPerformed(true);
     } else {
       alert("Location not found!");
       setRegion(null);
+      setMarker(null);
+      setLocationDetails(null);
+      setShowDetails(false);
+      setSearchPerformed(false);
+    }
+  };
+
+  const getPlaceDetails = async (placeId: string) => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU0NjAyLCJleHAiOjE3NDAxNTUyMDJ9.GQW_3_1FrDJFudlXWYgpst-A-5xQH-z1H1wkSYdnohY";
+    const url = `http://146.190.151.248:3000/maps/place-details?placeId=${encodeURIComponent(placeId)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        console.error("Fetch failed with status:", response.status);
+        return null;
+      }
+      const details = await response.json();
+      return details;
+    } catch (error) {
+      console.error("Error fetching location data from backend", error);
+      return null;
     }
   };
 
@@ -119,7 +157,31 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
         </TouchableOpacity>
       </View>
     </View>
-        <GoogleMapComponent region={region}/>
+    <GoogleMapComponent region={region} marker={marker}/>
+        {searchPerformed && (
+          <>
+            {showDetails && locationDetails ? (
+              <ScrollView style={styles.detailsContainer}>
+                <Text style={styles.locationName}>{locationDetails.name}</Text>
+                <Text style={styles.locationAddress}>{locationDetails.formatted_address}</Text>
+                {locationDetails.photos && locationDetails.photos.map((photo: { photo_reference: string }, index: number) => (
+                  <Image
+                    key={index}
+                    style={styles.photo}
+                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${"test123"}` }}
+                  />
+                ))}
+                <TouchableOpacity style={styles.closeButton} onPress={() => setShowDetails(false)}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            ) : (
+              <TouchableOpacity style={styles.showDetailsButton} onPress={() => setShowDetails(true)}>
+                <Text style={styles.showDetailsButtonText}>Show Details</Text>
+              </TouchableOpacity>
+            )}
+          </>
+        )}
       </SafeAreaView>
     </>
   );
@@ -200,5 +262,54 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     resizeMode: "contain",
+  },
+  detailsContainer: {
+    width: '100%',
+    marginTop: 20,
+    backgroundColor: '#f8f8f8',
+  },
+  locationName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    paddingRight: 50, // Add padding to avoid overlap with buttons
+    backgroundColor: '#f8f8f8',
+    padding: 10,
+  },
+  locationAddress: {
+    fontSize: 16,
+    marginBottom: 10,
+    paddingRight: 50, // Add padding to avoid overlap with buttons
+    backgroundColor: '#f8f8f8',
+    padding: 10,
+  },
+  photo: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
+  },
+  showDetailsButton: {
+    position: 'absolute',
+    top: 180,
+    right: 5,
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+  },
+  showDetailsButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#FF0000',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
