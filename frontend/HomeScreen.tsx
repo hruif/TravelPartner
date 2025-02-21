@@ -1,17 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import GoogleMapComponent from './google-map';
 import React, { useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 
 type RootStackParamList = {
-    Home: undefined;
-    TravelDiary: undefined;
+  Home: undefined;
+  TravelDiary: undefined;
 };
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>;
 
-export default function HomeScreen({navigation}: HomeScreenProps) {
+export default function HomeScreen({ navigation }: HomeScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -28,11 +28,9 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
 
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
-    // hardcode from swagger
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTM5NjU1LCJleHAiOjE3NDAxNDAyNTV9.g0HP6VPSvhY5LycieaaW3zToVOYjZ-sBos7LYU9OWXI";
-    // endpoint to send request to
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU4MzgzLCJleHAiOjE3NDAxNTg5ODN9.AGW--mhg3wjlO1qEuUkXD9c-v_BrNICjfTieLC6m810";
     const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
-  
+
     try {
       const response = await fetch(url, {
         headers: {
@@ -40,17 +38,16 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           "Content-Type": "application/json"
         }
       });
-      if (!response.ok) { // debug
+      if (!response.ok) {
         console.error("Fetch failed with status:", response.status);
         return null;
       }
       const coordinates = await response.json();
-      console.log("Response data:", coordinates);
       if (coordinates.length > 0) {
         const location = coordinates[0].geometry.location;
         const placeId = coordinates[0].place_id;
         return {
-          lat: location.lat, 
+          lat: location.lat,
           lng: location.lng,
           place_id: placeId
         };
@@ -93,7 +90,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   };
 
   const getPlaceDetails = async (placeId: string) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU0NjAyLCJleHAiOjE3NDAxNTUyMDJ9.GQW_3_1FrDJFudlXWYgpst-A-5xQH-z1H1wkSYdnohY";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU4MzgzLCJleHAiOjE3NDAxNTg5ODN9.AGW--mhg3wjlO1qEuUkXD9c-v_BrNICjfTieLC6m810";
     const url = `http://146.190.151.248:3000/maps/place-details?placeId=${encodeURIComponent(placeId)}`;
     try {
       const response = await fetch(url, {
@@ -122,42 +119,16 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           <Text style={styles.title}>GlobeGram</Text>
         </View>
         <View style={styles.searchContainer}>
-          <TextInput style={styles.searchBar}
-              placeholder="Search location..."
-              placeholderTextColor="#aaa"
-              value={searchText}
-              onChangeText={setSearchText}
-              onSubmitEditing={handleSearch}/>
-        </View>  
-        <View style={styles.container}>
-      <View style={styles.container}>      
-        <TouchableOpacity 
-        style={styles.diaryIconContainer} 
-        onPress={() => navigation.navigate('TravelDiary')}>
-        <Image 
-          source={require('./assets/diary-icon.png')}
-          style={styles.Icon}
-        />
-        </TouchableOpacity>
-        <TouchableOpacity 
-        style={styles.mapIconContainer} 
-        onPress={() => navigation.navigate('Home')}>
-        <Image 
-          source={require('./assets/mapicon.png')}
-          style={styles.Icon}
-        />
-        </TouchableOpacity>
-        <TouchableOpacity 
-        style={styles.budgetIconContainer} 
-        onPress={() => navigation.navigate('Home')}>
-        <Image 
-          source={require('./assets/budgeticon.png')}
-          style={styles.Icon}
-        />
-        </TouchableOpacity>
-      </View>
-    </View>
-    <GoogleMapComponent region={region} marker={marker}/>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search location..."
+            placeholderTextColor="#aaa"
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearch}
+          />
+        </View>
+        <GoogleMapComponent region={region} marker={marker} />
         {searchPerformed && (
           <>
             {showDetails && locationDetails ? (
@@ -168,7 +139,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
                   <Image
                     key={index}
                     style={styles.photo}
-                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${"test123"}` }}
+                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${"AIzaSyBwDfYSVR0oQWqoFR7hOPgqK_JChCNlSoI"}` }}
                   />
                 ))}
                 <TouchableOpacity style={styles.closeButton} onPress={() => setShowDetails(false)}>
@@ -182,6 +153,35 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
             )}
           </>
         )}
+        <View style={styles.iconContainer}>
+          <TouchableOpacity
+            style={styles.diaryIconContainer}
+            onPress={() => navigation.navigate('TravelDiary')}
+          >
+            <Image
+              source={require('./assets/diary-icon.png')}
+              style={styles.Icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.mapIconContainer}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Image
+              source={require('./assets/mapicon.png')}
+              style={styles.Icon}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.budgetIconContainer}
+            onPress={() => navigation.navigate('Home')}
+          >
+            <Image
+              source={require('./assets/budgeticon.png')}
+              style={styles.Icon}
+            />
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     </>
   );
@@ -199,8 +199,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     paddingVertical: 10,
-    zIndex: 2,
-    elevation: 2,
+    zIndex: 3, // Incremented zIndex
+    elevation: 3,
     borderRadius: 10,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
@@ -208,38 +208,38 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     paddingVertical: 8,
-    zIndex: 2,
-    elevation: 2,
+    zIndex: 3, // Incremented zIndex
+    elevation: 3,
   },
   diaryIconContainer: {
     position: 'absolute',
-    bottom: '0.5%', 
+    bottom: '0.5%',
     right: '8%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2,
+    zIndex: 3, // Incremented zIndex
   },
   mapIconContainer: {
     position: 'absolute',
-    bottom: '0.5%', 
+    bottom: '0.5%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: "center",
     alignSelf: 'center',
-    zIndex: 2,
+    zIndex: 3, // Incremented zIndex
   },
   budgetIconContainer: {
     position: 'absolute',
-    bottom: '0.5%', 
+    bottom: '0.5%',
     left: '8%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2,
+    zIndex: 3, // Incremented zIndex
   },
   title: {
     fontSize: 24,
@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
     backgroundColor: '#f8f8f8',
+    zIndex: 3, // Incremented zIndex
   },
   locationName: {
     fontSize: 20,
@@ -295,6 +296,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
+    zIndex: 3, // Incremented zIndex
   },
   showDetailsButtonText: {
     color: '#fff',
@@ -307,9 +309,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF0000',
     padding: 10,
     borderRadius: 5,
+    zIndex: 3, // Incremented zIndex
   },
   closeButtonText: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  iconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '10%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    zIndex: 3, // Incremented zIndex
   },
 });
