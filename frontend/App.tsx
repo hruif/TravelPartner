@@ -1,6 +1,5 @@
-// filepath: /c:/Users/mrobi/Documents/Projects/TravelPartner/frontend/App.tsx
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, ScrollView, TouchableOpacity } from 'react-native';
 import GoogleMapComponent from './google-map';
 import React, { useState } from 'react';
 
@@ -9,6 +8,8 @@ export default function App() {
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
   const [locationDetails, setLocationDetails] = useState<any>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   interface Region {
     latitude: number;
@@ -19,7 +20,7 @@ export default function App() {
 
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTQ5NzM2LCJleHAiOjE3NDAxNTAzMzZ9.b_2uEteVFMDIvZDXh8K5-83TYYiHJsX8tqGyzIq7DrU";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU0NjAyLCJleHAiOjE3NDAxNTUyMDJ9.GQW_3_1FrDJFudlXWYgpst-A-5xQH-z1H1wkSYdnohY";
     const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
   
     try {
@@ -68,16 +69,20 @@ export default function App() {
         latitude: location.lat,
         longitude: location.lng,
       });
+      setShowDetails(true);
+      setSearchPerformed(true);
     } else {
       alert("Location not found!");
       setRegion(null);
       setMarker(null);
       setLocationDetails(null);
+      setShowDetails(false);
+      setSearchPerformed(false);
     }
   };
 
   const getPlaceDetails = async (placeId: string) => {
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTQ5NzM2LCJleHAiOjE3NDAxNTAzMzZ9.b_2uEteVFMDIvZDXh8K5-83TYYiHJsX8tqGyzIq7DrU";
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTU0NjAyLCJleHAiOjE3NDAxNTUyMDJ9.GQW_3_1FrDJFudlXWYgpst-A-5xQH-z1H1wkSYdnohY";
     const url = `http://146.190.151.248:3000/maps/place-details?placeId=${encodeURIComponent(placeId)}`;
     try {
       const response = await fetch(url, {
@@ -113,19 +118,29 @@ export default function App() {
           />
         </View>  
         <GoogleMapComponent region={region} marker={marker}/>
-        {locationDetails && (
-          <ScrollView style={styles.detailsContainer}>
-            <Text style={styles.locationName}>{locationDetails.name}</Text>
-            <Text style={styles.locationAddress}>{locationDetails.formatted_address}</Text>
-            {locationDetails.photos && locationDetails.photos.map((photo: { photo_reference: string }, index: number) => (
-              <Image
-                key={index}
-                style={styles.photo}
-                //The API key is stored in the .env file but for some reason preccesing it in the uri is not working
-                source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${process.env.GOOGLE_PLACES_API_KEY}` }}
-              />
-            ))}
-          </ScrollView>
+        {searchPerformed && (
+          <>
+            {showDetails && locationDetails ? (
+              <ScrollView style={styles.detailsContainer}>
+                <Text style={styles.locationName}>{locationDetails.name}</Text>
+                <Text style={styles.locationAddress}>{locationDetails.formatted_address}</Text>
+                {locationDetails.photos && locationDetails.photos.map((photo: { photo_reference: string }, index: number) => (
+                  <Image
+                    key={index}
+                    style={styles.photo}
+                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${"test123"}` }}
+                  />
+                ))}
+                <TouchableOpacity style={styles.closeButton} onPress={() => setShowDetails(false)}>
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            ) : (
+              <TouchableOpacity style={styles.showDetailsButton} onPress={() => setShowDetails(true)}>
+                <Text style={styles.showDetailsButtonText}>Show Details</Text>
+              </TouchableOpacity>
+            )}
+          </>
         )}
       </SafeAreaView>
     </>
@@ -165,21 +180,52 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8f8f8',
   },
   detailsContainer: {
-    width: '90%',
+    width: '100%',
     marginTop: 20,
+    backgroundColor: '#f8f8f8',
   },
   locationName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    paddingRight: 50, // Add padding to avoid overlap with buttons
+    backgroundColor: '#f8f8f8',
+    padding: 10,
   },
   locationAddress: {
     fontSize: 16,
     marginBottom: 10,
+    paddingRight: 50, // Add padding to avoid overlap with buttons
+    backgroundColor: '#f8f8f8',
+    padding: 10,
   },
   photo: {
     width: '100%',
     height: 200,
     marginBottom: 10,
+  },
+  showDetailsButton: {
+    position: 'absolute',
+    top: 180,
+    right: 5,
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+  },
+  showDetailsButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#FF0000',
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
