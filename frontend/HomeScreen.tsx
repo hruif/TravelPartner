@@ -267,11 +267,11 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     width: '100%',
+    height: '90%',
     backgroundColor: '#f8f8f8',
-    zIndex: 3,
+    zIndex: 4,
     position: "absolute",
-    top: "19.39%",
-    left: 0,
+    top: "21%",
   },
   locationName: {
     fontSize: 20,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   },
   showDetailsButton: {
     position: 'absolute',
-    top: 180,
+    top: '21%',
     right: 5,
     backgroundColor: '#007BFF',
     padding: 10,
