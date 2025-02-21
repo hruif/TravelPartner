@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#25292e',
     alignItems: 'center',
     justifyContent: 'flex-end', 
-    paddingBottom: 80,
+    paddingBottom: '25%',
   },
   mapContainer: {
     width: '100%',

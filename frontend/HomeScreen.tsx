@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Button} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image} from 'react-native';
 import GoogleMapComponent from './google-map';
 import React, { useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -89,12 +89,36 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
               placeholderTextColor="#aaa"
               value={searchText}
               onChangeText={setSearchText}
-              onSubmitEditing={handleSearch}
-          />
+              onSubmitEditing={handleSearch}/>
         </View>  
-        <View style={styles.diaryIconContainer}>
-            <Button title="Go to Travel Diary" onPress={() => navigation.navigate('TravelDiary')} />
-        </View>
+        <View style={styles.container}>
+      <View style={styles.container}>      
+        <TouchableOpacity 
+        style={styles.diaryIconContainer} 
+        onPress={() => navigation.navigate('TravelDiary')}>
+        <Image 
+          source={require('./assets/diary-icon.png')}
+          style={styles.Icon}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity 
+        style={styles.mapIconContainer} 
+        onPress={() => navigation.navigate('Home')}>
+        <Image 
+          source={require('./assets/mapicon.png')}
+          style={styles.Icon}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity 
+        style={styles.budgetIconContainer} 
+        onPress={() => navigation.navigate('Home')}>
+        <Image 
+          source={require('./assets/budgeticon.png')}
+          style={styles.Icon}
+        />
+        </TouchableOpacity>
+      </View>
+    </View>
         <GoogleMapComponent region={region}/>
       </SafeAreaView>
     </>
@@ -105,13 +129,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'flex-start',
   },
   titleContainer: {
     width: '50%',
     height: '7%',
     alignItems: 'center',
+    alignSelf: 'center',
     paddingVertical: 10,
     zIndex: 2,
     elevation: 2,
@@ -126,11 +150,33 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   diaryIconContainer: {
-    width: '50%',
-    height: '85%',
+    position: 'absolute',
+    bottom: '0.5%', 
+    right: '8%',
+    width: '10%',
+    height: '10%',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingVertical: 10,
+    zIndex: 2,
+  },
+  mapIconContainer: {
+    position: 'absolute',
+    bottom: '0.5%', 
+    width: '10%',
+    height: '10%',
+    justifyContent: 'center',
+    alignItems: "center",
+    alignSelf: 'center',
+    zIndex: 2,
+  },
+  budgetIconContainer: {
+    position: 'absolute',
+    bottom: '0.5%', 
+    left: '8%',
+    width: '10%',
+    height: '10%',
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 2,
   },
   title: {
@@ -149,5 +195,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     backgroundColor: '#f8f8f8',
-  },  
+  },
+  Icon: {
+    width: 50,
+    height: 50,
+    resizeMode: "contain",
+  },
 });
