@@ -139,7 +139,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                   <Image
                     key={index}
                     style={styles.photo}
-                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${"AIzaSyBwDfYSVR0oQWqoFR7hOPgqK_JChCNlSoI"}` }}
+                    source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${""}` }}
                   />
                 ))}
                 <TouchableOpacity style={styles.closeButton} onPress={() => setShowDetails(false)}>
