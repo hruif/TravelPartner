@@ -10,10 +10,12 @@
     "test": "echo \"No tests available\" && exit 0"
   },
   "dependencies": {
+    "@nestjs/config": "^4.0.0",
     "expo": "~52.0.31",
     "expo-status-bar": "~2.0.1",
     "react": "18.3.1",
     "react-native": "0.76.7",
+    "react-native-dotenv": "^3.4.11",
     "react-native-elements": "^3.4.3",
     "react-native-maps": "^1.20.1"
   },

@@ -1,10 +1,14 @@
+// filepath: /c:/Users/mrobi/Documents/Projects/TravelPartner/frontend/App.tsx
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, TextInput} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Image, ScrollView } from 'react-native';
 import GoogleMapComponent from './google-map';
 import React, { useState } from 'react';
 
 export default function App() {
   const [searchText, setSearchText] = useState('');
+  const [region, setRegion] = useState<Region | null>(null);
+  const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationDetails, setLocationDetails] = useState<any>(null);
 
   interface Region {
     latitude: number;
@@ -12,13 +16,10 @@ export default function App() {
     latitudeDelta: number;
     longitudeDelta: number;
   };
-  const [region, setRegion] = useState<Region | null>(null);
 
   // Geocoding function using backend endpoint
   const getCoordinates = async (address: string) => {
-    // hardcode from swagger
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzM5Nzg2MjE3LCJleHAiOjE3Mzk3ODYyNzd9.hMPFioeEqqIrDVjwgKZl1GTLxG7B8DKNqF8SstP0Ya8";
-    // endpoint to send request to
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTQ5NzM2LCJleHAiOjE3NDAxNTAzMzZ9.b_2uEteVFMDIvZDXh8K5-83TYYiHJsX8tqGyzIq7DrU";
     const url = `http://146.190.151.248:3000/maps/geocode?address=${encodeURIComponent(address)}`;
   
     try {
@@ -28,17 +29,19 @@ export default function App() {
           "Content-Type": "application/json"
         }
       });
-      if (!response.ok) { // debug
+      if (!response.ok) {
         console.error("Fetch failed with status:", response.status);
         return null;
       }
       const coordinates = await response.json();
-      console.log("Response data:", coordinates);
       if (coordinates.length > 0) {
-        // use first result
         const location = coordinates[0].geometry.location;
-        console.log("Extracted location:", location);
-        return location;
+        const placeId = coordinates[0].place_id;
+        return {
+          lat: location.lat, 
+          lng: location.lng,
+          place_id: placeId
+        };
       } else {
         console.log("No results found.");
         return null;
@@ -52,19 +55,46 @@ export default function App() {
   // Process search query
   const handleSearch = async () => {
     const location = await getCoordinates(searchText);
-    console.log("Coordinates for address:", searchText, location);
-    // moves camera to search location
     if (location) {
-      console.log("location: ", location);
+      const details = await getPlaceDetails(location.place_id);
+      setLocationDetails(details);
       setRegion({
         latitude: location.lat,
         longitude: location.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
+      setMarker({
+        latitude: location.lat,
+        longitude: location.lng,
+      });
     } else {
       alert("Location not found!");
       setRegion(null);
+      setMarker(null);
+      setLocationDetails(null);
+    }
+  };
+
+  const getPlaceDetails = async (placeId: string) => {
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImV4YW1wbGVAZ21haWwuY29tIiwiaWF0IjoxNzQwMTQ5NzM2LCJleHAiOjE3NDAxNTAzMzZ9.b_2uEteVFMDIvZDXh8K5-83TYYiHJsX8tqGyzIq7DrU";
+    const url = `http://146.190.151.248:3000/maps/place-details?placeId=${encodeURIComponent(placeId)}`;
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        console.error("Fetch failed with status:", response.status);
+        return null;
+      }
+      const details = await response.json();
+      return details;
+    } catch (error) {
+      console.error("Error fetching location data from backend", error);
+      return null;
     }
   };
 
@@ -82,7 +112,21 @@ export default function App() {
             onSubmitEditing={handleSearch}
           />
         </View>  
-        <GoogleMapComponent region={region}/>
+        <GoogleMapComponent region={region} marker={marker}/>
+        {locationDetails && (
+          <ScrollView style={styles.detailsContainer}>
+            <Text style={styles.locationName}>{locationDetails.name}</Text>
+            <Text style={styles.locationAddress}>{locationDetails.formatted_address}</Text>
+            {locationDetails.photos && locationDetails.photos.map((photo: { photo_reference: string }, index: number) => (
+              <Image
+                key={index}
+                style={styles.photo}
+                //The API key is stored in the .env file but for some reason preccesing it in the uri is not working
+                source={{ uri: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${process.env.GOOGLE_PLACES_API_KEY}` }}
+              />
+            ))}
+          </ScrollView>
+        )}
       </SafeAreaView>
     </>
   );
@@ -119,5 +163,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     backgroundColor: '#f8f8f8',
-  },  
+  },
+  detailsContainer: {
+    width: '90%',
+    marginTop: 20,
+  },
+  locationName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  locationAddress: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  photo: {
+    width: '100%',
+    height: 200,
+    marginBottom: 10,
+  },
 });
