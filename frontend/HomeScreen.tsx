@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     paddingVertical: 10,
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
     elevation: 3,
     borderRadius: 10,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
@@ -207,39 +207,41 @@ const styles = StyleSheet.create({
   searchContainer: {
     width: '100%',
     alignItems: 'center',
-    paddingVertical: 8,
-    zIndex: 3, // Incremented zIndex
+    paddingTop: '2%',
+    zIndex: 3,
     elevation: 3,
   },
   diaryIconContainer: {
     position: 'absolute',
-    bottom: '0.5%',
+    bottom: '70%',
     right: '8%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
   mapIconContainer: {
     position: 'absolute',
-    bottom: '0.5%',
+    bottom: '70%',
+    right: '55.5%',
+    left: '45.5%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: "center",
     alignSelf: 'center',
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
   budgetIconContainer: {
     position: 'absolute',
-    bottom: '0.5%',
+    bottom: '70%',
     left: '8%',
     width: '10%',
     height: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
   title: {
     fontSize: 24,
@@ -265,22 +267,24 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     width: '100%',
-    marginTop: 20,
     backgroundColor: '#f8f8f8',
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
+    position: "absolute",
+    top: "19.39%",
+    left: 0,
   },
   locationName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    paddingRight: 50, // Add padding to avoid overlap with buttons
+    paddingRight: 50,
     backgroundColor: '#f8f8f8',
     padding: 10,
   },
   locationAddress: {
     fontSize: 16,
     marginBottom: 10,
-    paddingRight: 50, // Add padding to avoid overlap with buttons
+    paddingRight: 50,
     backgroundColor: '#f8f8f8',
     padding: 10,
   },
@@ -296,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
   showDetailsButtonText: {
     color: '#fff',
@@ -309,7 +313,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF0000',
     padding: 10,
     borderRadius: 5,
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
   closeButtonText: {
     color: '#fff',
@@ -323,6 +327,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    zIndex: 3, // Incremented zIndex
+    zIndex: 3,
   },
 });
