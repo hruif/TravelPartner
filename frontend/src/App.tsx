@@ -1,18 +1,39 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import HomeScreen from './screens/home-screen';
-import TravelDiaryScreen from './screens/travel-diary-screen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AuthProvider, useAuth } from './hooks/useAuth'; // ✅ Ensure AuthProvider is imported
 
-const Stack = createStackNavigator();
+// Import screens
+import AuthScreen from './screens/auth-screen';
+import MainScreen from './screens/main-screen';
+
+const Stack = createNativeStackNavigator();
+
+function MainApp() {
+    const { authState, loading } = useAuth(); // ✅ Correct use of context
+
+    if (loading) return null;
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                key={authState ? "MainNav" : "AuthNav"}
+                screenOptions={{ headerShown: false }}
+            >
+                {!authState ? (
+                    <Stack.Screen name="Auth" component={AuthScreen} />
+                ) : (
+                    <Stack.Screen name="Main" component={MainScreen} />
+                )}
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="TravelDiary" component={TravelDiaryScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <AuthProvider>
+            <MainApp />
+        </AuthProvider>
+    );
 }
