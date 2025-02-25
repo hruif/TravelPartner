@@ -47,35 +47,6 @@ export default function TravelDiaryScreen({navigation}: DiaryScreenProps) {
       <TouchableOpacity style={styles.postButtonContainer}>
         <Text style={styles.postButton}>Post</Text>
       </TouchableOpacity>
-      <View style={styles.iconContainer}>
-                <TouchableOpacity
-                  style={styles.diaryIconContainer}
-                  onPress={() => navigation.navigate('TravelDiary')}
-                >
-                  <Image
-                    source={require('./assets/diary-icon.png')}
-                    style={styles.Icon}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.mapIconContainer}
-                  onPress={() => navigation.navigate('Home')}
-                >
-                  <Image
-                    source={require('./assets/mapicon.png')}
-                    style={styles.Icon}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.budgetIconContainer}
-                  onPress={() => navigation.navigate('Home')}
-                >
-                  <Image
-                    source={require('./assets/budgeticon.png')}
-                    style={styles.Icon}
-                  />
-                </TouchableOpacity>
-              </View>
     </View>
     
   );
