@@ -53,7 +53,7 @@ export default function TravelDiaryScreen({navigation}: DiaryScreenProps) {
                   onPress={() => navigation.navigate('TravelDiary')}
                 >
                   <Image
-                    source={require('./assets/diary-icon.png')}
+                    source={require('../assets/diary-icon.png')}
                     style={styles.Icon}
                   />
                 </TouchableOpacity>
@@ -62,7 +62,7 @@ export default function TravelDiaryScreen({navigation}: DiaryScreenProps) {
                   onPress={() => navigation.navigate('Home')}
                 >
                   <Image
-                    source={require('./assets/mapicon.png')}
+                    source={require('../assets/mapicon.png')}
                     style={styles.Icon}
                   />
                 </TouchableOpacity>
@@ -71,7 +71,7 @@ export default function TravelDiaryScreen({navigation}: DiaryScreenProps) {
                   onPress={() => navigation.navigate('Home')}
                 >
                   <Image
-                    source={require('./assets/budgeticon.png')}
+                    source={require('../assets/budgeticon.png')}
                     style={styles.Icon}
                   />
                 </TouchableOpacity>

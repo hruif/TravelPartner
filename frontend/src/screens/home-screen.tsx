@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, SafeAreaView, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
-import GoogleMapComponent from './google-map';
+import GoogleMapComponent from '../components/google-map';
 import React, { useState } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 
@@ -159,7 +159,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={() => navigation.navigate('TravelDiary')}
           >
             <Image
-              source={require('./assets/diary-icon.png')}
+              source={require('../assets/diary-icon.png')}
               style={styles.Icon}
             />
           </TouchableOpacity>
@@ -168,7 +168,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={() => navigation.navigate('Home')}
           >
             <Image
-              source={require('./assets/mapicon.png')}
+              source={require('../assets/mapicon.png')}
               style={styles.Icon}
             />
           </TouchableOpacity>
@@ -177,7 +177,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             onPress={() => navigation.navigate('Home')}
           >
             <Image
-              source={require('./assets/budgeticon.png')}
+              source={require('../assets/budgeticon.png')}
               style={styles.Icon}
             />
           </TouchableOpacity>
