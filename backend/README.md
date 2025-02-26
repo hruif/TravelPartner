@@ -1,19 +1,12 @@
-# Backend
+# Backend (Developer Guide)
 
-## Basics
+## Table of Contents
 - [Quick Start](#quick-start)
 - [Dependencies](#dependencies)
 - [Swagger](#swagger)
 - [Database](#database)
+- [Testing](#testing)
 - [Structure](#structure)
-
-
-## Quick Start
-Before starting, you will need to install all the [dependencies](#dependencies) and have a basic understanding of the app outlined in [basics](#basics). Once you have done that, you can run the app using the following command:
-```bash
-npm run build
-```
-
 
 ## Dependencies
 You will need the following dependencies to run the app
@@ -25,12 +18,17 @@ Additionally, you will need to install the MikroORM CLI using the following comm
 npm install @mikro-orm/cli
 ```
 
+## Quick Start
+Before starting, you will need to install all the [dependencies](#dependencies) and have a basic understanding of the app outlined in [basics](#basics). Once you have done that, you can run the app using the following command:
+```bash
+npm run build
+```
 
 ## Swagger
 The app will be documented using Swagger. This will let you see all the endpoints and their parameters, along with a easy way to test them. You can access the Swagger UI at
 **[http://localhost:3000/api](http://localhost:3000/api)**
 
-Most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you  to access all the endpoints.
+Without authorization via signing up/logging in on the auth screen, most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can additionally get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you  to access all the endpoints.
 
 
 ## Database
@@ -44,7 +42,13 @@ npx mikro-orm schema:drop --dump     # Dumps drop schema SQL
 ```
 This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with. 
 
+### Testing
+```sh
+npm test
+```
 
 ## Structure
-This is a whole another topic which will be covered in the [structure](./structure.md) file. This will cover the structure of the backend, along with the different layers and how they interact with each other.
-
+```
+backend/
+│── 
+```
