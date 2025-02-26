@@ -3,13 +3,24 @@
 ## Table of Contents
 - [Quick Start](#quick-start)
 - [Dependencies](#dependencies)
+- [Testing](#testing)
 - [Swagger](#swagger)
 - [Database](#database)
-- [Testing](#testing)
-- [Structure](#structure)
+- [Project Structure](#project-structure)
+
+
+## Quick Start
+There is a live version of the app running on [http://146.190.151.248:3000/](http://146.190.151.248:3000/), which you can use to test the endpoints.
+
+To run the app locally, make sure you have installed the [dependencies.](#dependencies) Once you have done that, you can run the app using the following command:
+```bash
+docker compose up --build
+```
+
 
 ## Dependencies
 You will need the following dependencies to run the app
+- [docker](https://docs.docker.com/compose/install/)
 - [node.js](https://nodejs.org/en/download)
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
@@ -18,11 +29,16 @@ Additionally, you will need to install the MikroORM CLI using the following comm
 npm install @mikro-orm/cli
 ```
 
-## Quick Start
-Before starting, you will need to install all the [dependencies](#dependencies) and have a basic understanding of the app outlined in [basics](#basics). Once you have done that, you can run the app using the following command:
+
+## Testing
+**To run the tests, you can use the following command:**
 ```bash
-npm run build
+npm test
 ```
+**To create tests, there is 2 main ways:**
+1. **Unit Tests** - These tests are used to test individual services/controllers. They are written using the Jest testing framework and are automatically generated as the `*.spec.ts` files using [Nest CLI](https://docs.nestjs.com/cli/overview).
+2. **Integration Tests** - These tests are used to test the interaction between different parts of the app. They are written using the Jest testing framework and are placed in the `/test`, more details/conventions [here.](https://docs.nestjs.com/fundamentals/testing#end-to-end-testing)
+
 
 ## Swagger
 The app will be documented using Swagger. This will let you see all the endpoints and their parameters, along with a easy way to test them. You can access the Swagger UI at
@@ -42,13 +58,24 @@ npx mikro-orm schema:drop --dump     # Dumps drop schema SQL
 ```
 This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with. 
 
-## Testing
-```sh
-npm test
-```
 
-## Structure
+## Project Structure
+The project structure is as follows:
 ```
 backend/
-│── 
+│── 📂 src/                    # Main source code directory
+│   │── 📂 auth/               # Authentication module (JWT, OAuth, etc.)
+│   │── 📂 users/              # Users module (CRUD operations)
+│   │── 📂 maps/               # Maps module (CRUD operations)
+│   │── app.module.ts          # Root module
+│   │── main.ts                # Entry point for the app
+│   │── mikro-orm.config.ts    # MikroORM configuration
+│── 📂 tests/                  # Unit and integration tests
+│── 📜 .env                    # Environment variables
+│── 📜 package.json            # Dependencies and scripts
+│── 📜 tsconfig.json           # TypeScript configuration
+│── 📜 schema.sql              # Database schema
+|── 📜 docker-compose.yml      # Docker compose file
+│── 📜 README.md               # Project documentation
 ```
+
