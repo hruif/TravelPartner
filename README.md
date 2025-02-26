@@ -1,6 +1,6 @@
 # Globe Gram
 
-**Current Release:** [`v0.2.0`](https://github.com/hruif/TravelPartner/releases/tag/v0.2.0)
+**Current Release:** [`v0.3.0`](https://github.com/hruif/TravelPartner/releases/tag/v0.3.0)
 
 ## Developer Guide
 Please read more detailed developer guidelines for the [backend](../main/backend/README.md) and [frontend](../main/frontend/README.md) in their respective READMES. These include:
