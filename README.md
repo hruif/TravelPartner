@@ -3,7 +3,10 @@
 **Current Release:** [`v0.2.0`](https://github.com/hruif/TravelPartner/releases/tag/v0.2.0)
 
 ## Developer Guide
-Please read more detailed developer guidelines for the [backend](../main/backend/README.md) and [frontend](../main/frontend/README.md) in their respective READMES. 
+Please read more detailed developer guidelines for the [backend](../main/backend/README.md) and [frontend](../main/frontend/README.md) in their respective READMES. These include:
+- directory structures
+- more on how to build the software
+- testing
 
 ### Dependencies
 You will need the following dependencies to run the app
