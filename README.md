@@ -2,40 +2,9 @@
 
 **Current Release:** [`v0.2.0`](https://github.com/hruif/TravelPartner/releases/tag/v0.2.0)
 
-## User documentation
-### Description
-We are a social travel-planning app. Users planning a trip can be inspired by other travelers’ diaries around that destination, filtering the map according to their budget. Travelers may upload and tag their photos with ease, receive a comprehensive travel diary in return, and share their diary on the map to inspire others.
+## Developer Guide
+Please read more detailed developer guidelines for the [backend](../main/backend/README.md) and [frontend](../main/frontend/README.md) in their respective READMES. 
 
-Our goals:
-Our target customers are travelers. Our app offers solutions for 2 problems travelers face:
-1) When planning a trip, one often doesn’t know all that they want to do nor all that’s available at their destination. Our app will show users other travelers’ photos at nearby spots for inspiration, accompanied with planning information like pricing, etc.
-2) During a trip, days are full of adventure, so there remains little time to preserve these moments’ details in writing, for example. Given photos and tags, our app will return a travel diary. Optionally, users can share these to inspire others.
-
-### (Getting started sections)
-Please see the below sections:
-- [Dependencies](#dependencies)
-- [Quick Start](#quick-start)
-- [More Information](#more-information)
-
-### Using software
-Functional use cases: 
-- Explore recommendations on the map. 
-How to use features:
-- On the authorization screen, sign up or login via entering an email and password.
-- On the home screen, choose from (more functionality to be added)
-	- Explore the map via pressing the home screen's button or the bottom Map tab.
-		- Search for a location in the world via the search bar or by moving around on the map (slide, zoom). (Future feature: filter recommendations by budget, experience type, etc.)
-		- View a recommendation's details by tapping on its map marker (none currently present). (Future feature: add recommendation to itinerary.)
- 	- Create a travel recommendation/journal post via pressing the bottom Profile tab. Type a title and description, optionally upload photos (work in progress). (Future feature: choose to add to private profile, friend feed, and/or map database.)
-- Return to home screen via the bottom Home tab. May logout from here.
-  
-### Bugs
-**How to report a bug:** GitHub Issues are used to keep track of bugs to fix and desired features to implement. 
-Please reference [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for how to write an informative bug report. 
-
-**Known bugs:** please see the [project backlog](https://github.com/users/hruif/projects/1/views/1).
-
-## Getting started
 ### Dependencies
 You will need the following dependencies to run the app
 - [Node.js](https://nodejs.org/en/download)
@@ -80,19 +49,7 @@ npm  start
 
 Now scan the QR code displayed in the terminal or the browser with the Expo Go app.
 
-3) **Get authentication token**:
-Currently, to access the search function, you will need to manually generate and paste an authentication token into [App.tsx](../frontend/App.tsx):
-- Go to http://146.190.151.248:3000/api#/Auth/AuthController_signup.
-- Enter any valid email and password into the field and hit "Execute".
-- Paste the outputted access token on line 20 in [App.tsx](../frontend/App.tsx).
-- The search function should work 
-
 If you prefer to run the app on an iOS or Android simulator, check [here](../main/frontend/README.md#running-on-a-simulator).
-
-### More Information
-Check out [\backend's](../main/backend/README.md) and [\frontend's](../main/frontend/README.md) READMEs to learn more.
-
-## Other
 
 ### Testing & Continuous Integration
 We use **GitHub Actions** to automatically verify that the project builds correctly on each push and pull request.
@@ -103,11 +60,43 @@ We use **GitHub Actions** to automatically verify that the project builds correc
 
 You can view the latest runs and logs in the [GitHub Actions tab](https://github.com/hruif/TravelPartner/actions).
 
-### Living Document
-https://docs.google.com/document/d/1QPL-KpL8HGXZmXVWRMLAcBoYqu4GowHgW0gimDIc_YU/edit?usp=sharing
-
 ### Style Guides
 - TypeScript: https://ts.dev/style/. Automated linter: ESLint with a TypeScript configuration (@typescript-eslint).
 - TypeScript in NestJS built on ESLint (automatic linter/formatter): https://awesome-nestjs.com/components-and-libraries/lint.html.
 - Python: https://peps.python.org/pep-0008/. Automated linter: flake8. Automated formatter: Black.
 - SQL: https://docs.telemetry.mozilla.org/concepts/sql_style.html. Automated formatting: https://sqlfluff.com/.
+
+### Living Document
+https://docs.google.com/document/d/1QPL-KpL8HGXZmXVWRMLAcBoYqu4GowHgW0gimDIc_YU/edit?usp=sharing
+
+## User documentation
+### Description
+We are a social travel-planning app. Users planning a trip can be inspired by other travelers’ diaries around that destination, filtering the map according to their budget. Travelers may upload and tag their photos with ease, receive a comprehensive travel diary in return, and share their diary on the map to inspire others.
+
+Our goals:
+Our target customers are travelers. Our app offers solutions for 2 problems travelers face:
+1) When planning a trip, one often doesn’t know all that they want to do nor all that’s available at their destination. Our app will show users other travelers’ photos at nearby spots for inspiration, accompanied with planning information like pricing, etc.
+2) During a trip, days are full of adventure, so there remains little time to preserve these moments’ details in writing, for example. Given photos and tags, our app will return a travel diary. Optionally, users can share these to inspire others.
+
+### (Getting started sections)
+Please see the above Developer Guide sections:
+- [Dependencies](#dependencies)
+- [Quick Start](#quick-start)
+
+### Using software
+Functional use cases: 
+- Explore recommendations on the map. 
+How to use features:
+- On the authorization screen, sign up or login via entering an email and password.
+- On the home screen, choose from (more functionality to be added)
+	- Explore the map via pressing the home screen's button or the bottom Map tab.
+		- Search for a location in the world via the search bar or by moving around on the map (slide, zoom). (Future feature: filter recommendations by budget, experience type, etc.)
+		- View a recommendation's details by tapping on its map marker (none currently present). (Future feature: add recommendation to itinerary.)
+ 	- Create a travel recommendation/journal post via pressing the bottom Profile tab. Type a title and description, optionally upload photos (work in progress). (Future feature: choose to add to private profile, friend feed, and/or map database.)
+- Return to home screen via the bottom Home tab. May logout from here.
+  
+### Bugs
+**How to report a bug:** GitHub Issues are used to keep track of bugs to fix and desired features to implement. 
+Please reference [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for how to write an informative bug report. 
+
+**Known bugs:** please see the [project backlog](https://github.com/users/hruif/projects/1/views/1).
