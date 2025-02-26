@@ -1,26 +1,29 @@
-# Backend
+# Backend (Developer Guide)
+Built with NestJS and PostgresSQL. 
 
-## Basics
+## Table of Contents
 - [Quick Start](#quick-start)
 - [Dependencies](#dependencies)
+- [Testing](#testing)
 - [Swagger](#swagger)
 - [Database](#database)
-- [Structure](#structure)
+- [Project Structure](#project-structure)
 
 
 ## Quick Start
-Before starting, you will need to install all the [dependencies](#dependencies) and have a basic understanding of the app outlined in [basics](#basics). Once you have done that, you can run the app using the following command:
+There is a live version of the app running on [http://146.190.151.248:3000/](http://146.190.151.248:3000/), which you can use to test the endpoints.
+
+To run the app locally, make sure you have installed the [dependencies.](#dependencies) Once you have done that, you can run the app using the following command:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
-You can then access the app at **[http://localhost:3000](http://localhost:3000)**
 
 
 ## Dependencies
 You will need the following dependencies to run the app
+- [docker](https://docs.docker.com/compose/install/)
 - [node.js](https://nodejs.org/en/download)
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [docker](https://docs.docker.com/compose/install/)
 
 Additionally, you will need to install the MikroORM CLI using the following command:
 ```bash
@@ -28,11 +31,21 @@ npm install @mikro-orm/cli
 ```
 
 
+## Testing
+**To run the tests, you can use the following command:**
+```bash
+npm test
+```
+**To create tests, there is 2 main ways:**
+1. **Unit Tests** - These tests are used to test individual services/controllers. They are written using the Jest testing framework and are automatically generated as the `*.spec.ts` files using [Nest CLI](https://docs.nestjs.com/cli/overview).
+2. **Integration Tests** - These tests are used to test the interaction between different parts of the app. They are written using the Jest testing framework and are placed in the `/test`, more details/conventions [here.](https://docs.nestjs.com/fundamentals/testing#end-to-end-testing)
+
+
 ## Swagger
 The app will be documented using Swagger. This will let you see all the endpoints and their parameters, along with a easy way to test them. You can access the Swagger UI at
 **[http://localhost:3000/api](http://localhost:3000/api)**
 
-Most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you  to access all the endpoints.
+Without authorization via signing up/logging in on the auth screen, most of the endpoints will result in **unauthorized** and will require a **JWT token** to access. You can additionally get a token by using either the **/auth/signup** or **/auth/login** endpoint. You can then **authorize** in the top corner of the Swagger UI, allowing you  to access all the endpoints.
 
 
 ## Database
@@ -46,19 +59,24 @@ npx mikro-orm schema:drop --dump     # Dumps drop schema SQL
 ```
 This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with. 
 
-**Docker WILL keep the old database**, so you will need to remove the old database using the following commands:
-```bash
-docker-compose down ## If the app is running
-docker volume rm $(docker volume ls -q | grep postgres_data)
+
+## Project Structure
+The project structure is as follows:
 ```
-You can then run the app again using `docker-compose up --build`.
-
-Finally, if you want to access the database yourself you can use the following command:
-```bash
-docker exec -it postgres_db psql -U devuser -d devdb
+backend/
+│── 📂 src/                    # Main source code directory
+│   │── 📂 auth/               # Authentication module (JWT, OAuth, etc.)
+│   │── 📂 users/              # Users module (CRUD operations)
+│   │── 📂 maps/               # Maps module (CRUD operations)
+│   │── app.module.ts          # Root module
+│   │── main.ts                # Entry point for the app
+│   │── mikro-orm.config.ts    # MikroORM configuration
+│── 📂 tests/                  # Unit and integration tests
+│── 📜 .env                    # Environment variables
+│── 📜 package.json            # Dependencies and scripts
+│── 📜 tsconfig.json           # TypeScript configuration
+│── 📜 schema.sql              # Database schema
+|── 📜 docker-compose.yml      # Docker compose file
+│── 📜 README.md               # Project documentation
 ```
-
-
-## Structure
-This is a whole another topic which will be covered in the [structure](./structure.md) file. This will cover the structure of the backend, along with the different layers and how they interact with each other.
 
