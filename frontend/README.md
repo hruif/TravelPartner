@@ -4,6 +4,7 @@ Frontend for the Globe Gram app built with React Native and Expo.
 ## Table of Contents
 - [Dependencies](#dependencies)
 - [Quick Start](#quick-start)
+- [Testing](#testing)
 - [Project Structure](#project-structure)
 - [Resources](#resources)
 
@@ -41,7 +42,7 @@ Before you begin, install the following dependencies:
       - **Windows/Linux** - [Android Studio](https://developer.android.com/studio)
       - **MacOS** - [Xcode](https://developer.apple.com/xcode/)
 
-### Testing
+## Testing
 ```sh
 npm test
 ```
