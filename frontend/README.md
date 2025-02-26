@@ -42,11 +42,14 @@ Before you begin, install the following dependencies:
       - **Windows/Linux** - [Android Studio](https://developer.android.com/studio)
       - **MacOS** - [Xcode](https://developer.apple.com/xcode/)
 
+
 ## Testing
-```sh
+**To run the tests, you can use the following command:**
+```bash
 npm test
 ```
-
+**To create tests, you do the following:**
+1. Create a new file with the `*.test.tsx` extension in the `tests` directory, where * is the name of the file you are testing. From there you can write your tests using the Jest testing framework.
 
 ## Project Structure
 The project structure is as follows:
