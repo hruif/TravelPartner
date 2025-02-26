@@ -11,16 +11,14 @@
 ## Quick Start
 Before starting, you will need to install all the [dependencies](#dependencies) and have a basic understanding of the app outlined in [basics](#basics). Once you have done that, you can run the app using the following command:
 ```bash
-docker-compose up --build
+npm run build
 ```
-You can then access the app at **[http://localhost:3000](http://localhost:3000)**
 
 
 ## Dependencies
 You will need the following dependencies to run the app
 - [node.js](https://nodejs.org/en/download)
 - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-- [docker](https://docs.docker.com/compose/install/)
 
 Additionally, you will need to install the MikroORM CLI using the following command:
 ```bash
@@ -45,18 +43,6 @@ npx mikro-orm schema:update --dump   # Dumps update schema SQL
 npx mikro-orm schema:drop --dump     # Dumps drop schema SQL
 ```
 This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with. 
-
-**Docker WILL keep the old database**, so you will need to remove the old database using the following commands:
-```bash
-docker-compose down ## If the app is running
-docker volume rm $(docker volume ls -q | grep postgres_data)
-```
-You can then run the app again using `docker-compose up --build`.
-
-Finally, if you want to access the database yourself you can use the following command:
-```bash
-docker exec -it postgres_db psql -U devuser -d devdb
-```
 
 
 ## Structure
