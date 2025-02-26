@@ -1,70 +1,71 @@
-# Frontend
+# Frontend (Developer Guide)
+Frontend for the Globe Gram app built with React Native and Expo. 
 
-This project is built using React Native and Expo. Follow the steps below to set up and run the project using Expo Go.
+## Table of Contents
+- [Dependencies](#dependencies)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Resources](#resources)
 
-## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
-- You have installed [Node.js](https://nodejs.org/en/download/) and [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
-- You have installed [Expo CLI](https://docs.expo.dev/more/expo-cli/).
+## Dependencies
+Before you begin, install the following dependencies:
+- [node.js](https://nodejs.org/en/download/)
+- [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+- [Expo CLI](https://docs.expo.dev/more/expo-cli/)
 
-## Setup
 
-1. **Clone the repository:**
+## Quick Start
+
+1. Clone the repository
     ```sh
     git clone https://github.com/hruif/TravelPartner
     cd frontend
     ```
 
-2. **Install dependencies:**
+2. Install dependencies
     ```sh
     npm install
     ```
 
-3. **Start the Expo development server:**
+3. Start the Expo development server
     ```sh
     npm start
     ```
 
-4. **Install Expo Go on your mobile device:**
-    - For Android: [Expo Go on Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent)
-    - For iOS: [Expo Go on the App Store](https://apps.apple.com/us/app/expo-go/id982107779)
+4. You can now connect via phone or emulator
+    - Phone (Expo Go)
+      - **Android** - [Play Store](https://play.google.com/store/apps/details?id=host.exp.exponent)
+      - **iOS** - [App Store](https://apps.apple.com/us/app/expo-go/id982107779)
+    - Emulator
+      - **Windows/Linux** - [Android Studio](https://developer.android.com/studio)
+      - **MacOS** - [Xcode](https://developer.apple.com/xcode/)
 
-5. **Open the project in Expo Go:**
-    - Scan the QR code displayed in the terminal or the browser with the Expo Go app.
+### Testing
+```sh
+npm test
+```
 
-## Running on a Simulator
-
-If you prefer to run the app on an iOS or Android simulator, follow these steps:
-
-1. **For iOS:**
-    - Ensure you have Xcode installed.
-    - Start the Expo development server:
-        ```sh
-        npm start
-        ```
-    - Press `i` to open the app in the iOS simulator.
-
-2. **For Android:**
-    - Ensure you have Android Studio installed and an Android Virtual Device (AVD) configured.
-    - Start the Expo development server:
-        ```sh
-        npm start
-        ```
-    - Press `a` to open the app in the Android emulator.
 
 ## Project Structure
+The project structure is as follows:
+```
+frontend/
+│── 📂 assets/                 # Static assets like images, fonts, icons
+│── 📂 src/                    # Main source code directory
+│   │── 📂 services/           # API calls and network requests
+│   │── 📂 components/         # Reusable UI components
+│   │── 📂 hooks/              # Custom hooks
+│   │── 📂 screens/            # App screens/pages
+│   │── 📂 styles/             # Global styles, themes
+│   │── 📂 utils/              # Helper functions and utilities
+│   ├── App.tsx                # Entry point for the app
+│── 📂 tests/                  # Jest, React Native Testing Library tests
+│── 📜 package.json            # Dependencies and scripts
+│── 📜 README.md               # Project documentation
+```
 
-- [App.tsx](http://_vscodecontentref_/0): The main entry point of the application.
-- `assets/`: Contains images and other assets.
-- [index.ts](http://_vscodecontentref_/1): Registers the root component.
-
-## Google Map Integration (Temp notes)
-
-When the basic layout has been implemented, ensure that the first thing the user sees is the map. The backend has been already designed for calls. I will help develop the startup page.
-
-## Learn More
-
+## Resources
 To learn more about Expo and React Native, check out the following resources:
 - [Expo Documentation](https://docs.expo.dev/)
 - [React Native Documentation](https://reactnative.dev/docs/getting-started)
