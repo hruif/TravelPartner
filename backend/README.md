@@ -1,4 +1,5 @@
 # Backend (Developer Guide)
+Built with NestJS and PostgresSQL. 
 
 ## Table of Contents
 - [Quick Start](#quick-start)
