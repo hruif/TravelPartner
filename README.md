@@ -3,7 +3,7 @@
 **Current Release:** [`v0.2.0`](https://github.com/hruif/TravelPartner/releases/tag/v0.2.0)
 
 ## User documentation
-## Description
+### Description
 We are a social travel-planning app. Users planning a trip can be inspired by other travelers’ diaries around that destination, filtering the map according to their budget. Travelers may upload and tag their photos with ease, receive a comprehensive travel diary in return, and share their diary on the map to inspire others.
 
 Our goals:
@@ -11,13 +11,13 @@ Our target customers are travelers. Our app offers solutions for 2 problems trav
 1) When planning a trip, one often doesn’t know all that they want to do nor all that’s available at their destination. Our app will show users other travelers’ photos at nearby spots for inspiration, accompanied with planning information like pricing, etc.
 2) During a trip, days are full of adventure, so there remains little time to preserve these moments’ details in writing, for example. Given photos and tags, our app will return a travel diary. Optionally, users can share these to inspire others.
 
-## (Getting started sections)
+### (Getting started sections)
 Please see the below sections:
 - [Dependencies](#dependencies)
 - [Quick Start](#quick-start)
 - [More Information](#more-information)
 
-## Using software
+### Using software
 Functional use cases: 
 - Explore recommendations on the map. 
 How to use features:
@@ -29,7 +29,7 @@ How to use features:
  	- Create a travel recommendation/journal post via pressing the bottom Profile tab. Type a title and description, optionally upload photos (work in progress). (Future feature: choose to add to private profile, friend feed, and/or map database.)
 - Return to home screen via the bottom Home tab. May logout from here.
   
-## Bugs
+### Bugs
 **How to report a bug:** GitHub Issues are used to keep track of bugs to fix and desired features to implement. 
 Please reference [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for how to write an informative bug report. 
 
