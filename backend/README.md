@@ -42,7 +42,7 @@ npx mikro-orm schema:drop --dump     # Dumps drop schema SQL
 ```
 This will generate the needed SQL code for the database, which you can then update the [schema.sql](./schema.sql) file with. 
 
-### Testing
+## Testing
 ```sh
 npm test
 ```
