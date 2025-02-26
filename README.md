@@ -18,19 +18,17 @@ Please see the below sections:
 - [More Information](#more-information)
 
 ## Using software
+Functional use cases: 
+- Explore recommendations on the map. 
+How to use features:
 - On the authorization screen, sign up or login via entering an email and password.
 - On the home screen, choose from (more functionality to be added)
 	- Explore the map via pressing the home screen's button or the bottom Map tab.
 		- Search for a location in the world via the search bar or by moving around on the map (slide, zoom). (Future feature: filter recommendations by budget, experience type, etc.)
 		- View a recommendation's details by tapping on its map marker (none currently present). (Future feature: add recommendation to itinerary.)
  	- Create a travel recommendation/journal post via pressing the bottom Profile tab. Type a title and description, optionally upload photos (work in progress). (Future feature: choose to add to private profile, friend feed, and/or map database.)
-- Return to home screen via the bottom Home tab. May logout from here.  
-
-## Functional Use Cases
-- Exploring recommendations on map.
-	- The user can explore a map of the world and potential travel locations.
-	- Recommendations appear as markers which users can tap to learn more about.
-
+- Return to home screen via the bottom Home tab. May logout from here.
+  
 ## Bugs
 **How to report a bug:** GitHub Issues are used to keep track of bugs to fix and desired features to implement. 
 Please reference [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for how to write an informative bug report. 
