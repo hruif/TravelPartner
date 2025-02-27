@@ -1,3 +1,9 @@
+# Meeting Agenda
+- Update on project status.
+- Any input on the core features we decided to keep for our final implementation?
+- Any advice as we finish implementing for final release? 
+Thank you, Celestine! 
+
 # Project Status
 ## Goals for this week
 - Add multiple screens and UI styling. 
