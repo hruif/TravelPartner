@@ -56,11 +56,14 @@
 
 ## Iliya
 ### Goals for this week
-  
+- Implement user accounts along with proper security handling and password storing
+- Allow storage of images in the backend database
 ### Progress and issues
-  
+- Fixed issue where authentication on the frontend wasn't updating the UI
+- Updated lots of the documentation to help assist peer review team in grading our project
 ### Goals for next week
-
+- Flesh out frontend more with features including location details, ratings, along with images
+- Create schema for posts and sharing them, including a journal diary which user can add to items.
 
 ## Nathan
 ### Goals for this week
