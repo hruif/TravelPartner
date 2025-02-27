@@ -19,7 +19,7 @@
 - [🛠️ Developer Guide](#-developer-guide)
 - [📝 User Guide](#-user-guide)
 - [🐞 Bug Reporting](#-bug-reporting)
-- [🛠️ CI & Testing](#-ci--testing)
+- [🛠️ CI and Testing](#-ci-and-testing)
 - [🎨 Style Guide](#-style-guide)
 - [📜 License](#-license)
 - [📢 Acknowledgments](#-acknowledgments)
@@ -85,7 +85,7 @@ To report a bug, use **GitHub Issues**. Follow [Mozilla's Bug Writing Guidelines
 
 📌 **Known Bugs:** Check the [project backlog](https://github.com/users/hruif/projects/1/views/1).
 
-## 🛠️ CI & Testing
+## 🛠️ CI and Testing
 We use **GitHub Actions** for continuous integration.
 
 ### ✅ CI Pipeline
