@@ -1,3 +1,9 @@
+# Meeting Agenda
+- Update on project status.
+- Any input on the core features we decided to keep for our final implementation?
+- Any advice as we finish implementing for final release? 
+Thank you, Celestine! 
+
 # Project Status
 ## Goals for this week
 - Add multiple screens and UI styling. 
@@ -39,11 +45,13 @@
  
 ## Rui
 ### Goals for this week
-  
+- Implement better search function - display results
 ### Progress and issues
-  
+- App was revamped - previous issues with starting and running
+- Search function working but w/o results
 ### Goals for next week
-
+- Fix search function
+- Implement markers
 
 ## Chloë
 ### Goals for this week
@@ -72,7 +80,10 @@
 
 ## Nathan
 ### Goals for this week
-  
+- Implement search functionality on Google Maps element
+- Continue working on UI
 ### Progress and issues
-  
+- Added more functionality to point of interest markers
+- Search bar is not returning desired results, may be problem with search algorithm itself
 ### Goals for next week 
+- Implement and link recommendation system with the map
