@@ -37,11 +37,14 @@ Thank you, Celestine!
 
 ## Mateo
 ### Goals for this week
-  
+  -Develop and iron out some of the features already implemented, whilst also implementing the other features thats makes our program
+  -Work on the filtering system and obtaining specific places from the map
 ### Progress and issues
-  
+  -Enhanced the Search feature and implemented a simple ui for showing results of locations.
+  -Fined tuned some visual things around the codebase.
 ### Goals for next week
-
+- Re-implement the search results feature using secure standards for using the api key.
+- finish implementing the filtering system.
  
 ## Rui
 ### Goals for this week
