@@ -75,7 +75,10 @@ Thank you, Celestine!
 
 ## Nathan
 ### Goals for this week
-  
+- Implement search functionality on Google Maps element
+- Continue working on UI
 ### Progress and issues
-  
+- Added more functionality to point of interest markers
+- Search bar is not returning desired results, may be problem with search algorithm itself
 ### Goals for next week 
+- Implement and link recommendation system with the map
