@@ -18,10 +18,15 @@
 # Individual Progress and Plans
 ## Kam
 ### Goals for this week
-  
+- Continue working on improving the look of the app now that we have a theme and a set of logos to choose from.
+- Begin working with the backend to develop our various smaller features such as filter and image displaying for searches.
 ### Progress and issues
-  
+- Implemented screen switching capability as well as a basic UI for the traveldiary screen.
+- Improved the look of the map page and added icons for the other screens.
+- Helped review Iliya's pull request earlier this week.
 ### Goals for next week
+- Ideally finish up most map features.
+- Begin work on the traveldiary posting feature and seeing those posts displayed on the map.
 
 
 ## Mateo
