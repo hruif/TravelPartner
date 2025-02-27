@@ -34,11 +34,13 @@
  
 ## Rui
 ### Goals for this week
-  
+- Implement better search function - display results
 ### Progress and issues
-  
+- App was revamped - previous issues with starting and running
+- Search function working but w/o results
 ### Goals for next week
-
+- Fix search function
+- Implement markers
 
 ## Chloë
 ### Goals for this week
