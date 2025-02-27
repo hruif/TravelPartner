@@ -104,5 +104,6 @@ We use **GitHub Actions** for continuous integration.
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ## 📢 Acknowledgments
-💙 **Globe Gram is made by [hruif](https://github.com/hruif) and contributors with love.**
+💙 **Globe Gram is made by [hruif](https://github.com/hruif), [iliyababin](https://github.com/iliyababin), [chloe-mi](https://github.com/chloe-mi), [kam-n](https://github.com/kam-n), [MateoRobinsonn
+](https://github.com/MateoRobinsonn), [pencilvulture](https://github.com/pencilvulture).**
 
