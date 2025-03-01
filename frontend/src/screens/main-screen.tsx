@@ -23,6 +23,7 @@ export default function MainScreen() {
                 },
                 tabBarActiveTintColor: 'tomato',
                 tabBarInactiveTintColor: 'gray',
+                tabBarHideOnKeyboard: true,
             })}
         >
             <Tab.Screen name="Home" component={HomeScreen} />
