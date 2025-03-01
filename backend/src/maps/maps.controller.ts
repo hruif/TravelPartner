@@ -29,4 +29,20 @@ export class MapsController {
     const destinationsArray = destinations.split(',');
     return this.mapsService.calculateDistance(originsArray, destinationsArray);
   }
+
+  @Get('place-photos')
+  async getPlacePhotos(
+    @Query('placeId') placeId: string,
+    @Query('key') apiKey: string
+  ) {
+    return this.mapsService.getPlacePhotos(placeId, apiKey);
+  }
+
+  @Get('photo')
+  async getPhoto(
+    @Query('photoreference') photoReference: string,
+    @Query('maxwidth') maxWidth: string,
+  ) {
+    return this.mapsService.getPhoto(photoReference, maxWidth);
+  }
 }

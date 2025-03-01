@@ -16,6 +16,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "jsx": "react-native",
+    "types": ["jest", "node"],
+  },
+  "include": [
+    "env.d.ts",
+    "src"
+  ],
   }
-}
