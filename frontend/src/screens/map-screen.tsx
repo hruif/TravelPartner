@@ -1,10 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, SafeAreaView, TextInput, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform
+} from 'react-native';
 import React, { useState } from 'react';
 import GoogleMapComponent from '../components/google-map';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import {getCoordinates, getPlaceDetails} from "../services/maps-service";
+import { getCoordinates, getPlaceDetails } from "../services/maps-service";
+import AnimatedPlaceholderInput from '../components/animated-input-placeholder';
 
 type RootStackParamList = {
   Home: undefined;
@@ -64,57 +72,67 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-      <>
-        <SafeAreaView style={styles.container}>
-          <StatusBar style="auto" />
-          <GoogleMapComponent region={region} marker={marker} />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+    >
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="auto" />
+        <GoogleMapComponent region={region} marker={marker} />
 
-          {/* Search Bar at the Bottom */}
-          <View style={styles.searchContainer}>
-            <TextInput
-                style={styles.searchBar}
-                placeholder="Search location..."
-                placeholderTextColor="#aaa"
-                value={searchText}
-                onChangeText={setSearchText}
-                onSubmitEditing={handleSearch}
-            />
-            <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-              <Ionicons name="search" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-        </SafeAreaView>
-      </>
+        {/* Search Bar Overlay */}
+        <View style={styles.searchContainer}>
+          <AnimatedPlaceholderInput
+            style={styles.searchBar}
+            value={searchText}
+            onChangeText={setSearchText}
+            onSubmitEditing={handleSearch}
+          />
+          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+            <Ionicons name="search" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   searchContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 25,
     width: '90%',
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 25,
-    paddingHorizontal: 15,
-    elevation: 5, // Shadow effect for better UI
+    // Removed horizontal padding so the elements are flush
+    elevation: 5,
+    borderColor: '#969ba3',
+    borderWidth: 2,
+    overflow: 'hidden', // ensures child components respect the container's border radius
   },
   searchBar: {
     flex: 1,
     height: 40,
     fontSize: 16,
-    paddingHorizontal: 10,
+    paddingHorizontal: 10, // add padding only to the input
+    color: 'black',
+    borderTopLeftRadius: 25,
+    borderBottomLeftRadius: 25,
+    paddingLeft: 15,
   },
   searchButton: {
     backgroundColor: '#3498db',
-    padding: 10,
-    borderRadius: 20,
-    marginLeft: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderTopRightRadius: 25,
+    borderBottomRightRadius: 25,
   },
 });
+
