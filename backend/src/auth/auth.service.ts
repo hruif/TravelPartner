@@ -23,15 +23,14 @@ export class AuthService {
   /**
    * Validates a user's credentials.
    *
-   * @param {string} email - The email of the user.
+   * @param {string} uuid - The uuid of the user.
    * @param {string} pass - The password of the user.
    * @returns {Promise<any>} A user object without the password if valid, otherwise null.
    */
-  async validateUser(email: string, pass: string): Promise<any> {
-    const user = await this.em.findOne<User>(User, { email });
+  async validateUser(uuid: string, pass: string): Promise<any> {
+    const user = await this.em.findOne<User>(User, { uuid });
     if (user && user.password === pass) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { email, ...result } = user; // Remove password from result
+      const { uuid, ...result } = user; // Remove password from result
       return result;
     }
     return null;
@@ -59,7 +58,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid password');
     }
 
-    const payload = { email: user.email };
+    const payload = { uuid: user.uuid };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -85,7 +84,7 @@ export class AuthService {
     this.em.persist(user);
     await this.em.flush();
 
-    const payload = { email: user.email };
+    const payload = { uuid: user.uuid };
     return { access_token: this.jwtService.sign(payload) };
   }
 }

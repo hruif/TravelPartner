@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import config from './mikro-orm.config';
 import { MapsModule } from './maps/maps.module';
+import { DiaryModule } from './diary/diary.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { MapsModule } from './maps/maps.module';
     UsersModule,
     MikroOrmModule.forRoot(config),
     MapsModule,
+    DiaryModule,
   ],
   controllers: [AppController],
   providers: [
