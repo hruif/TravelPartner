@@ -34,6 +34,7 @@ npm install @mikro-orm/cli
 ## Testing
 **To run the tests, you can use the following command:**
 ```bash
+npm install
 npm test
 ```
 **To create tests, there is 2 main ways:**
