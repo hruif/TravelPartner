@@ -42,11 +42,14 @@ Thank you, Celestine!
  
 ## Rui
 ### Goals for this week
-- 
+- Fix search function
+- Implement markers
 ### Progress and issues
-- 
+- Search function working
+- Implementation issues in merging backend and frontend
 ### Goals for next week
-- 
+- Help finish travel diaries
+- Implement primitive budgeting features for live demo
 
 ## Chloë
 ### Goals for this week
