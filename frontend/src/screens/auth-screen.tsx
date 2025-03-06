@@ -33,7 +33,7 @@ export default function AuthScreen() {
             console.error('Unexpected error:', error);
             Alert.alert('Error', 'Something went wrong. Please try again.');
         } finally {
-            setIsLoading(false); // ✅ Always stop loading
+            setIsLoading(false); // Always stop loading
         }
     };
 
