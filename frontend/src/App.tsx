@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider, useAuth } from './hooks/useAuth'; // ✅ Ensure AuthProvider is imported
+import { AuthProvider, useAuth } from './hooks/useAuth';
 
 // Import screens
 import AuthScreen from './screens/auth-screen';
@@ -10,7 +10,7 @@ import MainScreen from './screens/main-screen';
 const Stack = createNativeStackNavigator();
 
 function MainApp() {
-    const { authState, loading } = useAuth(); // ✅ Correct use of context
+    const { authState, loading } = useAuth();
 
     if (loading) return null;
 
