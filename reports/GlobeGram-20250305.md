@@ -64,11 +64,11 @@ Thank you, Celestine!
 
 ## Iliya
 ### Goals for this week
-- 
+- Implement authetnication with proper testing
 ### Progress and issues
-- 
+- Resolve majority of the issues presented by the new group in peer review.
 ### Goals for next week
-- 
+- Add more endpoints for more information pertaining to posts and map
 
 ## Nathan
 ### Goals for this week
