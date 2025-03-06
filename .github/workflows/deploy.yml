@@ -4,13 +4,17 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    types:
+      - closed
 
 jobs:
   deploy:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.title, 'backend')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Deploy API via SSH
         uses: appleboy/ssh-action@master
@@ -19,16 +23,37 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           script: |
+            set -e  # Stop execution on any error
+
+            echo "🔄 Navigating to project directory..."
             cd /root/TravelPartner
+
+            echo "📦 Fetching latest changes..."
+            git fetch --prune
+            git reset --hard origin/main
             git pull origin main
+
+            echo "🔄 Navigating to backend directory..."
             cd backend
-            
-            # Stop and remove PostgreSQL container if it exists
-            docker ps -q --filter "name=postgres_db" | grep -q . && docker stop postgres_db && docker rm postgres_db || echo "Postgres container not found"
 
-            # (Optional) Remove PostgreSQL volume (uncomment if needed)
-            docker volume rm postgres_data || echo "No volume found"
+            echo "🛑 Stopping and removing existing PostgreSQL container..."
+            if docker ps -q --filter "name=postgres_db"; then
+              docker stop postgres_db
+              docker rm postgres_db
+            else
+              echo "✅ No running Postgres container found."
+            fi
 
-            # Rebuild and restart services
+            echo "🗑️ Removing old PostgreSQL volume (if exists)..."
+            if docker volume ls | grep -q "backend_postgres_data"; then
+              docker volume rm backend_postgres_data
+            else
+              echo "✅ No PostgreSQL volume found."
+            fi
+
+            echo "🛠️ Rebuilding and restarting services..."
+            docker compose down
             docker compose build --force-rm --no-cache --compress
-            docker compose up -d
+            docker compose up -d --remove-orphans
+
+            echo "🚀 Deployment successful!"
