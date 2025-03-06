@@ -75,8 +75,10 @@ Thank you, Celestine!
 
 ## Nathan
 ### Goals for this week
-- 
+- Implement and link recommendation system with the map
 ### Progress and issues
-- 
+- Researched best practices for integrating dynamic recommendations with interactive map.
+- Familiarized myself with autocomplete for addresses API in Google Maps
 ### Goals for next week 
-- 
+- Finalize the integration strategy and begin implementation.
+- Implement autocomplete feature for search bar
