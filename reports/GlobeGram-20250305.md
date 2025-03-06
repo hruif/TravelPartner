@@ -22,11 +22,15 @@ Thank you, Celestine!
 # Individual Progress and Plans
 ## Kam
 ### Goals for this week
-- 
+- Implement allowing the user to add locations to an itinerary.
+- Work with the backend to add basic filters.
 ### Progress and issues
-- 
+- Stylized the traveldiary screen to fit the current brighter theme of the rest of the app.
+- Beginning to work on allowing the user to create an itinerary.
+- Contributed to peer review.
 ### Goals for next week
-- 
+- Help finalize any core features that aren't fully flushed out.
+- Prep for live demo.
 
 
 ## Mateo
