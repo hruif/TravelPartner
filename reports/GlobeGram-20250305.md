@@ -31,11 +31,14 @@ Thank you, Celestine!
 
 ## Mateo
 ### Goals for this week
-- 
+- Implement photo search
+- implement primitive filter of locations
 ### Progress and issues
-- 
+- Had some backend issues when implementing photo search
+- Implemented new ui for map where search bar is now ontop of the map and contains new animation for the placeholder.
+- Implemented photo search functionality with new safety but hasn't been hooked up to the backend yet.
 ### Goals for next week
-- 
+- Finalize Photo search and filters.
  
 ## Rui
 ### Goals for this week
