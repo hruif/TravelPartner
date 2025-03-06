@@ -1,8 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 // Import screens
 import HomeScreen from './home-screen';
@@ -32,21 +30,7 @@ export default function MainScreen() {
                 tabBarHideOnKeyboard: true,
             })}
         >
-            <Tab.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                    headerTitle: () => (
-                        <Image
-                            source={require('../../assets/globegramlogo1.png')}
-                            style={{ width: 160, height: 70 }}
-                            resizeMode="contain"
-                        />
-                    ),
-                    headerTitleAlign: 'left',
-                    headerTransparent: true,
-                }}
-            />
+            <Tab.Screen name="Home" component={HomeScreen}/>
             <Tab.Screen name="Map" component={MapScreen} />
             <Tab.Screen name="Profile" component={TravelDiaryScreen} />
         </Tab.Navigator>

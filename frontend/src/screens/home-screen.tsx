@@ -34,11 +34,6 @@ export default function HomeScreen({ navigation }) {
           { useNativeDriver: true }
         )}
       >
-        <Image
-          style={styles.logo}
-          source={require('../../assets/invis.png')}
-          resizeMode="contain"
-        />
         <View style={styles.content}>
           <Text style={styles.welcomeText}>
             Connect with the World, One Post at a Time!
@@ -56,10 +51,10 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.postsContainer}>
           <View style={styles.post}>
             <Image 
-              source={require('../../assets/paris1.jpg')}
+              source={require('../../assets/vaticancity.jpg')}
               style={styles.postImage} 
             />
-            <Text style={styles.postTitle}>Paris</Text>
+            <Text style={styles.postTitle}>Vatican City</Text>
           </View>
           <View style={styles.post}>
             <Image 
