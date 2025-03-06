@@ -39,18 +39,12 @@ export default function MainScreen() {
                     headerTitle: () => (
                         <Image
                             source={require('../../assets/globegramlogo1.png')}
-                            style={{ width: 140, height: 60 }}
+                            style={{ width: 160, height: 70 }}
                             resizeMode="contain"
                         />
                     ),
                     headerTitleAlign: 'left',
-
-                    /*headerBackground: () => (
-                        <LinearGradient
-                            colors={['#F0FFFF', '#A7C7E7']}
-                            style={{ flex: 1 }}
-                        />
-                    ),*/
+                    headerTransparent: true,
                 }}
             />
             <Tab.Screen name="Map" component={MapScreen} />
