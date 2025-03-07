@@ -12,9 +12,8 @@ export default function LargePost({ imageSource, title }) {
 
 const styles = StyleSheet.create({
   post: {
-    marginBottom: 20,
     backgroundColor: '#fff',
-    borderRadius: 10,
+    // borderRadius: 10,
     overflow: 'hidden',
     width: '100%',
   },

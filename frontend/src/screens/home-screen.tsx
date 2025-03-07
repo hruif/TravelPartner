@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
 import LargePost from '../components/large-post';
@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
     ];
 
     { /* Still need to grab descriptions from back-end user posts */}
-    const desc = `Description for ${postTitle}.`;
+    const desc = `List of user-submitted posts for ${postTitle}.`;
     setSelectedPost({
       title: postTitle,
       images: images,
@@ -33,15 +33,33 @@ export default function HomeScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         {/* Small posts */}
         <View style={styles.smallPostsSection}>
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false} 
-            contentContainerStyle={styles.smallPostsContainer}
-          >
-            <SmallPost text="Post 1" onPress={() => handleSmallPostPress("Post 1")} />
-            <SmallPost text="Post 2" onPress={() => handleSmallPostPress("Post 2")} />
-            <SmallPost text="Post 3" onPress={() => handleSmallPostPress("Post 3")} />
-          </ScrollView>
+        <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false} 
+        contentContainerStyle={styles.smallPostsContainer}
+        >
+          <SmallPost 
+            text="Arundel, England" 
+            onPress={() => handleSmallPostPress("Arundel, England")} 
+            imageSource={require('../../assets/arundel-england1.jpg')}
+          />
+          <SmallPost 
+            text="Italy" 
+            onPress={() => handleSmallPostPress("Italy")} 
+            imageSource={require('../../assets/italy1.jpg')}
+          />
+          <SmallPost 
+            text="St. Petersburg, Russia" 
+            onPress={() => handleSmallPostPress("St. Petersburg, Russia")} 
+            imageSource={require('../../assets/spbg-russia1.jpg')}
+          />
+          <SmallPost 
+            text="Norway" 
+            onPress={() => handleSmallPostPress("Norway")} 
+            imageSource={require('../../assets/norway1.jpg')}
+          />
+        </ScrollView>
+
         </View>
 
         {/* Large posts */}
