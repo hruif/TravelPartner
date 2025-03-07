@@ -2,8 +2,8 @@ import React from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
-import LargePost from '../components/largepost';  
-import SmallPost from '../components/smallpost';
+import LargePost from '../components/large-post';  
+import SmallPost from '../components/small-post';
 
 export default function HomeScreen({ navigation }) {
   const { logout } = useAuth(); // Logout function
