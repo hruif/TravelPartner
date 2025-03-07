@@ -9,27 +9,30 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <ImageBackground
-            source={require('../../assets/background3.avif')} // Replace with your desired background image
+            source={require('../../assets/background3.avif')}
             style={styles.backgroundImage}
         >
             <ScrollView contentContainerStyle={styles.container}>
-                <LinearGradient colors={['#3498db', '#8e44ad']} style={styles.header}>
-                    <Text style={styles.headerText}>GlobeGram</Text>
-                </LinearGradient>
-                <View style={styles.content}>
-                    <Text style={styles.welcomeText}>
-                        Connect with the World, One Post at a Time!
-                    </Text>
-                    <Text style={styles.subtitle}>
-                        Share your travels, explore new cultures, and stay connected globally.
-                    </Text>
+                {/* Horizontal small posts section */}
+                <View style={styles.smallPostsSection}>
+                    <ScrollView 
+                        horizontal={true} 
+                        showsHorizontalScrollIndicator={false} 
+                        contentContainerStyle={styles.smallPostsContainer}
+                    >
+                        <View style={styles.smallPost}>
+                            <Text style={styles.smallPostText}>Post 1</Text>
+                        </View>
+                        <View style={styles.smallPost}>
+                            <Text style={styles.smallPostText}>Post 2</Text>
+                        </View>
+                        <View style={styles.smallPost}>
+                            <Text style={styles.smallPostText}>Post 3</Text>
+                        </View>
+                    </ScrollView>
                 </View>
 
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Map')}>
-                    <Ionicons name="globe-outline" size={24} color="white" />
-                    <Text style={styles.buttonText}>Explore the Map</Text>
-                </TouchableOpacity>
-
+                {/* Big posts section */}
                 <View style={styles.postsContainer}>
                     <View style={styles.post}>
                         <Image 
@@ -47,8 +50,8 @@ export default function HomeScreen({ navigation }) {
                     </View>
                     <View style={styles.post}>
                         <Image 
-                        source={require('../../assets/tokyo1.jpg')}
-                        style={styles.postImage} 
+                            source={require('../../assets/tokyo1.jpg')}
+                            style={styles.postImage} 
                         />
                         <Text style={styles.postTitle}>Tokyo</Text>
                     </View>
@@ -119,6 +122,28 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 10,
     },
+    smallPostsSection: {
+        marginTop: 20,
+        width: '100%',
+    },
+    smallPostsContainer: {
+        paddingHorizontal: 10,
+    },
+    smallPost: {
+        width: 100,
+        height: 100,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 10,
+    },
+    smallPostText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#333',
+    },
+    // Styles for big posts
     postsContainer: {
         marginTop: 38,
         width: '100%',
