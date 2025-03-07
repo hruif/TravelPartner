@@ -5,6 +5,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { getCoordinates } from "../services/maps-service";
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { postJournalEntry } from '../services/diary-service';
 
 
 type RootStackParamList = {
@@ -30,17 +31,17 @@ export default function TravelDiaryScreen({navigation}: JournalScreenProps) {
   // handle journal entry (post) submission
   const handleEntry = async () => {
     const entryData = {
-      title,
-      location,
-      description,
-      photoURI: photo, 
-      experienceTypes,
+      photoURI: photo,
       price,
-      rating
+      title,
+      description,
+      rating,
+      location,
+      // experienceTypes,
     }
 
     try {
-      //await postJournalEntry(entryData); // call API to save entry
+      await postJournalEntry(entryData); // call API to save entry
       navigation.goBack(); // after posting
     } catch (error) {
       Alert.alert("Error", "Failed to post entry. Please try again later.");
