@@ -4,13 +4,13 @@ export async function postJournalEntry(entryData: any) {
     const { title, description, photoURI, price, rating, location } = entryData;
 
     const bodyToSend = {
-    title,
-    description,
-    photoURI,
-    price,
-    rating,
-    momentAddress: location?.someLocationField || "",
-    };
+        photoURI,
+        price,
+        title,
+        description,
+        rating,
+        formattedAddress: location?.formattedAddress || '',
+      }      
 
   const response = await apiClient.post('/diary/entry', bodyToSend);
   return response.data;
