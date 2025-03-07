@@ -16,7 +16,7 @@ import AnimatedPlaceholderInput from '../components/animated-input-placeholder';
 
 type RootStackParamList = {
   Home: undefined;
-  TravelDiary: undefined;
+  TravelJournal: undefined;
 };
 
 type HomeScreenProps = StackScreenProps<RootStackParamList, 'Home'>;

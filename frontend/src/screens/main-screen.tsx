@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 // Import screens
 import HomeScreen from './home-screen';
 import MapScreen from './map-screen';
-import TravelDiaryScreen from './travel-diary-screen';
+import TravelDiaryScreen from "./travel-diary-screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,13 +15,9 @@ export default function MainScreen() {
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === 'Home') {
-                        iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Map') {
-                        iconName = focused ? 'map' : 'map-outline';
-                    } else if (route.name === 'Profile') {
-                        iconName = focused ? 'person' : 'person-outline';
-                    }
+                    if (route.name === 'Home') iconName = focused ? 'home' : 'home-outline';
+                    else if (route.name === 'Map') iconName = focused ? 'map' : 'map-outline';
+                    else if (route.name === 'Profile') iconName = focused ? 'person' : 'person-outline';
 
                     return <Ionicons name={iconName} size={size} color={color} />;
                 },
@@ -30,7 +26,7 @@ export default function MainScreen() {
                 tabBarHideOnKeyboard: true,
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen}/>
+            <Tab.Screen name="Home" component={HomeScreen} />
             <Tab.Screen name="Map" component={MapScreen} />
             <Tab.Screen name="Profile" component={TravelDiaryScreen} />
         </Tab.Navigator>
