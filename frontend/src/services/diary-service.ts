@@ -15,3 +15,8 @@ export async function postJournalEntry(entryData: any) {
   const response = await apiClient.post('/diary/entry', bodyToSend);
   return response.data;
 }
+
+export async function getJournalEntries() {
+    const response = await apiClient.get('/diary/entries');
+    return response.data;
+  }

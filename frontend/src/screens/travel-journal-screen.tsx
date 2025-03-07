@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
   Alert, Keyboard, TouchableWithoutFeedback, ScrollView
@@ -8,11 +8,13 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
 import { getCoordinates } from '../services/maps-service';
-import { postJournalEntry } from '../services/diary-service';
+import { postJournalEntry, getJournalEntries } from '../services/diary-service';
 
 import { DescriptionInput } from '../components/description-input';
 import { ExperienceTypesSelector } from '../components/experience-types';
 import { PriceInput } from '../components/price-input';
+
+import { ProfilePosts } from '../components/profile-posts';
 
 type RootStackParamList = {
   Home: undefined;
@@ -22,10 +24,10 @@ type RootStackParamList = {
 type JournalScreenProps = StackScreenProps<RootStackParamList, 'TravelJournal'>;
 
 export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
-  // State for profile page vs create post form
   const [showCreatePost, setShowCreatePost] = useState(false);
+  const [journalEntries, setJournalEntries] = useState<any[]>([]);
 
-  // Fields for the post form
+  // States for the post form
   const [title, setTitle] = useState('');
   const [locSearchText, setLocSearchText] = useState('');
   const [location, setLocation] = useState<{ lat: any; lng: any; place_id: any } | null>(null);
@@ -35,7 +37,20 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [price, setPrice] = useState(0);
   const [rating, setRating] = useState(0);
 
-  // Handle post submission
+  useEffect(() => {
+    if (!showCreatePost) {
+      async function fetchEntries() {
+        try {
+          const entries = await getJournalEntries();
+          setJournalEntries(entries);
+        } catch (error) {
+          Alert.alert('Error', 'Failed to load your posts.');
+        }
+      }
+      fetchEntries();
+    }
+  }, [showCreatePost]);
+
   const handleEntry = async () => {
     const entryData = {
       photoURI: photo,
@@ -44,7 +59,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       description,
       rating,
       location,
-      // experienceTypes,
     };
 
     try {
@@ -55,7 +69,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
-  // Process location search query
   const handleLocSearch = async () => {
     if (!locSearchText.trim()) return;
     const foundLocation = await getCoordinates(locSearchText);
@@ -67,7 +80,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
-  // Pick photo from gallery
   const pickPhoto = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -79,7 +91,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
-  // Toggle experience type selection
   const toggleExperienceType = (type: string) => {
     if (experienceTypes.includes(type)) {
       setExperienceTypes(experienceTypes.filter(item => item !== type));
@@ -88,7 +99,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
-  // Render the profile view if showCreatePost is false
+  // Profile view
   if (!showCreatePost) {
     return (
       <ScrollView contentContainerStyle={styles.profileContainer}>
@@ -100,19 +111,9 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           />
           <Text style={styles.profileName}>Test Name</Text>
         </View>
-        <View style={styles.profilePostsSection}>
-          <Text style={styles.sectionTitle}>Your Posts</Text>
-          {/* Dummy list of posts */}
-          <View style={styles.postItem}>
-            <Text style={styles.postItemText}>Post 1</Text>
-          </View>
-          <View style={styles.postItem}>
-            <Text style={styles.postItemText}>Post 2</Text>
-          </View>
-          <View style={styles.postItem}>
-            <Text style={styles.postItemText}>Post 3</Text>
-          </View>
-        </View>
+
+        <ProfilePosts journalEntries={journalEntries} />
+
         <TouchableOpacity 
           style={styles.createPostButton} 
           onPress={() => setShowCreatePost(true)}
@@ -123,7 +124,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     );
   }
 
-  // Otherwise, render the create post form with a cancel button at the top right
+  // Create post form
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -216,26 +217,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  profilePostsSection: {
-    width: '100%',
-    marginBottom: 30,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    color: '#fff',
-    marginBottom: 10,
-  },
-  postItem: {
-    backgroundColor: '#3a3f47',
-    width: '100%',
-    padding: 10,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  postItemText: {
-    color: '#fff',
-    fontSize: 16,
-  },
   createPostButton: {
     width: '100%',
     height: 50,
@@ -249,7 +230,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  
   // Create post form styles
   scrollContainer: {
     flexGrow: 1,
