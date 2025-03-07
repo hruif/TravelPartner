@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 // Import screens
 import HomeScreen from './home-screen';
 import MapScreen from './map-screen';
-import TravelDiaryScreen from "./travel-diary-screen";
+import TravelDiaryScreen from "./travel-journal-screen";
 
 const Tab = createBottomTabNavigator();
 
