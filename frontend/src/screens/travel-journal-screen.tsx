@@ -22,16 +22,20 @@ type RootStackParamList = {
 type JournalScreenProps = StackScreenProps<RootStackParamList, 'TravelJournal'>;
 
 export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
+  // State for profile page vs create post form
+  const [showCreatePost, setShowCreatePost] = useState(false);
+
+  // Fields for the post form
   const [title, setTitle] = useState('');
   const [locSearchText, setLocSearchText] = useState('');
   const [location, setLocation] = useState<{ lat: any; lng: any; place_id: any } | null>(null);
-  
   const [description, setDescription] = useState('');
   const [photo, setPhoto] = useState<string | null>(null);
   const [experienceTypes, setExperienceTypes] = useState<string[]>([]);
   const [price, setPrice] = useState(0);
   const [rating, setRating] = useState(0);
 
+  // Handle post submission
   const handleEntry = async () => {
     const entryData = {
       photoURI: photo,
@@ -51,6 +55,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
+  // Process location search query
   const handleLocSearch = async () => {
     if (!locSearchText.trim()) return;
     const foundLocation = await getCoordinates(locSearchText);
@@ -62,6 +67,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
+  // Pick photo from gallery
   const pickPhoto = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -73,6 +79,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
+  // Toggle experience type selection
   const toggleExperienceType = (type: string) => {
     if (experienceTypes.includes(type)) {
       setExperienceTypes(experienceTypes.filter(item => item !== type));
@@ -81,14 +88,57 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
+  // Render the profile view if showCreatePost is false
+  if (!showCreatePost) {
+    return (
+      <ScrollView contentContainerStyle={styles.profileContainer}>
+        <View style={styles.profileHeader}>
+          {/* Filler profile picture */}
+          <Image 
+            source={require('../../assets/blank-profile.png')} 
+            style={styles.profilePic} 
+          />
+          <Text style={styles.profileName}>Test Name</Text>
+        </View>
+        <View style={styles.profilePostsSection}>
+          <Text style={styles.sectionTitle}>Your Posts</Text>
+          {/* Dummy list of posts */}
+          <View style={styles.postItem}>
+            <Text style={styles.postItemText}>Post 1</Text>
+          </View>
+          <View style={styles.postItem}>
+            <Text style={styles.postItemText}>Post 2</Text>
+          </View>
+          <View style={styles.postItem}>
+            <Text style={styles.postItemText}>Post 3</Text>
+          </View>
+        </View>
+        <TouchableOpacity 
+          style={styles.createPostButton} 
+          onPress={() => setShowCreatePost(true)}
+        >
+          <Text style={styles.createPostButtonText}>Create new post!</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    );
+  }
+
+  // Otherwise, render the create post form with a cancel button at the top right
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
-        <Text style={styles.titleContainer}>Make an entry</Text>
+        <View style={styles.formHeader}>
+          <Text style={styles.titleContainer}>Make an entry</Text>
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={() => setShowCreatePost(false)}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
 
         <TextInput
-          style={styles.descriptionContainer}
+          style={styles.input}
           placeholder="Title"
           placeholderTextColor="#aaa"
           value={title}
@@ -128,7 +178,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           experienceTypes={experienceTypes}
           toggleExperienceType={toggleExperienceType}
         />
-        
+
         <PriceInput
           price={price}
           setPrice={setPrice}
@@ -137,27 +187,96 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
           <Text style={styles.postButton}>Post</Text>
         </TouchableOpacity>
-
       </ScrollView>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
+  // Profile page styles
+  profileContainer: {
+    flexGrow: 1,
+    backgroundColor: '#25292e',
+    padding: 20,
+    alignItems: 'center',
+  },
+  profileHeader: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  profilePic: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#aaa', // placeholder color
+    marginBottom: 10,
+  },
+  profileName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  profilePostsSection: {
+    width: '100%',
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 10,
+  },
+  postItem: {
+    backgroundColor: '#3a3f47',
+    width: '100%',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 5,
+  },
+  postItemText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  createPostButton: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#28a745',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  createPostButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  
+  // Create post form styles
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#25292e',
     padding: 10,
     alignItems: 'center',
   },
+  formHeader: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
   titleContainer: {
-    top: '3%',
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 20,
   },
-  descriptionContainer: {
+  cancelButton: {
+    padding: 5,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: '#e74c3c',
+  },
+  input: {
     width: '100%',
     height: 50,
     backgroundColor: '#3a3f47',
@@ -208,9 +327,10 @@ const styles = StyleSheet.create({
   experienceTypeLabel: {
     color: '#fff',
     marginBottom: 10,
+    alignSelf: 'flex-start',
+    paddingLeft: 15,
   },
   postButtonContainer: {
-    top: '3%',
     width: '100%',
     height: 50,
     backgroundColor: '#28a745',
