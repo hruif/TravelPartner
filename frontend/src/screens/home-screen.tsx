@@ -1,12 +1,29 @@
-import React from 'react';
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../hooks/useAuth';
-import LargePost from '../components/large-post';  
+import LargePost from '../components/large-post';
 import SmallPost from '../components/small-post';
+import PopupOverlay from '../components/small-post-popup';
 
 export default function HomeScreen({ navigation }) {
-  const { logout } = useAuth(); // Logout function
+  const { logout } = useAuth();
+  const [selectedPost, setSelectedPost] = useState(null);
+
+  const handleSmallPostPress = (postTitle) => {
+    {/* Still need to grab images from back-end user posts */}
+    const images = [
+      {}
+    ];
+
+    { /* Still need to grab descriptions from back-end user posts */}
+    const desc = `Description for ${postTitle}.`;
+    setSelectedPost({
+      title: postTitle,
+      images: images,
+      description: desc,
+    });
+  };
 
   return (
     <ImageBackground
@@ -14,20 +31,20 @@ export default function HomeScreen({ navigation }) {
       style={styles.backgroundImage}
     >
       <ScrollView contentContainerStyle={styles.container}>
-        {/* Horizontal small posts section */}
+        {/* Small posts */}
         <View style={styles.smallPostsSection}>
           <ScrollView 
-            horizontal={true} 
+            horizontal 
             showsHorizontalScrollIndicator={false} 
             contentContainerStyle={styles.smallPostsContainer}
           >
-            <SmallPost text="Post 1" />
-            <SmallPost text="Post 2" />
-            <SmallPost text="Post 3" />
+            <SmallPost text="Post 1" onPress={() => handleSmallPostPress("Post 1")} />
+            <SmallPost text="Post 2" onPress={() => handleSmallPostPress("Post 2")} />
+            <SmallPost text="Post 3" onPress={() => handleSmallPostPress("Post 3")} />
           </ScrollView>
         </View>
 
-        {/* Large posts section */}
+        {/* Large posts */}
         <View style={styles.postsContainer}>
           <LargePost 
             imageSource={require('../../assets/vaticancity.jpg')}
@@ -48,6 +65,9 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Popups for small posts */}
+      <PopupOverlay post={selectedPost} onClose={() => setSelectedPost(null)} />
     </ImageBackground>
   );
 }
@@ -60,8 +80,9 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 30,
-    backgroundColor: 'transparent', 
+    backgroundColor: 'transparent',
     alignItems: 'center',
+    paddingTop: 20,
   },
   smallPostsSection: {
     marginTop: 20,

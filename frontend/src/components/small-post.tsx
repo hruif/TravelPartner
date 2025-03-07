@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 
-export default function SmallPost({ text }) {
+export default function SmallPost({ text, onPress }) {
   return (
-    <View style={styles.smallPost}>
+    <TouchableOpacity style={styles.smallPost} onPress={onPress}>
       <Text style={styles.smallPostText}>{text}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
