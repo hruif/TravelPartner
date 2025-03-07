@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import { useAuth } from '../hooks/useAuth';
 import {authenticateUser} from "../services/auth-service";
+import useAuthStore from "../stores/auth.store";
 
 export default function AuthScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const { login } = useAuth();
+    const { login } = useAuthStore();
 
     const handleLoginOrSignup = async (isLogin) => {
         if (!email || !password) {

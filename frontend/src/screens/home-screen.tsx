@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../hooks/useAuth';
 import LargePost from '../components/large-post';
 import SmallPost from '../components/small-post';
 import PopupOverlay from '../components/small-post-popup';
+import useAuthStore from "../stores/auth.store";
 
 export default function HomeScreen({ navigation }) {
-  const { logout } = useAuth();
+  const { logout } = useAuthStore();
   const [selectedPost, setSelectedPost] = useState(null);
 
   const handleSmallPostPress = (postTitle) => {
