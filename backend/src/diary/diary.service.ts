@@ -124,4 +124,16 @@ export class DiaryService {
 
     await this.em.removeAndFlush(entry);
   }
+
+  /**
+   * Retrieves diary entries from all users using pagination.
+   *
+   * @param page The page number (starting from 1).
+   * @param limit The number of entries per page.
+   * @returns {Promise<DiaryEntry[]>} An array of diary entries.
+   */
+  async getAllEntriesPaginated(page: number, limit: number): Promise<DiaryEntry[]> {
+    const offset = (page - 1) * limit;
+    return this.em.find(DiaryEntry, {}, { limit, offset });
+  }
 }

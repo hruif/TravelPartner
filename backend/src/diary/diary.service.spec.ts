@@ -242,4 +242,23 @@ describe('DiaryService', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
   });
+
+  describe('getAllEntriesPaginated', () => {
+    it('should return paginated diary entries', async () => {
+      const mockEntries: DiaryEntry[] = [
+        { uuid: 'entry-1', title: 'Entry 1' } as DiaryEntry,
+        { uuid: 'entry-2', title: 'Entry 2' } as DiaryEntry,
+      ];
+      (entityManager.find as jest.Mock).mockResolvedValue(mockEntries);
+
+      const page = 2;
+      const limit = 5;
+      const offset = (page - 1) * limit; // expected offset = 5
+
+      const result = await diaryService.getAllEntriesPaginated(page, limit);
+      expect(entityManager.find).toHaveBeenCalledWith(DiaryEntry, {}, { limit, offset });
+      expect(result).toEqual(mockEntries);
+    });
+  });
+
 });

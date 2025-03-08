@@ -5,7 +5,7 @@ import {
   Put,
   Delete,
   Param,
-  Body,
+  Body, Query,
 } from '@nestjs/common';
 import { DiaryService } from './diary.service';
 import { DiaryEntry } from './diary-entry.entity';
@@ -91,5 +91,24 @@ export class DiaryController {
   @Delete('entry/:id')
   async deleteEntry(@Param('id') id: string, @GetUser() user): Promise<void> {
     return this.diaryService.deleteEntry(id, user.uuid);
+  }
+
+  /**
+   * Retrieves all diary entries paginated.
+   *
+   * @param page The page number.
+   * @param limit The number of entries per page.
+   * @returns {Promise<DiaryEntry[]>} An array of diary entries.
+   * @throws {401} Unauthorized if not logged in.
+   */
+  @Get('entries/all')
+  async getAllEntriesPaginated(
+      @Query('page') page: string = '1',
+      @Query('limit') limit: string = '10',
+  ): Promise<DiaryEntry[]> {
+    const pageNumber = parseInt(page, 10) || 1;
+    const parsedLimit = parseInt(limit, 10) || 10;
+    const limitNumber = Math.min(parsedLimit, 10);
+    return this.diaryService.getAllEntriesPaginated(pageNumber, limitNumber);
   }
 }

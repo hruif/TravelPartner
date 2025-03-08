@@ -206,4 +206,43 @@ describe('DiaryController', () => {
       ).rejects.toThrow(UnauthorizedException);
     });
   });
+
+  describe('getAllEntriesPaginated', () => {
+    it('should return paginated entries with default page and limit', async () => {
+      const mockEntries: DiaryEntry[] = [
+        { uuid: '1', title: 'Entry 1' } as DiaryEntry,
+        { uuid: '2', title: 'Entry 2' } as DiaryEntry,
+      ];
+      // Set up the mock to resolve with some diary entries.
+      diaryService.getAllEntriesPaginated = jest.fn().mockResolvedValue(mockEntries);
+
+      // When no query parameters are provided, the default page '1' and limit '10' should be used.
+      const result = await diaryController.getAllEntriesPaginated();
+      expect(diaryService.getAllEntriesPaginated).toHaveBeenCalledWith(1, 10);
+      expect(result).toEqual(mockEntries);
+    });
+
+    it('should return paginated entries with provided page and limit', async () => {
+      const mockEntries: DiaryEntry[] = [
+        { uuid: '1', title: 'Entry 1' } as DiaryEntry,
+      ];
+      diaryService.getAllEntriesPaginated = jest.fn().mockResolvedValue(mockEntries);
+
+      const result = await diaryController.getAllEntriesPaginated('2', '5');
+      expect(diaryService.getAllEntriesPaginated).toHaveBeenCalledWith(2, 5);
+      expect(result).toEqual(mockEntries);
+    });
+
+    it('should clamp limit to 10 if provided limit exceeds 10', async () => {
+      const mockEntries: DiaryEntry[] = [
+        { uuid: '1', title: 'Entry 1' } as DiaryEntry,
+      ];
+      diaryService.getAllEntriesPaginated = jest.fn().mockResolvedValue(mockEntries);
+
+      // Provide a limit greater than 10; the endpoint should clamp the limit to 10.
+      const result = await diaryController.getAllEntriesPaginated('1', '20');
+      expect(diaryService.getAllEntriesPaginated).toHaveBeenCalledWith(1, 10);
+      expect(result).toEqual(mockEntries);
+    });
+  });
 });
