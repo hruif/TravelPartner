@@ -1,24 +1,30 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-interface Post {
+export interface Post {
   uuid: string;
   title: string;
+  description: string;
+  photoURI: string;
+  rating: number;
 }
 
 interface ProfilePostsProps {
   journalEntries: Post[];
+  onPostPress: (post: Post) => void;
 }
 
-export function ProfilePosts({ journalEntries }: ProfilePostsProps) {
+export function ProfilePosts({ journalEntries, onPostPress }: ProfilePostsProps) {
   return (
     <View style={styles.profilePostsSection}>
       <Text style={styles.sectionTitle}>Your Posts</Text>
       {journalEntries.length > 0 ? (
         journalEntries.map((entry) => (
-          <View key={entry.uuid} style={styles.postItem}>
-            <Text style={styles.postItemText}>{entry.title}</Text>
-          </View>
+          <TouchableOpacity key={entry.uuid} onPress={() => onPostPress(entry)}>
+            <View style={styles.postItem}>
+              <Text style={styles.postItemText}>{entry.title}</Text>
+            </View>
+          </TouchableOpacity>
         ))
       ) : (
         <Text style={styles.postItemText}>No posts yet.</Text>

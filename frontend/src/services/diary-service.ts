@@ -19,4 +19,8 @@ export async function postJournalEntry(entryData: any) {
 export async function getJournalEntries() {
     const response = await apiClient.get('/diary/entries');
     return response.data;
-  }
+}
+
+export async function deleteJournalEntry(postId: string) {
+    await apiClient.delete(`/diary/entry/${postId}`);
+}

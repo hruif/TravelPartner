@@ -8,13 +8,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
 import { getCoordinates } from '../services/maps-service';
-import { postJournalEntry, getJournalEntries } from '../services/diary-service';
+import { postJournalEntry, getJournalEntries, deleteJournalEntry } from '../services/diary-service';
 
 import { DescriptionInput } from '../components/description-input';
 import { ExperienceTypesSelector } from '../components/experience-types';
 import { PriceInput } from '../components/price-input';
 
-import { ProfilePosts } from '../components/profile-posts';
+import { ProfilePosts, Post } from '../components/profile-posts';
+import { DiaryPostPopup } from '../components/profile-post-popup';
 
 type RootStackParamList = {
   Home: undefined;
@@ -26,6 +27,7 @@ type JournalScreenProps = StackScreenProps<RootStackParamList, 'TravelJournal'>;
 export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
+  const [selectedDiaryPost, setSelectedDiaryPost] = useState<Post | null>(null);
 
   // States for the post form
   const [title, setTitle] = useState('');
@@ -60,12 +62,27 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       rating,
       location,
     };
-
+  
     try {
       await postJournalEntry(entryData);
-      navigation.goBack();
+      setShowCreatePost(false);
     } catch (error) {
       Alert.alert('Error', 'Failed to post entry. Please try again later.');
+    }
+  };
+  
+
+  // Refresh posts after deletion
+  const handleDeletePost = async (postId: string) => {
+    try {
+      await deleteJournalEntry(postId);
+      setSelectedDiaryPost(null); // close the popup
+
+      // refresh the list
+      const updatedEntries = await getJournalEntries();
+      setJournalEntries(updatedEntries);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete post.');
     }
   };
 
@@ -104,7 +121,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     return (
       <ScrollView contentContainerStyle={styles.profileContainer}>
         <View style={styles.profileHeader}>
-          {/* Filler profile picture */}
           <Image 
             source={require('../../assets/blank-profile.png')} 
             style={styles.profilePic} 
@@ -112,7 +128,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <Text style={styles.profileName}>Test Name</Text>
         </View>
 
-        <ProfilePosts journalEntries={journalEntries} />
+        <ProfilePosts
+          journalEntries={journalEntries}
+          onPostPress={(post: Post) => setSelectedDiaryPost(post)}
+        />
 
         <TouchableOpacity 
           style={styles.createPostButton} 
@@ -120,6 +139,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         >
           <Text style={styles.createPostButtonText}>Create new post!</Text>
         </TouchableOpacity>
+
+        {/* Render popup if a post is selected */}
+        {selectedDiaryPost && (
+          <DiaryPostPopup
+            post={selectedDiaryPost}
+            onClose={() => setSelectedDiaryPost(null)}
+            onDeletePost={handleDeletePost}
+          />
+        )}
       </ScrollView>
     );
   }
