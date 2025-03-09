@@ -4,10 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import LargePost from '../components/large-post';
 import SmallPost from '../components/small-post';
 import PopupOverlay from '../components/small-post-popup';
-import useAuthStore from "../stores/auth.store";
 
 export default function HomeScreen({ navigation }) {
-  const { logout } = useAuthStore();
   const [selectedPost, setSelectedPost] = useState(null);
 
   const handleSmallPostPress = (postTitle) => {
@@ -26,9 +24,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/background3.avif')}
-      style={styles.backgroundImage}
+    <View
     >
       <ScrollView contentContainerStyle={styles.container}>
         {/* Small posts */}
@@ -77,16 +73,11 @@ export default function HomeScreen({ navigation }) {
             title="Tokyo" 
           />
         </View>
-
-        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
-          <Ionicons name="log-out-outline" size={24} color="white" />
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
       </ScrollView>
 
       {/* Popups for small posts */}
       <PopupOverlay post={selectedPost} onClose={() => setSelectedPost(null)} />
-    </ImageBackground>
+    </View>
   );
 }
 
@@ -112,20 +103,5 @@ const styles = StyleSheet.create({
   postsContainer: {
     marginTop: 38,
     width: '100%',
-  },
-  logoutButton: {
-    flexDirection: 'row',
-    backgroundColor: '#e74c3c',
-    padding: 15,
-    borderRadius: 30,
-    alignItems: 'center',
-    marginTop: 20,
-    paddingHorizontal: 20,
-  },
-  logoutText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
   },
 });
