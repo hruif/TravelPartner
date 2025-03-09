@@ -242,6 +242,21 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           setPrice={setPrice}
         />
 
+        <View style={styles.ratingContainer}>
+          <Text style={styles.experienceTypeLabel}>Rating:</Text>
+          <View style={styles.stars}>
+            {[1, 2, 3, 4, 5].map((star) => (
+              <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                <Ionicons
+                  name={star <= rating ? "star" : "star-outline"}
+                  size={28}
+                  color={star <= rating ? "#FFD700" : "#aaa"}
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
           <Text style={styles.postButton}>Post</Text>
         </TouchableOpacity>
@@ -381,6 +396,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-start',
     paddingLeft: 15,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  stars: {
+    flexDirection: 'row',
+    marginLeft: 10,
   },
   postButtonContainer: {
     width: '100%',
