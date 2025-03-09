@@ -149,9 +149,22 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         <TouchableOpacity 
           style={styles.createPostButton} 
-          onPress={() => setShowCreatePost(true)}
+          onPress={() => {
+            // reset state for new post
+            setTitle('');
+            setDate(new Date());
+            setLocSearchText('');
+            setLocation(null);
+            setDescription('');
+            setPhoto(null);
+            setExperienceTypes([]);
+            setPrice(0);
+            setRating(0);
+
+            setShowCreatePost(true)
+          }}
         >
-          <Text style={styles.createPostButtonText}>Create new post!</Text>
+          <Text style={styles.createPostButtonText}>Make an entry</Text>
         </TouchableOpacity>
 
         {/* Render popup if a post is selected */}
@@ -176,7 +189,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.formHeader}>
-            <Text style={styles.titleContainer}>Make an entry</Text>
+            <Text style={styles.titleContainer}>New entry</Text>
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={() => setShowCreatePost(false)}
