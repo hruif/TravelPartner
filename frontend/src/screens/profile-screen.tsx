@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
-  Alert, Keyboard, TouchableWithoutFeedback, ScrollView,
-  ImageBase
+  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView,
+  ImageBase, Platform
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -168,100 +168,107 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
   // Create post form
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.formHeader}>
-          <Text style={styles.titleContainer}>Make an entry</Text>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => setShowCreatePost(false)}
-          >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
-          </TouchableOpacity>
-        </View>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Title"
-          placeholderTextColor="#aaa"
-          value={title}
-          onChangeText={setTitle}
-        />
-
-        <View style={styles.dateContainer}>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
-            <Text style={styles.dateText}>{date.toDateString()}</Text>
-          </TouchableOpacity>
-
-          {showDatePicker && (
-            <DateTimePicker
-              value={date}
-              mode="date"
-              display="default"
-              onChange={handleDateChange}
-            />
-          )}
-        </View>
-
-        <View style={styles.searchContainer}>
-          <Ionicons name="search" size={20} color="#aaa" style={styles.searchIcon} />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Location"
-            placeholderTextColor="#aaa"
-            value={locSearchText}
-            onChangeText={setLocSearchText}
-            onSubmitEditing={handleLocSearch}
-          />
-        </View>
-
-        <DescriptionInput
-          description={description}
-          setDescription={setDescription}
-          placeholder="Description"
-        />
-
-        {photo && (
-          <Image source={{ uri: photo }} style={styles.photoPreview} />
-        )}
-
-        <TouchableOpacity style={styles.photoContainer} onPress={pickPhoto}>
-          <Text style={styles.photoContainerLabel}>
-            {photo ? 'Change Photo' : 'Select photo'}
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.experienceTypeLabel}>Experience Types:</Text>
-        <ExperienceTypesSelector
-          experienceTypes={experienceTypes}
-          toggleExperienceType={toggleExperienceType}
-        />
-
-        <PriceInput
-          price={price}
-          setPrice={setPrice}
-        />
-
-        <View style={styles.ratingContainer}>
-          <Text style={styles.experienceTypeLabel}>Rating:</Text>
-          <View style={styles.stars}>
-            {[1, 2, 3, 4, 5].map((star) => (
-              <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                <Ionicons
-                  name={star <= rating ? "star" : "star-outline"}
-                  size={28}
-                  color={star <= rating ? "#FFD700" : "#aaa"}
-                />
-              </TouchableOpacity>
-            ))}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={100}
+    >
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.formHeader}>
+            <Text style={styles.titleContainer}>Make an entry</Text>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => setShowCreatePost(false)}
+            >
+              <Text style={styles.cancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
-        </View>
 
-        <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
-          <Text style={styles.postButton}>Post</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+          <TextInput
+            style={styles.input}
+            placeholder="Title"
+            placeholderTextColor="#aaa"
+            value={title}
+            onChangeText={setTitle}
+          />
+
+          <View style={styles.dateContainer}>
+            <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+              <Text style={styles.dateText}>{date.toDateString()}</Text>
+            </TouchableOpacity>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={handleDateChange}
+              />
+            )}
+          </View>
+
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="#aaa" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Location"
+              placeholderTextColor="#aaa"
+              value={locSearchText}
+              onChangeText={setLocSearchText}
+              onSubmitEditing={handleLocSearch}
+            />
+          </View>
+
+          <DescriptionInput
+            description={description}
+            setDescription={setDescription}
+            placeholder="Description"
+          />
+
+          {photo && (
+            <Image source={{ uri: photo }} style={styles.photoPreview} />
+          )}
+
+          <TouchableOpacity style={styles.photoContainer} onPress={pickPhoto}>
+            <Text style={styles.photoContainerLabel}>
+              {photo ? 'Change Photo' : 'Select photo'}
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.experienceTypeLabel}>Experience Types:</Text>
+          <ExperienceTypesSelector
+            experienceTypes={experienceTypes}
+            toggleExperienceType={toggleExperienceType}
+          />
+
+          <PriceInput
+            price={price}
+            setPrice={setPrice}
+          />
+
+          <View style={styles.ratingContainer}>
+            <Text style={styles.experienceTypeLabel}>Rating:</Text>
+            <View style={styles.stars}>
+              {[1, 2, 3, 4, 5].map((star) => (
+                <TouchableOpacity key={star} onPress={() => setRating(star)}>
+                  <Ionicons
+                    name={star <= rating ? "star" : "star-outline"}
+                    size={28}
+                    color={star <= rating ? "#FFD700" : "#aaa"}
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
+            <Text style={styles.postButton}>Post</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+
   );
 }
 
