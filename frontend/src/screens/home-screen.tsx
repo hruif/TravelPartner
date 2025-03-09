@@ -1,87 +1,91 @@
-import React, { useRef, useEffect } from 'react';
-import { Animated, View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '../hooks/useAuth';
+import LargePost from '../components/large-post';
+import SmallPost from '../components/small-post';
+import PopupOverlay from '../components/small-post-popup';
+import useAuthStore from "../stores/auth.store";
 
 export default function HomeScreen({ navigation }) {
-  const { logout } = useAuth();
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const { logout } = useAuthStore();
+  const [selectedPost, setSelectedPost] = useState(null);
 
-  // Listen to scroll events and update header translation.
-  useEffect(() => {
-    const listenerId = scrollY.addListener(({ value }) => {
-      const translateY = Math.min(value, 50); // this value affects how fast the logo disappears off-screen
-      navigation.setOptions({
-        headerStyle: {
-          transform: [{ translateY: -translateY }],
-          opacity: 1 - translateY / 50,
-        },
-      });
+  const handleSmallPostPress = (postTitle) => {
+    {/* Still need to grab images from back-end user posts */}
+    const images = [
+      {}
+    ];
+
+    { /* Still need to grab descriptions from back-end user posts */}
+    const desc = `List of user-submitted posts for ${postTitle}.`;
+    setSelectedPost({
+      title: postTitle,
+      images: images,
+      description: desc,
     });
-    return () => scrollY.removeListener(listenerId);
-  }, [navigation, scrollY]);
+  };
 
   return (
     <ImageBackground
       source={require('../../assets/background3.avif')}
       style={styles.backgroundImage}
     >
-      <Animated.ScrollView
-        contentContainerStyle={styles.container}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
-        )}
-      >
-        <Image
-          style={styles.logo}
-          source={require('../../assets/invis.png')}
-          resizeMode="contain"
-        />
-        <View style={styles.content}>
-          <Text style={styles.welcomeText}>
-            Connect with the World, One Post at a Time!
-          </Text>
-          <Text style={styles.subtitle}>
-            Share your travels, explore new cultures, and stay connected globally.
-          </Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Small posts */}
+        <View style={styles.smallPostsSection}>
+        <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false} 
+        contentContainerStyle={styles.smallPostsContainer}
+        >
+          <SmallPost 
+            text="Arundel, England" 
+            onPress={() => handleSmallPostPress("Arundel, England")} 
+            imageSource={require('../../assets/arundel-england1.jpg')}
+          />
+          <SmallPost 
+            text="Italy" 
+            onPress={() => handleSmallPostPress("Italy")} 
+            imageSource={require('../../assets/italy1.jpg')}
+          />
+          <SmallPost 
+            text="St. Petersburg, Russia" 
+            onPress={() => handleSmallPostPress("St. Petersburg, Russia")} 
+            imageSource={require('../../assets/spbg-russia1.jpg')}
+          />
+          <SmallPost 
+            text="Norway" 
+            onPress={() => handleSmallPostPress("Norway")} 
+            imageSource={require('../../assets/norway1.jpg')}
+          />
+        </ScrollView>
+
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Map')}>
-          <Ionicons name="globe-outline" size={24} color="white" />
-          <Text style={styles.buttonText}>Explore the Map</Text>
-        </TouchableOpacity>
-
+        {/* Large posts */}
         <View style={styles.postsContainer}>
-          <View style={styles.post}>
-            <Image 
-              source={require('../../assets/paris1.jpg')}
-              style={styles.postImage} 
-            />
-            <Text style={styles.postTitle}>Paris</Text>
-          </View>
-          <View style={styles.post}>
-            <Image 
-              source={require('../../assets/switzerland1.jpg')}
-              style={styles.postImage} 
-            />
-            <Text style={styles.postTitle}>Switzerland</Text>
-          </View>
-          <View style={styles.post}>
-            <Image 
-              source={require('../../assets/tokyo1.jpg')}
-              style={styles.postImage} 
-            />
-            <Text style={styles.postTitle}>Tokyo</Text>
-          </View>
+          <LargePost 
+            imageSource={require('../../assets/vaticancity.jpg')}
+            title="Vatican City" 
+          />
+          <LargePost 
+            imageSource={require('../../assets/switzerland1.jpg')}
+            title="Switzerland" 
+          />
+          <LargePost 
+            imageSource={require('../../assets/tokyo1.jpg')}
+            title="Tokyo" 
+          />
         </View>
 
         <TouchableOpacity style={styles.logoutButton} onPress={logout}>
           <Ionicons name="log-out-outline" size={24} color="white" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-      </Animated.ScrollView>
+      </ScrollView>
+
+      {/* Popups for small posts */}
+      <PopupOverlay post={selectedPost} onClose={() => setSelectedPost(null)} />
     </ImageBackground>
   );
 }
@@ -93,68 +97,21 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   container: {
-    paddingTop: 30,
     paddingBottom: 30,
     backgroundColor: 'transparent',
     alignItems: 'center',
+    paddingTop: 20,
   },
-  logo: {
-    width: 200, 
-    height: 80,
-    alignSelf: 'flex-start', 
-    paddingHorizontal: 20,
-  },
-  content: {
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  welcomeText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#666',
-    marginTop: 5,
-  },
-  button: {
-    flexDirection: 'row',
-    backgroundColor: '#8e44ad',
-    padding: 15,
-    borderRadius: 30,
-    alignItems: 'center',
+  smallPostsSection: {
     marginTop: 20,
-    paddingHorizontal: 20,
+    width: '100%',
   },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 10,
+  smallPostsContainer: {
+    paddingHorizontal: 10,
   },
   postsContainer: {
-    marginTop: 20,
+    marginTop: 38,
     width: '100%',
-  },
-  post: {
-    marginBottom: 20,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    overflow: 'hidden',
-    width: '100%',
-  },
-  postImage: {
-    width: '100%',
-    height: 300,
-  },
-  postTitle: {
-    padding: 10,
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
   logoutButton: {
     flexDirection: 'row',

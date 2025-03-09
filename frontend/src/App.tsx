@@ -1,25 +1,28 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthProvider, useAuth } from './hooks/useAuth';
 
 // Import screens
 import AuthScreen from './screens/auth-screen';
 import MainScreen from './screens/main-screen';
+import useAuthStore from "./stores/auth.store";
 
 const Stack = createNativeStackNavigator();
 
 function MainApp() {
-    const { authState, loading } = useAuth();
+    const { authState, loading, initializeAuth } = useAuthStore();
 
-    if (loading) return null;
+    useEffect(() => {
+        initializeAuth();
+    }, []);
+
 
     return (
         <NavigationContainer>
             <Stack.Navigator
                 key={authState ? "MainNav" : "AuthNav"}
                 screenOptions={{ headerShown: false }}
-            >
+            r>
                 {!authState ? (
                     <Stack.Screen name="Auth" component={AuthScreen} />
                 ) : (
@@ -32,8 +35,6 @@ function MainApp() {
 
 export default function App() {
     return (
-        <AuthProvider>
-            <MainApp />
-        </AuthProvider>
+        <MainApp />
     );
 }
