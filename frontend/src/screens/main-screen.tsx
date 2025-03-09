@@ -45,7 +45,10 @@ export default function MainScreen() {
   })}
 >
   <Tab.Screen name="Home" component={HomeScreen} />
-  <Tab.Screen name="Itinerary" component={ItineraryScreen} />
+  <Tab.Screen 
+  name="Itinerary" 
+  component={ItineraryScreen} 
+  options={{ tabBarStyle: { display: 'none' } , headerShown: false}} />
   <Tab.Screen name="Profile" component={ProfileScreen} />
 </Tab.Navigator>
   );

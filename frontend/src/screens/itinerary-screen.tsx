@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { 
   StyleSheet, 
   View, 
-  Text, 
-  SafeAreaView, 
+  Text,  
   ScrollView, 
   TouchableOpacity, 
   KeyboardAvoidingView, 
@@ -11,10 +10,12 @@ import {
 } from 'react-native';
 import MapScreen from './map-screen';
 import { StackScreenProps } from '@react-navigation/stack';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 type RootStackParamList = {
   Itinerary: undefined;
-  // other routes if needed
+  Home: undefined;
 };
 
 type ItineraryScreenProps = StackScreenProps<RootStackParamList, 'Itinerary'>;
@@ -26,10 +27,16 @@ export default function ItineraryScreen({ navigation }: ItineraryScreenProps) {
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
         <View style={styles.header}>
+          <TouchableOpacity 
+            style={styles.backButton} 
+            onPress={() => navigation.navigate('Home')} 
+          >
+            <Ionicons name="arrow-back" size={24} color="#000" />
+          </TouchableOpacity>
+          
           <Text style={styles.headerText}>Your Trip to </Text>
         </View>
 
@@ -83,9 +90,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    position: 'relative',    
     backgroundColor: '#f0f0f0',
     paddingVertical: 20,
     alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 2,
+    padding: 5,
   },
   headerText: {
     fontSize: 24,
