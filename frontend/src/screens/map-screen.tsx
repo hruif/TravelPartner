@@ -4,8 +4,6 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform
 } from 'react-native';
 import React, { useState } from 'react';
 import GoogleMapComponent from '../components/google-map';
@@ -72,11 +70,6 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={100}
-    >
       <SafeAreaView style={styles.container}>
         <StatusBar style="auto" />
         <GoogleMapComponent region={region} marker={marker} />
@@ -94,7 +87,6 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </KeyboardAvoidingView>
   );
 }
 
@@ -111,11 +103,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 25,
-    // Removed horizontal padding so the elements are flush
     elevation: 5,
     borderColor: '#969ba3',
     borderWidth: 2,
-    overflow: 'hidden', // ensures child components respect the container's border radius
+    overflow: 'hidden',
   },
   searchBar: {
     flex: 1,
