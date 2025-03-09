@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
-  Alert, Keyboard, TouchableWithoutFeedback, ScrollView
+  Alert, Keyboard, TouchableWithoutFeedback, ScrollView,
+  ImageBase
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -31,6 +34,8 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
   // States for the post form
   const [title, setTitle] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [locSearchText, setLocSearchText] = useState('');
   const [location, setLocation] = useState<{ lat: any; lng: any; place_id: any } | null>(null);
   const [description, setDescription] = useState('');
@@ -55,12 +60,14 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
   const handleEntry = async () => {
     const entryData = {
-      photoURI: photo,
-      price,
-      title,
-      description,
-      rating,
+      title, 
+      date: date.toISOString(), 
       location,
+      description,
+      photoURI: photo,
+      experienceTypes,
+      price,
+      rating,
     };
   
     try {
@@ -86,20 +93,27 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   };
 
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setDate(selectedDate);
+    }
+  };
+
   const handleLocSearch = async () => {
     if (!locSearchText.trim()) return;
     const foundLocation = await getCoordinates(locSearchText);
     if (foundLocation) {
       setLocation(foundLocation);
     } else {
-      Alert.alert('Location not found!');
+      Alert.alert('Location not found. This entry will not be displayable on the map as is.');
       setLocation(null);
     }
   };
 
   const pickPhoto = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ['images', 'videos'],
       allowsEditing: true,
       quality: 1,
     });
@@ -173,6 +187,21 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           value={title}
           onChangeText={setTitle}
         />
+
+        <View style={styles.dateContainer}>
+          <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.datePickerButton}>
+            <Text style={styles.dateText}>{date.toDateString()}</Text>
+          </TouchableOpacity>
+
+          {showDatePicker && (
+            <DateTimePicker
+              value={date}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
 
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color="#aaa" style={styles.searchIcon} />
@@ -293,6 +322,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     marginBottom: 15,
+  },
+  dateContainer: {
+    width: '100%',
+    marginBottom: 15,
+  },
+  datePickerButton: {
+    backgroundColor: '#3a3f47',
+    paddingVertical: 12,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  dateText: {
+    color: '#fff',
+    fontSize: 16,
   },
   searchContainer: {
     flexDirection: 'row',
