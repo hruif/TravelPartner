@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
-  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView,
-  ImageBase, Platform
+  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, FlatList, Button
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -30,7 +29,13 @@ type JournalScreenProps = StackScreenProps<RootStackParamList, 'TravelJournal'>;
 export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
-  const [selectedDiaryPost, setSelectedDiaryPost] = useState<Post | null>(null);
+
+  // not in use yet
+  const [journalColl, setJournalColl] = useState<any[]>([]);
+  const [heldJournal, setHeldJournal] = useState(null);
+  const [showJournalOptions, setShowJournalOptions] = useState(false);
+  const [selectedJournal, setSelectedJournal] = useState(journalColl[0]);
+
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   // States for the post form
@@ -59,6 +64,55 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     }
   }, [showCreatePost]);
 
+  // to be implemented
+  const handleEditProfile = () => {
+    Alert.alert('Edit Profile', 'Profile editing not implemented yet.');
+  };
+
+   // not in use yet; currently hard coding instead of using journal coll
+  const handleNewJournal = () => {
+    const newJournal = {
+      uuid: Math.random().toString(), // elaborate later
+      title: 'New Journal',
+    };
+
+    setJournalColl((prevColl) => [newJournal, ...prevColl]); 
+  };
+
+  // not in use yet
+  const handleJournalClick = (journalName: string) => {
+    setSelectedJournal(journalName === selectedJournal ? null : journalName);
+  };
+
+  // not in use yet
+  const handleLongPress = (journal) => {
+    setHeldJournal(journal);
+    setShowJournalOptions(true);
+  };
+
+  // not in use yet
+  const handleTapOutside = () => {
+    setHeldJournal(null);
+    setShowJournalOptions(false);
+  };
+
+  // not in use yet
+  const renameJournal = (journal) => {
+    const newName = prompt('Enter new journal name:'); // change to modal later
+    if (newName) {
+      const updatedJournals = journalColl.map((item) => 
+        item.uuid === journal.uuid ? { ...item, name: newName } : item
+      );
+      setJournalColl(updatedJournals); // update state to trigger re-render
+    }
+  };
+
+  // not in use yet
+  const deleteJournal = (journal) => {
+    const updatedJournals = journalColl.filter((item) => item.uuid !== journal.uuid);
+    setJournalColl(updatedJournals); 
+  };
+
   const handleEntry = async () => {
     const entryData = {
       title, 
@@ -74,6 +128,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     try {
       await postJournalEntry(entryData);
       setShowCreatePost(false);
+      setEditingPost(null);
     } catch (error) {
       Alert.alert('Error', 'Failed to publish entry. Please try again later.');
     }
@@ -84,7 +139,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const handleDeletePost = async (postId: string) => {
     try {
       await deleteJournalEntry(postId);
-      setSelectedDiaryPost(null); // close the popup
 
       // refresh the list
       const updatedEntries = await getJournalEntries();
@@ -95,7 +149,18 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   };
 
   const handleEditPost = (post: Post) => {
+    setTitle(post.title);
+    setDate(new Date(post.date));
+    setLocSearchText(post.location ? post.location.place_id : '');
+    setLocation(post.location);
+    setDescription(post.description);
+    setPhoto(post.photoURI);
+    setExperienceTypes(post.experienceTypes || []);
+    setPrice(post.price);
+    setRating(post.rating);
+
     setEditingPost(post);
+    setShowCreatePost(true);
   }
 
   const handleSaveEditingPost = async () => {
@@ -172,17 +237,67 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
             source={require('../../assets/blank-profile.png')} 
             style={styles.profilePic} 
           />
-          <Text style={styles.profileName}>Test Name</Text>
+
+          <View style={styles.userInfo}>
+            <Text style={styles.profileName}>Test Name</Text>
+
+            <View style={styles.statsContainer}>
+              <View style={styles.statBox}>
+                <Text style={styles.statNumber}>n</Text> {/*implement counts later*/}
+                <Text style={styles.statLabel}>trips</Text>
+              </View>
+              <View style={styles.statBox}>
+                <Text style={styles.statNumber}>m</Text>
+                <Text style={styles.statLabel}>entries</Text>
+              </View>
+            </View>
+          </View>
         </View>
 
-        <ProfilePosts
-          journalEntries={journalEntries}
-          onPostPress={(post: Post) => setSelectedDiaryPost(post)}
-          onEditPost={(post: Post) => handleEditPost(post)}
-        />
+        <Text>🪺 Originally from Portland, OR </Text> {/*implement later: make customizable in edit profile*/}
+        <Text>📍 Currently in Seattle, WA</Text> {/*implement later: make customizable in edit profile*/}
+
+        <TouchableOpacity
+          style={styles.editProfileButton}
+          onPress={handleEditProfile}
+        >
+          <Text style={styles.editProfileButtonText}>Edit profile</Text>
+        </TouchableOpacity>
+
+        <View style={styles.journalRow}>
+          <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          contentContainerStyle={styles.journalNamesContainer}
+          >
+            <TouchableOpacity
+              style={[styles.newButton, {backgroundColor:'#A6D7E0'}]}
+              onPress={handleNewJournal}
+            >
+              <Ionicons name="book-outline" size={24} color="black" />
+              <Text style={styles.newButtonText}>New journal</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.journalItem}>
+              <Text style = {{fontWeight: 'bold'}}>Trip 3</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.journalItem}>
+              <Text>Trip 2</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.journalItem}>
+              <Text>Trip 1</Text>
+            </TouchableOpacity>
+
+          </ScrollView>
+
+        </View>
+
+        <View style={styles.horizontalLine} />
 
         <TouchableOpacity 
-          style={styles.createPostButton} 
+          style={[styles.newButton, { backgroundColor: '#C4E0E5' }]} 
           onPress={() => {
             // reset state for new post
             setTitle('');
@@ -198,31 +313,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
             setShowCreatePost(true)
           }}
         >
-          <Text style={styles.createPostButtonText}>Make an entry</Text>
+          <Ionicons name="pencil-outline" size={24} color="black" />
+          <Text style={styles.newButtonText}>Make an entry</Text>
         </TouchableOpacity>
 
-        {/* Render popup if a post is selected */}
-        {selectedDiaryPost && (
-          <DiaryPostPopup
-            post={selectedDiaryPost}
-            onClose={() => setSelectedDiaryPost(null)}
-            onDelete={handleDeletePost}
-            onEdit={() => {
-              setTitle(selectedDiaryPost.title);
-              setDate(new Date(selectedDiaryPost.date));
-              setLocSearchText(selectedDiaryPost.location ? selectedDiaryPost.location.place_id : '');
-              setLocation(selectedDiaryPost.location);
-              setDescription(selectedDiaryPost.description);
-              setPhoto(selectedDiaryPost.photoURI);
-              setExperienceTypes(selectedDiaryPost.experienceTypes || []);
-              setPrice(selectedDiaryPost.price);
-              setRating(selectedDiaryPost.rating);
-
-              setEditingPost(selectedDiaryPost);
-              setShowCreatePost(true);
-            }}
-          />
-        )}
+        <ProfilePosts
+          journalEntries={journalEntries}
+          onDelete={handleDeletePost}
+          onEdit={handleEditPost}
+        />
       </ScrollView>
     );
   }
@@ -238,7 +337,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.formHeader}>
             <Text style={styles.formTitleContainer}>
-              {selectedDiaryPost ? 'Editing entry' : 'New entry'}
+              {editingPost ? 'Editing entry' : 'New entry'}
             </Text>
 
             <TouchableOpacity
@@ -314,18 +413,18 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <View style={styles.ratingContainer}>
             <View style={styles.stars}>
               {[1, 2, 3, 4, 5].map((star) => (
-                <TouchableOpacity key={star} onPress={() => setRating(star)}>
-                  <Ionicons
-                    name={star <= rating ? "star" : "star-outline"}
-                    size={28}
-                    color={star <= rating ? "#E0E5C4" : "#aaa"}
-                  />
+                <TouchableOpacity key={star} onPress={() => setRating(star)} style={styles.starContainer}>
+                  {star <= rating ? (
+                    <Text style={{ fontSize: 28 }}>⭐</Text> 
+                  ) : (
+                    <Ionicons name="star-outline" size={28} color="#aaa" /> 
+                  )}
                 </TouchableOpacity>
               ))}
             </View>
           </View>
 
-          {!selectedDiaryPost ?
+          {!editingPost ?
             <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
               <Text style={styles.postButton}>Publish</Text>
             </TouchableOpacity>
@@ -344,45 +443,111 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 const styles = StyleSheet.create({
   // Profile page styles
   profileContainer: {
+    flexDirection: 'column',
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 20,
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginBottom: 30
   },
   profileHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 20,
+    width: '100%'
   },
   profilePic: {
     width: 80,
     height: 80,
     borderRadius: 50,
     backgroundColor: '#aaa', // placeholder color
-    marginBottom: 10,
+    marginRight: 30,
+  },
+  userInfo: {
+    flex: 3, // allows text section to take remaining space
   },
   profileName: {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#000',
+    marginBottom: 5
   },
-  createPostButton: {
+  statsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statBox: {
+    alignItems: 'flex-start',
+    marginRight: 40, // space between "trips" and "entries"
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#000',
+  },
+  editProfileButton: {
+    marginTop: 20,
     width: '100%',
-    height: 50,
-    backgroundColor: '#1f3b5c',
+    height: 35,
+    backgroundColor: '#DAE7C4',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  createPostButtonText: {
-    color: '#fff',
-    fontSize: 18,
+  editProfileButtonText: {
+    color: '#000',
+    fontSize: 16,
     fontWeight: 'bold',
-    borderRadius: 10
+  },
+  journalRow: {
+    marginTop: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '100%',
+  },
+  newButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    paddingVertical: 5,  
+    paddingHorizontal: 15, 
+    height: 35, 
+    borderRadius: 10,
+    marginRight: 10,  
+    gap: 10 // space btwn icon, text
+  },
+  newButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textAlignVertical: 'center', // Helps with vertical centering
+  },
+  journalNamesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
+  },
+  journalItem: {
+    fontSize: 14,
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  horizontalLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#D3D3D3', // Light grey color
+    //marginTop: 10,
+    marginBottom: 20,
+    width: '100%', // Ensures it takes the full width of the screen
   },
   // Create post form styles
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: '#fff',
     padding: 10,
     alignItems: 'center',
   },
@@ -490,10 +655,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 10,
   },
+  starContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 28, 
+    width: 28, 
+    textAlignVertical: 'center',
+    marginBottom: 15
+  },
   postButtonContainer: {
     width: '100%',
     height: 50,
-    backgroundColor: '#C4E0E5',
+    backgroundColor: '#D0DAAC',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
