@@ -31,10 +31,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
 
   // not in use yet
-  const [journalColl, setJournalColl] = useState<any[]>([]);
-  const [heldJournal, setHeldJournal] = useState(null);
-  const [showJournalOptions, setShowJournalOptions] = useState(false);
-  const [selectedJournal, setSelectedJournal] = useState(journalColl[0]);
+  //const [journalColl, setJournalColl] = useState<any[]>([]);
+  //const [heldJournal, setHeldJournal] = useState(null);
+  //const [showJournalOptions, setShowJournalOptions] = useState(false);
+  //const [selectedJournal, setSelectedJournal] = useState(journalColl[0]);
 
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
@@ -71,47 +71,47 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
    // not in use yet; currently hard coding instead of using journal coll
   const handleNewJournal = () => {
-    const newJournal = {
-      uuid: Math.random().toString(), // elaborate later
-      title: 'New Journal',
-    };
+  //   const newJournal = {
+  //     uuid: Math.random().toString(), // elaborate later
+  //     title: 'New Journal',
+  //   };
 
-    setJournalColl((prevColl) => [newJournal, ...prevColl]); 
+  //   setJournalColl((prevColl) => [newJournal, ...prevColl]); 
   };
 
   // not in use yet
-  const handleJournalClick = (journalName: string) => {
-    setSelectedJournal(journalName === selectedJournal ? null : journalName);
-  };
+  // const handleJournalClick = (journalName: string) => {
+  //   setSelectedJournal(journalName === selectedJournal ? null : journalName);
+  // };
 
   // not in use yet
-  const handleLongPress = (journal) => {
-    setHeldJournal(journal);
-    setShowJournalOptions(true);
-  };
+  // const handleLongPress = (journal) => {
+  //   setHeldJournal(journal);
+  //   setShowJournalOptions(true);
+  // };
 
   // not in use yet
-  const handleTapOutside = () => {
-    setHeldJournal(null);
-    setShowJournalOptions(false);
-  };
+  // const handleTapOutside = () => {
+  //   setHeldJournal(null);
+  //   setShowJournalOptions(false);
+  // };
 
   // not in use yet
-  const renameJournal = (journal) => {
-    const newName = prompt('Enter new journal name:'); // change to modal later
-    if (newName) {
-      const updatedJournals = journalColl.map((item) => 
-        item.uuid === journal.uuid ? { ...item, name: newName } : item
-      );
-      setJournalColl(updatedJournals); // update state to trigger re-render
-    }
-  };
+  // const renameJournal = (journal) => {
+  //   const newName = prompt('Enter new journal name:'); // change to modal later
+  //   if (newName) {
+  //     const updatedJournals = journalColl.map((item) => 
+  //       item.uuid === journal.uuid ? { ...item, name: newName } : item
+  //     );
+  //     setJournalColl(updatedJournals); // update state to trigger re-render
+  //   }
+  // };
 
   // not in use yet
-  const deleteJournal = (journal) => {
-    const updatedJournals = journalColl.filter((item) => item.uuid !== journal.uuid);
-    setJournalColl(updatedJournals); 
-  };
+  // const deleteJournal = (journal) => {
+  //   const updatedJournals = journalColl.filter((item) => item.uuid !== journal.uuid);
+  //   setJournalColl(updatedJournals); 
+  // };
 
   const handleEntry = async () => {
     const entryData = {
@@ -155,7 +155,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     setLocation(post.location);
     setDescription(post.description);
     setPhoto(post.photoURI);
-    setExperienceTypes(post.experienceTypes || []);
+    setExperienceTypes(post.experienceTypes);
     setPrice(post.price);
     setRating(post.rating);
 
@@ -194,8 +194,8 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
-    setShowDatePicker(false);
     setDate(selectedDate);
+    setShowDatePicker(false);
   };
 
   const handleLocSearch = async () => {
@@ -221,11 +221,18 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   };
 
   const toggleExperienceType = (type: string) => {
-    if (experienceTypes.includes(type)) {
-      setExperienceTypes(experienceTypes.filter(item => item !== type));
+    console.log('experience types before toggle', {experienceTypes});
+    if (!experienceTypes) {
+      return;
+    }
+    if (experienceTypes && experienceTypes.includes(type)) { // selected
+      setExperienceTypes(experienceTypes.filter(item => item !== type)); // deselect
     } else {
       setExperienceTypes([...experienceTypes, type]);
     }
+    console.log('experience types after toggle', {experienceTypes});
+    const shouldbe = [...experienceTypes, type]
+    console.log('should be', {shouldbe});
   };
 
   // Profile view

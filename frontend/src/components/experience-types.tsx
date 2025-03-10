@@ -17,7 +17,7 @@ export function ExperienceTypesSelector({
   return (
     <View style={styles.container}>
       {availableTypes.map((type) => {
-        const isSelected = experienceTypes.includes(type);
+        const isSelected = experienceTypes && experienceTypes.includes(type);
         return (
           <TouchableOpacity
             key={type}
