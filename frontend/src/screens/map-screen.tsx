@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   View,
   SafeAreaView,
   TouchableOpacity,
-  Alert,
+  Keyboard,
 } from 'react-native';
-import * as Location from 'expo-location';
+import React, { useState } from 'react';
 import GoogleMapComponent from '../components/google-map';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -36,29 +35,11 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   const [showDetails, setShowDetails] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
 
-  // Get user's current location on mount
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'Permission to access location was denied.');
-        return;
-      }
-
-      const userLocation = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = userLocation.coords;
-      setRegion({
-        latitude,
-        longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-      setMarker({ latitude, longitude });
-    })();
-  }, []);
-
   // Process search query
   const handleSearch = async () => {
+    // Hide the keyboard
+    Keyboard.dismiss();
+
     if (!searchText.trim()) return;
 
     const location = await getCoordinates(searchText);
