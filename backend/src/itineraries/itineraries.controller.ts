@@ -6,7 +6,6 @@ import {
     Delete,
     Param,
     Body,
-    Query,
 } from '@nestjs/common';
 import { ItinerariesService } from './itineraries.service';
 import { Itinerary } from './itinerary.entity';
@@ -20,8 +19,9 @@ import { GetUser } from '../auth/get-user.decorator';
 /**
  * Controller for itinerary endpoints.
  *
- * This controller handles CRUD operations for itineraries and also provides sub-routes
- * to manage locations within a specific itinerary.
+ * This controller handles CRUD operations for itineraries and provides nested location
+ * operations under a specific itinerary. The GET endpoints for locations are removed,
+ * and locations are returned as part of the itinerary object.
  */
 @Controller('itineraries')
 export class ItinerariesController {
@@ -29,9 +29,10 @@ export class ItinerariesController {
 
     /**
      * Retrieves all itineraries for the authenticated user.
+     * Each itinerary will include its associated locations.
      *
-     * @param user The authenticated user retrieved via the token.
-     * @returns An array of itineraries.
+         * @param user The authenticated user.
+     * @returns An array of itineraries with nested locations.
      */
     @Get()
     async getAllItineraries(@GetUser() user): Promise<Itinerary[]> {
@@ -40,10 +41,11 @@ export class ItinerariesController {
 
     /**
      * Retrieves a specific itinerary by its uuid.
+     * The returned itinerary includes its associated locations.
      *
      * @param id The unique identifier of the itinerary.
      * @param user The authenticated user.
-     * @returns The itinerary object.
+     * @returns The itinerary object with nested locations.
      */
     @Get(':id')
     async getItinerary(
@@ -56,7 +58,7 @@ export class ItinerariesController {
     /**
      * Creates a new itinerary.
      *
-     * @param createDto The data transfer object containing itinerary details.
+     * @param createDto The DTO containing itinerary details.
      * @param user The authenticated user.
      * @returns The newly created itinerary.
      */
@@ -72,7 +74,7 @@ export class ItinerariesController {
      * Updates an existing itinerary.
      *
      * @param id The unique identifier of the itinerary.
-     * @param updateDto The data transfer object containing updated itinerary details.
+     * @param updateDto The DTO containing updated itinerary details.
      * @param user The authenticated user.
      * @returns The updated itinerary.
      */
@@ -90,7 +92,7 @@ export class ItinerariesController {
      *
      * @param id The unique identifier of the itinerary.
      * @param user The authenticated user.
-     * @returns Void.
+     * @returns void.
      */
     @Delete(':id')
     async deleteItinerary(
@@ -100,45 +102,13 @@ export class ItinerariesController {
         return this.itinerariesService.deleteItinerary(id, user.uuid);
     }
 
-    // --- Location routes nested under itineraries ---
-
-    /**
-     * Retrieves all locations for a specific itinerary.
-     *
-     * @param id The unique identifier of the itinerary.
-     * @param user The authenticated user.
-     * @returns An array of locations belonging to the itinerary.
-     */
-    @Get(':id/location')
-    async getLocations(
-        @Param('id') id: string,
-        @GetUser() user,
-    ): Promise<Location[]> {
-        return this.itinerariesService.getLocationsForItinerary(id, user.uuid);
-    }
-
-    /**
-     * Retrieves a specific location within an itinerary.
-     *
-     * @param id The unique identifier of the itinerary.
-     * @param locationId The unique identifier of the location.
-     * @param user The authenticated user.
-     * @returns The location object.
-     */
-    @Get(':id/location/:locationId')
-    async getLocation(
-        @Param('id') id: string,
-        @Param('locationId') locationId: string,
-        @GetUser() user,
-    ): Promise<Location> {
-        return this.itinerariesService.getLocationById(id, locationId, user.uuid);
-    }
+    // --- Location operations ---
 
     /**
      * Creates a new location within a specific itinerary.
      *
      * @param id The unique identifier of the itinerary.
-     * @param createLocationDto The data transfer object containing location details.
+     * @param createLocationDto The DTO containing location details.
      * @param user The authenticated user.
      * @returns The newly created location.
      */
@@ -156,7 +126,7 @@ export class ItinerariesController {
      *
      * @param id The unique identifier of the itinerary.
      * @param locationId The unique identifier of the location.
-     * @param updateLocationDto The data transfer object containing updated location details.
+     * @param updateLocationDto The DTO containing updated location details.
      * @param user The authenticated user.
      * @returns The updated location.
      */
@@ -176,7 +146,7 @@ export class ItinerariesController {
      * @param id The unique identifier of the itinerary.
      * @param locationId The unique identifier of the location.
      * @param user The authenticated user.
-     * @returns Void.
+     * @returns void.
      */
     @Delete(':id/location/:locationId')
     async deleteLocation(
