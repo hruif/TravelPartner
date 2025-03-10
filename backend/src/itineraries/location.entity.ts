@@ -7,6 +7,9 @@ import { Itinerary } from './itinerary.entity';
  */
 @Entity()
 export class Location {
+    /**
+     * The unique identifier of the location.
+     */
     @PrimaryKey()
     uuid: string = v4();
 

@@ -1,7 +1,8 @@
 import { IsString, IsOptional } from 'class-validator';
 
 /**
- * Data Transfer Object for updating a location.
+ * DTO for updating an existing location.
+ * All properties are optional.
  */
 export class UpdateLocationDto {
     @IsOptional()

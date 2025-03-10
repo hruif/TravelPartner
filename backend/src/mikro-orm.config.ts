@@ -2,12 +2,14 @@ import { Options, PostgreSqlDriver } from '@mikro-orm/postgresql';
 import { User } from './users/user.entity';
 import { config as dotenvConfig } from 'dotenv';
 import { DiaryEntry } from './diary/diary-entry.entity';
+import {Itinerary} from "./itineraries/itinerary.entity";
+import {Location} from "./itineraries/location.entity";
 
 // Load environment variables
 dotenvConfig();
 
 const config: Options = {
-  entities: [User, DiaryEntry],
+  entities: [User, DiaryEntry, Itinerary, Location],
   user: process.env.DATABASE_USER || 'defaultuser',
   password: process.env.DATABASE_PASSWORD || 'defaultpassword',
   host: process.env.DATABASE_HOST || 'localhost',

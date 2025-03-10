@@ -1,7 +1,7 @@
 import { IsString } from 'class-validator';
 
 /**
- * Data Transfer Object for creating a location.
+ * DTO for creating a new location within an itinerary.
  */
 export class CreateLocationDto {
     @IsString()
@@ -15,10 +15,4 @@ export class CreateLocationDto {
 
     @IsString()
     formattedAddress: string;
-
-    /**
-     * The uuid of the itinerary to which this location belongs.
-     */
-    @IsString()
-    itineraryUuid: string;
 }

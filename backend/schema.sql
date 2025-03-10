@@ -1,27 +1,53 @@
-set
-  names 'utf8';
+ CREATE TABLE "user"
+  (
+     "uuid"     VARCHAR(255) NOT NULL,
+     "email"    VARCHAR(255) NOT NULL,
+     "password" VARCHAR(255) NOT NULL,
+     CONSTRAINT "user_pkey" PRIMARY KEY ("uuid")
+  );
 
-create table "user" (
-  "uuid" varchar(255) not null,
-  "email" varchar(255) not null,
-  "password" varchar(255) not null,
-  constraint "user_pkey" primary key ("uuid")
-);
+CREATE TABLE "itinerary"
+  (
+     "uuid"        VARCHAR(255) NOT NULL,
+     "title"       VARCHAR(255) NOT NULL,
+     "description" VARCHAR(255) NULL,
+     "user_uuid"   VARCHAR(255) NOT NULL,
+     CONSTRAINT "itinerary_pkey" PRIMARY KEY ("uuid")
+  );
 
-create table "diary_entry" (
-  "uuid" varchar(255) not null,
-  "title" varchar(255) not null,
-  "description" varchar(255) null,
-  "photo_uri" varchar(255) null,
-  "price" int not null default 0,
-  "rating" int not null default 0,
-  "formatted_address" varchar(255) not null,
-  "created_at" timestamptz not null,
-  "user_uuid" varchar(255) not null,
-  constraint "diary_entry_pkey" primary key ("uuid")
-);
+CREATE TABLE "location"
+  (
+     "uuid"              VARCHAR(255) NOT NULL,
+     "photo_uri"         VARCHAR(255) NOT NULL,
+     "title"             VARCHAR(255) NOT NULL,
+     "description"       VARCHAR(255) NOT NULL,
+     "formatted_address" VARCHAR(255) NOT NULL,
+     "itinerary_uuid"    VARCHAR(255) NOT NULL,
+     CONSTRAINT "location_pkey" PRIMARY KEY ("uuid")
+  );
 
-alter table
-  "diary_entry"
-add
-  constraint "diary_entry_user_uuid_foreign" foreign key ("user_uuid") references "user" ("uuid") on update cascade;
+CREATE TABLE "diary_entry"
+  (
+     "uuid"              VARCHAR(255) NOT NULL,
+     "title"             VARCHAR(255) NOT NULL,
+     "description"       VARCHAR(255) NULL,
+     "photo_uri"         VARCHAR(255) NULL,
+     "price"             INT NOT NULL DEFAULT 0,
+     "rating"            INT NOT NULL DEFAULT 0,
+     "formatted_address" VARCHAR(255) NOT NULL,
+     "created_at"        TIMESTAMPTZ NOT NULL,
+     "user_uuid"         VARCHAR(255) NOT NULL,
+     CONSTRAINT "diary_entry_pkey" PRIMARY KEY ("uuid")
+  );
+
+ALTER TABLE "itinerary"
+  ADD CONSTRAINT "itinerary_user_uuid_foreign" FOREIGN KEY ("user_uuid")
+  REFERENCES "user" ("uuid") ON UPDATE CASCADE;
+
+ALTER TABLE "location"
+  ADD CONSTRAINT "location_itinerary_uuid_foreign" FOREIGN KEY ("itinerary_uuid"
+  ) REFERENCES "itinerary" ("uuid") ON UPDATE CASCADE;
+
+ALTER TABLE "diary_entry"
+  ADD CONSTRAINT "diary_entry_user_uuid_foreign" FOREIGN KEY ("user_uuid")
+  REFERENCES "user" ("uuid") ON UPDATE CASCADE;  

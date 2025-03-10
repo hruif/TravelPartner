@@ -2,52 +2,52 @@ import {
     Entity,
     PrimaryKey,
     Property,
+    ManyToOne,
     OneToMany,
     Collection,
 } from '@mikro-orm/core';
-import { v4 } from 'uuid';
+import { User } from '../users/user.entity';
 import { Location } from './location.entity';
+import {v4} from "uuid";
 
 /**
  * Entity representing an itinerary.
  */
 @Entity()
 export class Itinerary {
+    /**
+     * The unique identifier of the itinerary.
+     */
     @PrimaryKey()
     uuid: string = v4();
 
     /**
-     * Title of the itinerary.
+     * The title of the itinerary.
      */
     @Property()
     title: string;
 
     /**
-     * Description of the itinerary.
+     * The description of the itinerary.
      */
-    @Property()
+    @Property({ nullable: true })
     description: string;
 
     /**
-     * Timestamp when the itinerary was created.
+     * Many itineraries belong to one user.
      */
-    @Property()
-    createdAt: Date = new Date();
+    @ManyToOne(() => User)
+    user: User;
 
     /**
-     * Timestamp when the itinerary was last updated.
-     */
-    @Property({ onUpdate: () => new Date() })
-    updatedAt: Date = new Date();
-
-    /**
-     * List of locations associated with the itinerary.
+     * One itinerary can have many locations.
      */
     @OneToMany(() => Location, (location) => location.itinerary)
     locations = new Collection<Location>(this);
 
-    constructor(title: string, description?: string) {
+    constructor(title: string, description: string, user: User) {
         this.title = title;
         this.description = description;
+        this.user = user;
     }
 }

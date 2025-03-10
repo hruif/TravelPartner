@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Itinerary } from './itinerary.entity';
 import { Location } from './location.entity';
@@ -6,48 +10,66 @@ import { CreateItineraryDto } from './dto/create-itinerary.dto';
 import { UpdateItineraryDto } from './dto/update-itinerary.dto';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
+import { User } from '../users/user.entity';
 
 /**
- * Service for handling itinerary and location operations.
+ * Service for handling itinerary operations.
+ *
+ * This service manages CRUD operations for itineraries and nested locations.
  */
 @Injectable()
 export class ItinerariesService {
     constructor(private readonly em: EntityManager) {}
 
-    //////////// Itinerary Operations ////////////
-
     /**
-     * Retrieves all itineraries.
+     * Retrieves all itineraries for the authenticated user.
      *
-     * @returns {Promise<Itinerary[]>} An array of itineraries.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns An array of itineraries.
      */
-    async getAllItineraries(): Promise<Itinerary[]> {
-        return await this.em.find(Itinerary, {});
+    async getAllItineraries(userUuid: string): Promise<Itinerary[]> {
+        return await this.em.find(Itinerary, { user: { uuid: userUuid } });
     }
 
     /**
      * Retrieves a specific itinerary by its unique identifier.
      *
      * @param id - The unique identifier of the itinerary.
-     * @returns {Promise<Itinerary>} The itinerary.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns The itinerary.
      * @throws {NotFoundException} if the itinerary does not exist.
+     * @throws {UnauthorizedException} if the itinerary does not belong to the user.
      */
-    async getItineraryById(id: string): Promise<Itinerary> {
+    async getItineraryById(id: string, userUuid: string): Promise<Itinerary> {
         const itinerary = await this.em.findOne(Itinerary, { uuid: id });
         if (!itinerary) {
             throw new NotFoundException(`Itinerary with id ${id} not found`);
+        }
+        if (itinerary.user.uuid !== userUuid) {
+            throw new UnauthorizedException('You are not allowed to access this itinerary');
         }
         return itinerary;
     }
 
     /**
-     * Creates a new itinerary.
+     * Creates a new itinerary associated with the authenticated user.
      *
      * @param dto - The data for creating the itinerary.
-     * @returns {Promise<Itinerary>} The newly created itinerary.
+     * @param userUuid - The uuid extracted from the JWT token payload.
+     * @returns The newly created itinerary.
+     * @throws {NotFoundException} if the user is not found.
      */
-    async createItinerary(dto: CreateItineraryDto): Promise<Itinerary> {
-        const itinerary = this.em.create(Itinerary, dto) as Itinerary;
+    async createItinerary(
+        dto: CreateItineraryDto,
+        userUuid: string,
+    ): Promise<Itinerary> {
+        // Retrieve the user based on the uuid from the token payload.
+        const user = await this.em.findOne(User, { uuid: userUuid });
+        if (!user) {
+            throw new NotFoundException(`User with uuid ${userUuid} not found`);
+        }
+        // Create and persist the itinerary associated with the authenticated user.
+        const itinerary = this.em.create(Itinerary, { ...dto, user }) as Itinerary;
         await this.em.persistAndFlush(itinerary);
         return itinerary;
     }
@@ -57,11 +79,18 @@ export class ItinerariesService {
      *
      * @param id - The unique identifier of the itinerary.
      * @param dto - The data to update the itinerary.
-     * @returns {Promise<Itinerary>} The updated itinerary.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns The updated itinerary.
      * @throws {NotFoundException} if the itinerary does not exist.
+     * @throws {UnauthorizedException} if the itinerary does not belong to the user.
      */
-    async updateItinerary(id: string, dto: UpdateItineraryDto): Promise<Itinerary> {
-        const itinerary = await this.getItineraryById(id);
+    async updateItinerary(
+        id: string,
+        dto: Partial<UpdateItineraryDto>,
+        userUuid: string,
+    ): Promise<Itinerary> {
+        const itinerary = await this.getItineraryById(id, userUuid);
+        // Update the itinerary with new data.
         this.em.assign(itinerary, dto);
         await this.em.persistAndFlush(itinerary);
         return itinerary;
@@ -71,91 +100,115 @@ export class ItinerariesService {
      * Deletes an itinerary.
      *
      * @param id - The unique identifier of the itinerary.
-     * @returns {Promise<void>} Void.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns void.
      * @throws {NotFoundException} if the itinerary does not exist.
+     * @throws {UnauthorizedException} if the itinerary does not belong to the user.
      */
-    async deleteItinerary(id: string): Promise<void> {
-        const itinerary = await this.getItineraryById(id);
+    async deleteItinerary(id: string, userUuid: string): Promise<void> {
+        const itinerary = await this.getItineraryById(id, userUuid);
         await this.em.removeAndFlush(itinerary);
     }
 
-    //////////// Location Operations under Itineraries ////////////
+    // --- Location-related methods ---
 
     /**
-     * Retrieves all locations.
+     * Retrieves all locations for a specific itinerary.
      *
-     * @returns {Promise<Location[]>} An array of locations.
+     * @param itineraryId - The unique identifier of the itinerary.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns An array of locations belonging to the itinerary.
      */
-    async getAllLocations(): Promise<Location[]> {
-        return await this.em.find(Location, {});
+    async getLocationsForItinerary(itineraryId: string, userUuid: string): Promise<Location[]> {
+        const itinerary = await this.getItineraryById(itineraryId, userUuid);
+        // Initialize the collection of locations if needed.
+        await itinerary.locations.init();
+        return itinerary.locations.getItems();
     }
 
     /**
-     * Retrieves a specific location by its unique identifier.
+     * Retrieves a specific location within an itinerary.
      *
-     * @param id - The unique identifier of the location.
-     * @returns {Promise<Location>} The location.
-     * @throws {NotFoundException} if the location does not exist.
+     * @param itineraryId - The unique identifier of the itinerary.
+     * @param locationId - The unique identifier of the location.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns The location.
+     * @throws {NotFoundException} if the location does not exist within the itinerary.
      */
-    async getLocationById(id: string): Promise<Location> {
-        const location = await this.em.findOne(Location, { uuid: id });
+    async getLocationById(
+        itineraryId: string,
+        locationId: string,
+        userUuid: string,
+    ): Promise<Location> {
+        // Ensure the itinerary exists and belongs to the user.
+        const itinerary = await this.getItineraryById(itineraryId, userUuid);
+        // Find the location associated with the itinerary.
+        const location = await this.em.findOne(Location, { uuid: locationId, itinerary });
         if (!location) {
-            throw new NotFoundException(`Location with id ${id} not found`);
+            throw new NotFoundException(`Location with id ${locationId} not found in itinerary ${itineraryId}`);
         }
         return location;
     }
 
     /**
-     * Creates a new location for an itinerary.
+     * Creates a new location within a specific itinerary.
      *
+     * @param itineraryId - The unique identifier of the itinerary.
      * @param dto - The data for creating the location.
-     * @returns {Promise<Location>} The newly created location.
-     * @throws {NotFoundException} if the associated itinerary does not exist.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns The newly created location.
      */
-    async createLocation(dto: CreateLocationDto): Promise<Location> {
-        // Retrieve the itinerary using the provided itineraryUuid.
-        const itinerary = await this.em.findOne(Itinerary, { uuid: dto.itineraryUuid });
-        if (!itinerary) {
-            throw new NotFoundException(`Itinerary with id ${dto.itineraryUuid} not found`);
-        }
-
+    async createLocation(
+        itineraryId: string,
+        dto: CreateLocationDto,
+        userUuid: string,
+    ): Promise<Location> {
+        // Ensure the itinerary exists and belongs to the user.
+        const itinerary = await this.getItineraryById(itineraryId, userUuid);
         // Create and persist the location associated with the itinerary.
-        const location = this.em.create(Location, {
-            photoURI: dto.photoURI,
-            title: dto.title,
-            description: dto.description,
-            formattedAddress: dto.formattedAddress,
-            itinerary: itinerary,
-            uuid: itinerary.uuid,
-        });
+        const location = this.em.create(Location, { ...dto, itinerary });
         await this.em.persistAndFlush(location);
         return location;
     }
 
     /**
-     * Updates an existing location.
+     * Updates an existing location within an itinerary.
      *
-     * @param id - The unique identifier of the location.
+     * @param itineraryId - The unique identifier of the itinerary.
+     * @param locationId - The unique identifier of the location.
      * @param dto - The data to update the location.
-     * @returns {Promise<Location>} The updated location.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns The updated location.
      * @throws {NotFoundException} if the location does not exist.
      */
-    async updateLocation(id: string, dto: UpdateLocationDto): Promise<Location> {
-        const location = await this.getLocationById(id);
+    async updateLocation(
+        itineraryId: string,
+        locationId: string,
+        dto: Partial<UpdateLocationDto>,
+        userUuid: string,
+    ): Promise<Location> {
+        const location = await this.getLocationById(itineraryId, locationId, userUuid);
+        // Update the location with new data.
         this.em.assign(location, dto);
         await this.em.persistAndFlush(location);
         return location;
     }
 
     /**
-     * Deletes a location.
+     * Deletes a location from an itinerary.
      *
-     * @param id - The unique identifier of the location.
-     * @returns {Promise<void>} Void.
+     * @param itineraryId - The unique identifier of the itinerary.
+     * @param locationId - The unique identifier of the location.
+     * @param userUuid - The uuid of the authenticated user.
+     * @returns void.
      * @throws {NotFoundException} if the location does not exist.
      */
-    async deleteLocation(id: string): Promise<void> {
-        const location = await this.getLocationById(id);
+    async deleteLocation(
+        itineraryId: string,
+        locationId: string,
+        userUuid: string,
+    ): Promise<void> {
+        const location = await this.getLocationById(itineraryId, locationId, userUuid);
         await this.em.removeAndFlush(location);
     }
 }

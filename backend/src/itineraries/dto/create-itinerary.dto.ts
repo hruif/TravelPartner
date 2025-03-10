@@ -1,7 +1,7 @@
 import { IsString, IsOptional } from 'class-validator';
 
 /**
- * Data Transfer Object for creating an itinerary.
+ * DTO for creating a new itinerary.
  */
 export class CreateItineraryDto {
     @IsString()
