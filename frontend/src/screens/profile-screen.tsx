@@ -31,6 +31,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
   const [selectedDiaryPost, setSelectedDiaryPost] = useState<Post | null>(null);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
 
   // States for the post form
   const [title, setTitle] = useState('');
@@ -51,7 +52,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           const entries = await getJournalEntries();
           setJournalEntries(entries);
         } catch (error) {
-          Alert.alert('Error', 'Failed to load your posts.');
+          Alert.alert('Error', 'Failed to load your entries.');
         }
       }
       fetchEntries();
@@ -61,7 +62,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const handleEntry = async () => {
     const entryData = {
       title, 
-      date: date.toISOString(), 
+      date, 
       location,
       description,
       photoURI: photo,
@@ -74,7 +75,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       await postJournalEntry(entryData);
       setShowCreatePost(false);
     } catch (error) {
-      Alert.alert('Error', 'Failed to post entry. Please try again later.');
+      Alert.alert('Error', 'Failed to publish entry. Please try again later.');
     }
   };
   
@@ -89,15 +90,47 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       const updatedEntries = await getJournalEntries();
       setJournalEntries(updatedEntries);
     } catch (error) {
-      Alert.alert('Error', 'Failed to delete post.');
+      Alert.alert('Error', 'Failed to delete entry.');
+    }
+  };
+
+  const handleEditPost = (post: Post) => {
+    setEditingPost(post);
+  }
+
+  const handleSaveEditingPost = async () => {
+    if (editingPost) {
+      try {
+        // delete old post
+        await deleteJournalEntry(editingPost.uuid);
+
+        // save edited post
+        const entryData = {
+          title, 
+          date, 
+          location,
+          description,
+          photoURI: photo,
+          experienceTypes,
+          price,
+          rating,
+        };
+        await postJournalEntry(entryData);
+
+        // update local state with the new post and refresh the list
+        const updatedEntries = await getJournalEntries();
+        setJournalEntries(updatedEntries);
+        setEditingPost(null);
+        setShowCreatePost(false);
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save the edited entry.');
+      }
     }
   };
 
   const handleDateChange = (event: any, selectedDate?: Date) => {
     setShowDatePicker(false);
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
+    setDate(selectedDate);
   };
 
   const handleLocSearch = async () => {
@@ -145,6 +178,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         <ProfilePosts
           journalEntries={journalEntries}
           onPostPress={(post: Post) => setSelectedDiaryPost(post)}
+          onEditPost={(post: Post) => handleEditPost(post)}
         />
 
         <TouchableOpacity 
@@ -172,7 +206,21 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <DiaryPostPopup
             post={selectedDiaryPost}
             onClose={() => setSelectedDiaryPost(null)}
-            onDeletePost={handleDeletePost}
+            onDelete={handleDeletePost}
+            onEdit={() => {
+              setTitle(selectedDiaryPost.title);
+              setDate(new Date(selectedDiaryPost.date));
+              setLocSearchText(selectedDiaryPost.location ? selectedDiaryPost.location.place_id : '');
+              setLocation(selectedDiaryPost.location);
+              setDescription(selectedDiaryPost.description);
+              setPhoto(selectedDiaryPost.photoURI);
+              setExperienceTypes(selectedDiaryPost.experienceTypes || []);
+              setPrice(selectedDiaryPost.price);
+              setRating(selectedDiaryPost.rating);
+
+              setEditingPost(selectedDiaryPost);
+              setShowCreatePost(true);
+            }}
           />
         )}
       </ScrollView>
@@ -189,7 +237,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.formHeader}>
-            <Text style={styles.titleContainer}>New entry</Text>
+            <Text style={styles.titleContainer}>
+              {selectedDiaryPost ? 'Editing entry' : 'New entry'}
+            </Text>
+
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={() => setShowCreatePost(false)}
@@ -230,14 +281,9 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
               value={locSearchText}
               onChangeText={setLocSearchText}
               onSubmitEditing={handleLocSearch}
+              onBlur={handleLocSearch}
             />
           </View>
-
-          <DescriptionInput
-            description={description}
-            setDescription={setDescription}
-            placeholder="Description"
-          />
 
           {photo && (
             <Image source={{ uri: photo }} style={styles.photoPreview} />
@@ -248,6 +294,12 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
               {photo ? 'Change Photo' : 'Select photo'}
             </Text>
           </TouchableOpacity>
+
+          <DescriptionInput
+            description={description}
+            setDescription={setDescription}
+            placeholder="Description"
+          />
 
           <Text style={styles.experienceTypeLabel}>Experience Types:</Text>
           <ExperienceTypesSelector
@@ -275,9 +327,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
-            <Text style={styles.postButton}>Post</Text>
-          </TouchableOpacity>
+          {!selectedDiaryPost ?
+            <TouchableOpacity style={styles.postButtonContainer} onPress={handleEntry}>
+              <Text style={styles.postButton}>Publish</Text>
+            </TouchableOpacity>
+            :
+            <TouchableOpacity style={styles.postButtonContainer} onPress={handleSaveEditingPost}>
+              <Text style={styles.postButton}>Save Edits</Text>
+            </TouchableOpacity>
+          }
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
