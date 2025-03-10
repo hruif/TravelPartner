@@ -32,12 +32,13 @@ const styles = StyleSheet.create({
   descriptionContainer: {
     width: '100%',
     height: 100,
-    backgroundColor: '#3a3f47',
-    color: '#fff',
+    backgroundColor: '#ddd',
+    color: '#000',
     borderRadius: 10,
     paddingHorizontal: 15,
+    paddingTop: 15, // Ensure equal padding from top
     fontSize: 16,
     marginBottom: 15,
-    textAlignVertical: 'top', // ensures multiline text starts at the top
-  },
+    textAlignVertical: 'top', // Keeps text at the top
+  }
 });

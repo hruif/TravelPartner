@@ -12,7 +12,7 @@ interface ExperienceTypesSelectorProps {
 export function ExperienceTypesSelector({
   experienceTypes,
   toggleExperienceType,
-  availableTypes = ["Active", "Art", "Learning", "Food", "Accommodation", "Indoors", "Outdoors"],
+  availableTypes = ["Accommodation", "Active", "Adventure", "Art", "Culture", "Learning", "Food", "Relaxation", "Indoors", "Outdoors"],
 }: ExperienceTypesSelectorProps) {
   return (
     <View style={styles.container}>
@@ -27,7 +27,7 @@ export function ExperienceTypesSelector({
             <Ionicons
               name={isSelected ? 'checkmark' : 'add'}
               size={18}
-              color="#fff"
+              color="#000"
               style={styles.icon}
             />
             <Text style={styles.buttonText}>{type}</Text>
@@ -48,19 +48,19 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#3a3f47',
+    backgroundColor: '#ddd',
     padding: 10,
     borderRadius: 10,
     margin: 5,
   },
   selectedButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#C9DCAA',
   },
   icon: {
     marginRight: 5,
   },
   buttonText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#000',
+    fontSize: 12,
   },
 });

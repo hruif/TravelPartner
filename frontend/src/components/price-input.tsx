@@ -17,10 +17,10 @@ export function PriceInput({ price, setPrice }: PriceInputProps) {
 
   return (
     <View style={styles.priceContainer}>
-      <Text style={styles.priceSymbol}>$</Text>
+      <Text style={[styles.priceSymbol, { color: price === 0 ? '#aaa' : '#000' }]}>$</Text>
       <TextInput
-        style={styles.priceInput}
-        placeholder="Price"
+        style={[styles.priceInput, { color: price === 0 ? '#aaa' : '#000' }]}
+        placeholder="0"
         placeholderTextColor="#aaa"
         keyboardType="numeric"
         value={price.toString()}
@@ -36,19 +36,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: 50,
-    backgroundColor: '#3a3f47',
+    backgroundColor: '#ddd',
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 15,
   },
   priceSymbol: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
     marginRight: 5,
   },
   priceInput: {
     flex: 1,
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
   },
 });

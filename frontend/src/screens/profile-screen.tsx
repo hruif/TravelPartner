@@ -237,7 +237,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.formHeader}>
-            <Text style={styles.titleContainer}>
+            <Text style={styles.formTitleContainer}>
               {selectedDiaryPost ? 'Editing entry' : 'New entry'}
             </Text>
 
@@ -250,7 +250,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           </View>
 
           <TextInput
-            style={styles.input}
+            style={styles.title}
             placeholder="Title"
             placeholderTextColor="#aaa"
             value={title}
@@ -273,7 +273,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           </View>
 
           <View style={styles.searchContainer}>
-            <Ionicons name="search" size={20} color="#aaa" style={styles.searchIcon} />
+            <Ionicons name="location-outline" size={20} color={location ? "#000" : "#aaa"} style={styles.locIcon} />
             <TextInput
               style={styles.searchInput}
               placeholder="Location"
@@ -301,7 +301,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
             placeholder="Description"
           />
 
-          <Text style={styles.experienceTypeLabel}>Experience Types:</Text>
           <ExperienceTypesSelector
             experienceTypes={experienceTypes}
             toggleExperienceType={toggleExperienceType}
@@ -313,14 +312,13 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           />
 
           <View style={styles.ratingContainer}>
-            <Text style={styles.experienceTypeLabel}>Rating:</Text>
             <View style={styles.stars}>
               {[1, 2, 3, 4, 5].map((star) => (
                 <TouchableOpacity key={star} onPress={() => setRating(star)}>
                   <Ionicons
                     name={star <= rating ? "star" : "star-outline"}
                     size={28}
-                    color={star <= rating ? "#FFD700" : "#aaa"}
+                    color={star <= rating ? "#E0E5C4" : "#aaa"}
                   />
                 </TouchableOpacity>
               ))}
@@ -347,7 +345,7 @@ const styles = StyleSheet.create({
   // Profile page styles
   profileContainer: {
     flexGrow: 1,
-    backgroundColor: '#25292e',
+    backgroundColor: '#fff',
     padding: 20,
     alignItems: 'center',
   },
@@ -356,8 +354,8 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   profilePic: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 80,
     borderRadius: 50,
     backgroundColor: '#aaa', // placeholder color
     marginBottom: 10,
@@ -365,12 +363,12 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
   },
   createPostButton: {
     width: '100%',
     height: 50,
-    backgroundColor: '#28a745',
+    backgroundColor: '#1f3b5c',
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -379,11 +377,12 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    borderRadius: 10
   },
   // Create post form styles
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: '#25292e',
+    backgroundColor: '#fff',
     padding: 10,
     alignItems: 'center',
   },
@@ -394,10 +393,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  titleContainer: {
+  formTitleContainer: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000',
   },
   cancelButton: {
     padding: 5,
@@ -406,11 +405,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#e74c3c',
   },
+  title: {
+    fontWeight: 'bold',
+    width: '100%',
+    height: 50,
+    backgroundColor: '#ddd',
+    color: '#000',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    marginBottom: 15,
+  },
   input: {
     width: '100%',
     height: 50,
-    backgroundColor: '#3a3f47',
-    color: '#fff',
+    backgroundColor: '#ddd',
+    color: '#000',
     borderRadius: 10,
     paddingHorizontal: 15,
     fontSize: 16,
@@ -419,16 +429,17 @@ const styles = StyleSheet.create({
   dateContainer: {
     width: '100%',
     marginBottom: 15,
+    borderRadius: 10
   },
   datePickerButton: {
-    backgroundColor: '#3a3f47',
+    backgroundColor: '#ddd',
     paddingVertical: 12,
     paddingHorizontal: 15,
-    borderRadius: 10,
     alignItems: 'center',
+    borderRadius: 10
   },
   dateText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
   },
   searchContainer: {
@@ -436,49 +447,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: 50,
-    backgroundColor: '#3a3f47',
-    borderRadius: 10,
+    backgroundColor: '#ddd',
     paddingHorizontal: 15,
     marginBottom: 15,
+    borderRadius: 10
   },
-  searchIcon: {
+  locIcon: {
     marginRight: 10,
   },
   searchInput: {
     flex: 1,
-    color: '#fff',
+    color: '#000',
     fontSize: 16,
   },
   photoPreview: {
     width: 100,
     height: 100,
-    borderRadius: 10,
     marginBottom: 15,
   },
   photoContainer: {
     width: '100%',
     height: 40,
-    backgroundColor: '#007BFF',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
     marginBottom: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#000'
   },
   photoContainerLabel: {
-    color: '#fff',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  experienceTypeLabel: {
-    color: '#fff',
-    marginBottom: 10,
-    alignSelf: 'flex-start',
-    paddingLeft: 15,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginBottom: 10,
   },
   stars: {
     flexDirection: 'row',
@@ -487,7 +493,7 @@ const styles = StyleSheet.create({
   postButtonContainer: {
     width: '100%',
     height: 50,
-    backgroundColor: '#28a745',
+    backgroundColor: '#C4E0E5',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -495,7 +501,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   postButton: {
-    color: '#fff',
+    color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
   },
