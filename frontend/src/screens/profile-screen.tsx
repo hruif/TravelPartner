@@ -339,15 +339,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
 
-        {/* Render popup if a post is selected */}
-        {selectedDiaryPost && (
-          <DiaryPostPopup
-            post={selectedDiaryPost}
-            onClose={() => setSelectedDiaryPost(null)}
-            onDeletePost={handleDeletePost}
-          />
-        )}
-
       </ScrollView>
     );
   }
