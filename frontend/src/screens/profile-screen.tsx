@@ -4,7 +4,6 @@ import {
   Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, FlatList, Button
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
@@ -289,7 +288,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.journalItem}>
-              <Text style = {{fontWeight: 'bold'}}>Trip 3</Text>
+              <Text >Trip 3</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.journalItem}>

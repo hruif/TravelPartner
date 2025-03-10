@@ -1,11 +1,13 @@
+import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
   StyleSheet,
   View,
   SafeAreaView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
-import React, { useState } from 'react';
+import * as Location from 'expo-location';
 import GoogleMapComponent from '../components/google-map';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -33,6 +35,27 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   const [locationDetails, setLocationDetails] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
+
+  // Get user's current location on mount
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Permission to access location was denied.');
+        return;
+      }
+
+      const userLocation = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = userLocation.coords;
+      setRegion({
+        latitude,
+        longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+      setMarker({ latitude, longitude });
+    })();
+  }, []);
 
   // Process search query
   const handleSearch = async () => {
@@ -77,10 +100,10 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
         {/* Search Bar Overlay */}
         <View style={styles.searchContainer}>
           <AnimatedPlaceholderInput
-            style={styles.searchBar}
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearch}
+              style={styles.searchBar}
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <Ionicons name="search" size={24} color="white" />
@@ -112,7 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 16,
-    paddingHorizontal: 10, // add padding only to the input
+    paddingHorizontal: 10,
     color: 'black',
     borderTopLeftRadius: 25,
     borderBottomLeftRadius: 25,
@@ -126,4 +149,3 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
   },
 });
-
