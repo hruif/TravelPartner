@@ -9,6 +9,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import config from './mikro-orm.config';
 import { MapsModule } from './maps/maps.module';
 import { DiaryModule } from './diary/diary.module';
+import { ItinerariesModule } from './itineraries/itineraries.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DiaryModule } from './diary/diary.module';
     MikroOrmModule.forRoot(config),
     MapsModule,
     DiaryModule,
+    ItinerariesModule,
   ],
   controllers: [AppController],
   providers: [
