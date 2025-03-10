@@ -19,6 +19,8 @@ import { PriceInput } from '../components/price-input';
 import { ProfilePosts, Post } from '../components/profile-posts';
 import { DiaryPostPopup } from '../components/profile-post-popup';
 
+import useAuthStore from "../stores/auth.store";
+
 type RootStackParamList = {
   Home: undefined;
   TravelJournal: undefined;
@@ -27,6 +29,7 @@ type RootStackParamList = {
 type JournalScreenProps = StackScreenProps<RootStackParamList, 'TravelJournal'>;
 
 export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
+  const { logout } = useAuthStore();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
 
@@ -324,11 +327,27 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <Text style={styles.newButtonText}>Make an entry</Text>
         </TouchableOpacity>
 
+
         <ProfilePosts
           journalEntries={journalEntries}
           onDelete={handleDeletePost}
           onEdit={handleEditPost}
         />
+
+        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+          <Ionicons name="log-out-outline" size={24} color="white" />
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+
+        {/* Render popup if a post is selected */}
+        {selectedDiaryPost && (
+          <DiaryPostPopup
+            post={selectedDiaryPost}
+            onClose={() => setSelectedDiaryPost(null)}
+            onDeletePost={handleDeletePost}
+          />
+        )}
+
       </ScrollView>
     );
   }
@@ -684,5 +703,20 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    backgroundColor: '#e74c3c',
+    padding: 15,
+    borderRadius: 30,
+    alignItems: 'center',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+  logoutText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
 });
