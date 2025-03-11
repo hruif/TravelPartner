@@ -31,3 +31,16 @@ export async function getItineraryById(itineraryId: string) {
   const response = await apiClient.get(`/itineraries/${itineraryId}`);
   return response.data; 
 }
+
+interface AddLocationData {
+  photoURI: string;
+  title: string;
+  description?: string;
+  formattedAddress?: string;
+}
+
+export async function addLocationToItinerary(itineraryId: string, locationData: AddLocationData) {
+  const response = await apiClient.post(`/itineraries/${itineraryId}/location`, locationData);
+
+  return response.data;
+}

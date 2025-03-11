@@ -5,22 +5,53 @@ import { Ionicons } from '@expo/vector-icons';
 interface PlaceDetailsPopupProps {
   details: any;
   onClose: () => void;
+  onAddLocation?: (title: string, photoURI: string) => void; 
 }
 
-export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({ details, onClose }) => {
-  // Construct image URLs from each photo's photo_reference.
-  const imageUrls: string[] = details.photos?.map((photo: any) => {
-    return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${""}`;
-  }) || [];
-  
+export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
+  details,
+  onClose,
+  onAddLocation
+}) => {
+  // Construct image URLs from each photo's photo_reference
+  const imageUrls: string[] =
+    details.photos?.map((photo: any) => {
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=YOUR_API_KEY`;
+    }) || [];
+
+  // Grab the first image (if any)
+  const firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : '';
+
+  const handleAddPress = () => {
+    if (onAddLocation) {
+      onAddLocation(details.name || 'Untitled', firstImageUrl);
+    }
+  };
+
   return (
     <View style={styles.overlay}>
       <View style={styles.popup}>
+        {/* Close Button */}
         <TouchableOpacity style={styles.closeButton} onPress={onClose}>
           <Ionicons name="close" size={24} color="#000" />
         </TouchableOpacity>
-        <Text style={styles.placeName}>{details.name || "Unknown Place"}</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.imagesContainer}>
+
+        {/* Circular Plus Button */}
+        <TouchableOpacity style={styles.plusButton} onPress={handleAddPress}>
+          <Ionicons name="add" size={24} color="#fff" />
+        </TouchableOpacity>
+
+        {/* Place Name */}
+        <Text style={styles.placeName}>
+          {details.name || 'Unknown Place'}
+        </Text>
+
+        {/* Images Scroll */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.imagesContainer}
+        >
           {imageUrls.length > 0 ? (
             imageUrls.map((url, index) => (
               <Image key={index} source={{ uri: url }} style={styles.image} />
@@ -48,14 +79,32 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 15,
+    paddingTop: 30, // Extra top padding so the plus button + place name have room
   },
   closeButton: {
-    alignSelf: 'flex-end',
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 2,
+    padding: 5,
+  },
+  plusButton: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    zIndex: 2,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#3498db',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   placeName: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
+    textAlign: 'center',
   },
   imagesContainer: {
     flexDirection: 'row',

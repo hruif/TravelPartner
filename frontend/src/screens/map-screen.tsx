@@ -13,6 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getCoordinates, getPlaceDetails } from "../services/maps-service";
 import AnimatedPlaceholderInput from '../components/animated-input-placeholder';
 import { PlaceDetailsPopup } from '../components/place-details-popup';
+import { addLocationToItinerary } from '../services/itinerary-service';
 
 type RootStackParamList = {
   Home: undefined;
@@ -35,6 +36,7 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   const [locationDetails, setLocationDetails] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [itineraryId, setItineraryId] = useState<string>('SOME_ITINERARY_UUID'); 
 
   // Process search query
   const handleSearch = async () => {
@@ -93,12 +95,27 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
         </View>
 
         {/* Render the popup if details are available */}
-      {showDetails && locationDetails && (
-        <PlaceDetailsPopup
-          details={locationDetails}
-          onClose={() => setShowDetails(false)}
-        />
-      )}
+        {showDetails && locationDetails && (
+          <PlaceDetailsPopup
+            details={locationDetails}
+            onClose={() => setShowDetails(false)}
+            onAddLocation={async (title, photoURI) => {
+              try {
+                // Post to /itineraries/{id}/location
+                await addLocationToItinerary(itineraryId, {
+                  photoURI,
+                  title,
+                  description: '',          // optional
+                  formattedAddress: '',      // optional
+                });
+                alert('Location added to itinerary!');
+              } catch (error) {
+                console.error('Failed to add location:', error);
+                alert('Error adding location to itinerary.');
+              }
+            }}
+          />
+        )}
       </SafeAreaView>
   );
 }
