@@ -7,12 +7,15 @@ import {
   TouchableOpacity, 
   KeyboardAvoidingView, 
   Platform,
-  TextInput
+  TextInput,
+  Alert
 } from 'react-native';
 import MapScreen from './map-screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { ItineraryCreation } from '../components/itinerary-creation';
+import { postItinerary } from '../services/itinerary-service';
 
 type RootStackParamList = {
   Itinerary: undefined;
@@ -22,7 +25,7 @@ type RootStackParamList = {
 type ItineraryScreenProps = StackScreenProps<RootStackParamList, 'Itinerary'>;
 
 export default function ItineraryScreen({ navigation }: ItineraryScreenProps) {
-  // tripStarted controls whether to show the minimal trip planner or full itinerary interface
+  // tripStarted controls whether to show the itinerary creation UI or the full itinerary interface
   const [tripStarted, setTripStarted] = useState(false);
   const [destination, setDestination] = useState('');
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
@@ -37,36 +40,26 @@ export default function ItineraryScreen({ navigation }: ItineraryScreenProps) {
 
   if (!tripStarted) {
     return (
-      <SafeAreaView edges={['top', 'left', 'right']} style={styles.plannerContainer}>
-        <TouchableOpacity 
-          style={styles.backButtonMinimal} 
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Ionicons name="arrow-back" size={24} color="#000" />
-        </TouchableOpacity>
-        <View style={styles.plannerContent}>
-          <Text style={styles.plannerLabel}>Where to?</Text>
-          <TextInput 
-            style={styles.plannerInput}
-            placeholder="Enter destination"
-            placeholderTextColor="#aaa"
-            value={destination}
-            onChangeText={setDestination}
-          />
-        </View>
-        <TouchableOpacity 
-          style={styles.startTripButton}
-          onPress={() => {
-            setTripStarted(true);
+      <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
+        <ItineraryCreation 
+          destination={destination}
+          setDestination={setDestination}
+          onStartTrip={async () => {
+            try {
+              // Call postItinerary from itinerary-service with the destination as title
+              await postItinerary({ title: destination, description: "" });
+              setTripStarted(true);
+            } catch (error) {
+              Alert.alert('Error', 'Failed to post itinerary.');
+            }
           }}
-        >
-          <Text style={styles.startTripButtonText}>Start your trip</Text>
-        </TouchableOpacity>
+          onBack={() => navigation.navigate('Home')}
+        />
       </SafeAreaView>
     );
   }
 
-  // Full itinerary interface with back button (already present)
+  // Full itinerary interface with back button
   return (
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingContainer}
@@ -125,49 +118,6 @@ export default function ItineraryScreen({ navigation }: ItineraryScreenProps) {
 }
 
 const styles = StyleSheet.create({
-  // Minimal trip planner styles
-  plannerContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    padding: 20,
-    paddingTop: 50, 
-  },
-  plannerContent: {
-    marginBottom: 40,
-  },
-  plannerLabel: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  plannerInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 18,
-    color: '#000',
-  },
-  backButtonMinimal: {
-    position: 'absolute',
-    top: 47,
-    left: 10,
-    zIndex: 10,
-    padding: 5,
-  },
-  startTripButton: {
-    backgroundColor: '#28a745',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  startTripButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  // Full itinerary interface styles
   keyboardAvoidingContainer: {
     flex: 1,
   },
