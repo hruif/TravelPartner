@@ -1,5 +1,6 @@
+// place-details-popup.tsx
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface PlaceDetailsPopupProps {
@@ -11,12 +12,12 @@ interface PlaceDetailsPopupProps {
 export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   details,
   onClose,
-  onAddLocation
+  onAddLocation,
 }) => {
-  // Construct image URLs from each photo's photo_reference
+  // Construct image URLs from each photo's photo_reference.
   const imageUrls: string[] =
     details.photos?.map((photo: any) => {
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=YOUR_API_KEY`;
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=AIzaSyBwDfYSVR0oQWqoFR7hOPgqK_JChCNlSoI`;
     }) || [];
 
   // Grab the first image (if any)
@@ -31,26 +32,22 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   return (
     <View style={styles.overlay}>
       <View style={styles.popup}>
-        {/* Close Button */}
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Ionicons name="close" size={24} color="#000" />
-        </TouchableOpacity>
-
-        {/* Circular Plus Button */}
-        <TouchableOpacity style={styles.plusButton} onPress={handleAddPress}>
-          <Ionicons name="add" size={24} color="#fff" />
-        </TouchableOpacity>
-
-        {/* Place Name */}
-        <Text style={styles.placeName}>
-          {details.name || 'Unknown Place'}
-        </Text>
-
-        {/* Images Scroll */}
+        {/* Header Row */}
+        <View style={styles.headerRow}>
+          <TouchableOpacity style={styles.plusButton} onPress={handleAddPress}>
+            <Ionicons name="add" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.placeName}>
+            {details.name || 'Unknown Place'}
+          </Text>
+          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+            <Ionicons name="close" size={24} color="#000" />
+          </TouchableOpacity>
+        </View>
+        {/* Vertical Images Scroll */}
         <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
           style={styles.imagesContainer}
+          contentContainerStyle={styles.imagesContentContainer}
         >
           {imageUrls.length > 0 ? (
             imageUrls.map((url, index) => (
@@ -65,6 +62,8 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   );
 };
 
+const screenHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
   overlay: {
     position: 'absolute',
@@ -74,25 +73,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   popup: {
-    maxHeight: '50%',
+    height: screenHeight * 0.5, // Half the screen height
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 15,
-    paddingTop: 30, // Extra top padding so the plus button + place name have room
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 2,
-    padding: 5,
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   plusButton: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    zIndex: 2,
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -100,23 +93,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  closeButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   placeName: {
+    flex: 1,
+    textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
+    paddingHorizontal: 10,
   },
   imagesContainer: {
-    flexDirection: 'row',
+    flex: 1,
+  },
+  imagesContentContainer: {
+    paddingVertical: 10,
   },
   image: {
-    width: 120,
-    height: 80,
+    width: '100%', // Fill horizontal space
+    height: 150,   // Adjust height as needed
     borderRadius: 10,
-    marginRight: 10,
+    marginBottom: 10,
   },
   noImagesText: {
     fontSize: 14,
     color: 'gray',
+    textAlign: 'center',
   },
 });
