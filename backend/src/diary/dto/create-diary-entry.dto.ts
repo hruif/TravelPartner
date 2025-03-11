@@ -38,4 +38,9 @@ export class CreateDiaryEntryDto {
    * Formatted address for the location.
    */
   formattedAddress?: string;
+
+  /**
+   * Journal name for the entry.
+   */
+  journal?: string;
 }

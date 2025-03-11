@@ -19,10 +19,20 @@ export class DiaryService {
    * Retrieves all diary entries for the authenticated user.
    *
    * @param userUuid - The uuid of the authenticated user.
+   * @param journal - Optional journal filter to match the diary's journal string.
    * @returns An array of diary entries.
    */
-  async getAllEntries(userUuid: string): Promise<DiaryEntry[]> {
-    return await this.em.find(DiaryEntry, { user: { uuid: userUuid } });
+  async getAllEntries(userUuid: string, journal?: string): Promise<DiaryEntry[]> {
+    // Build filter with the authenticated user.
+    const filter: any = { user: { uuid: userUuid } };
+
+    // If a journal filter is provided, add it to the filter.
+    if (journal) {
+      filter.journal = journal;
+      // For substring matching, you might use MikroORM's QueryBuilder or additional operators.
+    }
+
+    return await this.em.find(DiaryEntry, filter);
   }
 
   /**
@@ -49,16 +59,13 @@ export class DiaryService {
    * @throws {NotFoundException} if the user is not found.
    */
   async createEntry(
-    dto: CreateDiaryEntryDto,
-    userUuid: string,
+      dto: CreateDiaryEntryDto,
+      userUuid: string,
   ): Promise<DiaryEntry> {
-    // Retrieve the user based on the uuid from the token payload.
     const user = await this.em.findOne(User, { uuid: userUuid });
     if (!user) {
       throw new NotFoundException(`User with uuid ${userUuid} not found`);
     }
-
-    // Create and persist the diary entry associated with the authenticated user.
     const entry = this.em.create(DiaryEntry, { ...dto, user }) as DiaryEntry;
     await this.em.persistAndFlush(entry);
     return entry;
@@ -75,24 +82,19 @@ export class DiaryService {
    * @throws {UnauthorizedException} if the authenticated user is not the owner of the diary entry.
    */
   async updateEntry(
-    id: string,
-    dto: Partial<DiaryEntry>,
-    userUuid: string,
+      id: string,
+      dto: Partial<DiaryEntry>,
+      userUuid: string,
   ): Promise<DiaryEntry> {
     const entry = await this.getEntryById(id);
-
-    // Ensure the diary entry exists.
     if (!entry) {
       throw new NotFoundException(`Diary entry with id ${id} not found`);
     }
-
-    // Ensure the diary entry belongs to the authenticated user.
     if (entry.user.uuid !== userUuid) {
       throw new UnauthorizedException(
-        'You are not allowed to update this entry',
+          'You are not allowed to update this entry',
       );
     }
-
     this.em.assign(entry, dto);
     await this.em.persistAndFlush(entry);
     return entry;
@@ -109,19 +111,14 @@ export class DiaryService {
    */
   async deleteEntry(id: string, userUuid: string): Promise<void> {
     const entry = await this.getEntryById(id);
-
-    // Ensure the diary entry exists.
     if (!entry) {
       throw new NotFoundException(`Diary entry with id ${id} not found`);
     }
-
-    // Ensure the diary entry belongs to the authenticated user.
     if (entry.user.uuid !== userUuid) {
       throw new UnauthorizedException(
-        'You are not allowed to delete this entry',
+          'You are not allowed to delete this entry',
       );
     }
-
     await this.em.removeAndFlush(entry);
   }
 

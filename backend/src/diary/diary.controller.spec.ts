@@ -38,20 +38,35 @@ describe('DiaryController', () => {
   });
 
   describe('getAllEntries', () => {
-    it('should return an array of diary entries', async () => {
+    it('should return an array of diary entries without journal filter', async () => {
       const mockUser = { uuid: 'user-uuid' };
       const mockEntries: DiaryEntry[] = [
         { uuid: '1', title: 'Entry 1' } as DiaryEntry,
         { uuid: '2', title: 'Entry 2' } as DiaryEntry,
       ];
-
       diaryService.getAllEntries = jest.fn().mockResolvedValue(mockEntries);
 
+      // Call without journal parameter.
       const result = await diaryController.getAllEntries(mockUser);
       expect(result).toEqual(mockEntries);
-      expect(diaryService.getAllEntries).toHaveBeenCalledWith(mockUser.uuid);
+      expect(diaryService.getAllEntries).toHaveBeenCalledWith(mockUser.uuid, undefined);
+    });
+
+    it('should return an array of diary entries with journal filter', async () => {
+      const mockUser = { uuid: 'user-uuid' };
+      const journal = 'my-journal';
+      const mockEntries: DiaryEntry[] = [
+        { uuid: '3', title: 'Entry 3', journal: journal } as DiaryEntry,
+      ];
+      diaryService.getAllEntries = jest.fn().mockResolvedValue(mockEntries);
+
+      // Call with the journal parameter.
+      const result = await diaryController.getAllEntries(mockUser, journal);
+      expect(result).toEqual(mockEntries);
+      expect(diaryService.getAllEntries).toHaveBeenCalledWith(mockUser.uuid, journal);
     });
   });
+
 
   describe('getEntry', () => {
     it('should return a single diary entry by uuid', async () => {

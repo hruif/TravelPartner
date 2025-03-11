@@ -36,6 +36,7 @@ CREATE TABLE "diary_entry"
      "rating"            INT NOT NULL DEFAULT 0,
      "formatted_address" VARCHAR(255) NOT NULL,
      "created_at"        TIMESTAMPTZ NOT NULL,
+     "journal"           VARCHAR(255) NULL,
      "user_uuid"         VARCHAR(255) NOT NULL,
      CONSTRAINT "diary_entry_pkey" PRIMARY KEY ("uuid")
   );

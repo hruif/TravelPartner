@@ -11,6 +11,7 @@ import { DiaryService } from './diary.service';
 import { DiaryEntry } from './diary-entry.entity';
 import { CreateDiaryEntryDto } from './dto/create-diary-entry.dto';
 import { GetUser } from '../auth/get-user.decorator';
+import {ApiQuery} from "@nestjs/swagger";
 
 /**
  * Controller for diary entry endpoints.
@@ -22,11 +23,17 @@ export class DiaryController {
   /**
    * Retrieves all diary entries.
    *
+   * @param user The authenticated user's token payload containing the uuid.
+   * @param journal Optional journal filter to filter entries by the journal string.
    * @returns {Promise<DiaryEntry[]>} An array of diary entries.
    */
   @Get('entries')
-  async getAllEntries(@GetUser() user): Promise<DiaryEntry[]> {
-    return this.diaryService.getAllEntries(user.uuid);
+  @ApiQuery({ name: 'journal', required: false, type: String })
+  async getAllEntries(
+      @GetUser() user,
+      @Query('journal') journal?: string,
+  ): Promise<DiaryEntry[]> {
+    return this.diaryService.getAllEntries(user.uuid, journal);
   }
 
   /**
