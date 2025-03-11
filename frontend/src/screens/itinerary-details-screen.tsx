@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import MapScreen from './map-screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ItineraryStackParamList } from './itinerary-stack';
+import { getItineraryById } from '../services/itinerary-service';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
 export default function ItineraryDetailsScreen({ navigation, route }: ItineraryDetailsScreenProps) {
-  const { itinerary } = route.params;   // The itinerary object from home-screen or creation
-  const destination = itinerary.title;  // Or other property
+  const { itinerary } = route.params;   
+  const destination = itinerary.title;
 
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
+
+  // We'll store the fetched itinerary details (including locations) in state
+  const [fetchedItinerary, setFetchedItinerary] = useState<any>(null);
+
+  useEffect(() => {
+    // If we have a UUID, fetch the latest itinerary data from the server
+    if (itinerary.uuid) {
+      (async () => {
+        try {
+          const fullItinerary = await getItineraryById(itinerary.uuid);
+          setFetchedItinerary(fullItinerary);
+        } catch (error) {
+          console.error('Failed to fetch itinerary details:', error);
+        }
+      })();
+    }
+  }, [itinerary.uuid]);
+
+  // If we haven't fetched anything yet, fallback to the initial object
+  const displayedItinerary = fetchedItinerary || itinerary;
+  const locations = displayedItinerary.locations || [];
 
   return (
     <KeyboardAvoidingView
@@ -62,8 +84,19 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
           {selectedOption === 'Itinerary' ? (
             <View style={styles.itineraryContent}>
               <Text style={styles.itineraryText}>
-                Itinerary details for {destination} will appear here.
+                Itinerary details for {destination}:
               </Text>
+              <View style={styles.locationsContainer}>
+                {locations.length > 0 ? (
+                  locations.map((loc: any, index: number) => (
+                    <Text key={loc.id || index} style={styles.locationItem}>
+                      {index + 1}. {loc.name || 'Untitled location'}
+                    </Text>
+                  ))
+                ) : (
+                  <Text>No locations found for this itinerary.</Text>
+                )}
+              </View>
             </View>
           ) : (
             <View style={styles.mapContent}>
@@ -92,17 +125,49 @@ const styles = StyleSheet.create({
     zIndex: 2,
     padding: 5,
   },
-  headerText: { 
-    fontSize: 24, 
-    fontWeight: 'bold' 
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  optionsContainer: { height: 50, justifyContent: 'center' },
-  optionsContent: { paddingHorizontal: 20, alignItems: 'center' },
-  optionButton: { marginRight: 20 },
-  optionText: { fontSize: 18, color: 'gray' },
-  selectedOptionText: { color: 'black', fontWeight: 'bold', borderBottomWidth: 2, borderBottomColor: 'black' },
+  optionsContainer: {
+    height: 50,
+    justifyContent: 'center',
+  },
+  optionsContent: {
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  optionButton: {
+    marginRight: 20,
+  },
+  optionText: {
+    fontSize: 18,
+    color: 'gray',
+  },
+  selectedOptionText: {
+    color: 'black',
+    fontWeight: 'bold',
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+  },
   content: { flex: 1 },
-  itineraryContent: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  itineraryText: { fontSize: 16, color: '#333' },
-  mapContent: { flex: 1 },
+  itineraryContent: {
+    flex: 1,
+    padding: 20,
+  },
+  itineraryText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 10,
+  },
+  locationsContainer: {
+    marginTop: 10,
+  },
+  locationItem: {
+    fontSize: 14,
+    marginBottom: 5,
+  },
+  mapContent: {
+    flex: 1,
+  },
 });

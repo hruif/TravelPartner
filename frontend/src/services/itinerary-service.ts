@@ -26,3 +26,8 @@ export async function getItineraries() {
 export async function deleteItinerary(postId: string) {
     await apiClient.delete(`/itineraries/${postId}`);
 }
+
+export async function getItineraryById(itineraryId: string) {
+  const response = await apiClient.get(`/itineraries/${itineraryId}`);
+  return response.data; 
+}
