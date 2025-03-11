@@ -1,9 +1,10 @@
 import apiClient from './api-client';
 
 export async function postJournalEntry(entryData: any) {
-    const { title, description, photoURI, price, rating, location } = entryData;
+    const { journalName, title, description, photoURI, price, rating, location } = entryData;
 
     const bodyToSend = {
+        journal: journalName,
         photoURI,
         price,
         title,

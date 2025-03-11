@@ -56,6 +56,12 @@ export class DiaryEntry {
   createdAt: Date = new Date();
 
   /**
+   * The journal name for the entry.
+   */
+  @Property({ nullable: true })
+  journal?: string;
+
+  /**
    * Reference to the user who created the entry.
    * This establishes a many-to-one relationship with the User entity.
    */

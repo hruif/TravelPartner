@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
-  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, FlatList, Button
+  View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Modal,
+  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { Ionicons } from '@expo/vector-icons';
 
 import { getCoordinates } from '../services/maps-service';
@@ -17,7 +19,6 @@ import { ExperienceTypesSelector } from '../components/experience-types';
 import { PriceInput } from '../components/price-input';
 
 import { ProfilePosts, Post } from '../components/profile-posts';
-import { DiaryPostPopup } from '../components/profile-post-popup';
 
 import useAuthStore from "../stores/auth.store";
 
@@ -32,12 +33,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const { logout } = useAuthStore();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
-
+3
   // not in use yet
-  //const [journalColl, setJournalColl] = useState<any[]>([]);
+  const [journals, setJournals] = useState<any[]>([]);
+  const [selectedJournal, setSelectedJournal] = useState(journals[0]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newJournalName, setNewJournalName] = useState('');
+  const [entries, setEntries] = useState<{ [journal: string]: any[] }>({});
   //const [heldJournal, setHeldJournal] = useState(null);
   //const [showJournalOptions, setShowJournalOptions] = useState(false);
-  //const [selectedJournal, setSelectedJournal] = useState(journalColl[0]);
 
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
@@ -72,15 +76,17 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     Alert.alert('Edit Profile', 'Profile editing not implemented yet.');
   };
 
-   // not in use yet; currently hard coding instead of using journal coll
   const handleNewJournal = () => {
-  //   const newJournal = {
-  //     uuid: Math.random().toString(), // elaborate later
-  //     title: 'New Journal',
-  //   };
-
-  //   setJournalColl((prevColl) => [newJournal, ...prevColl]); 
+    if (newJournalName.trim() === '') return;
+    setJournals([newJournalName, ...journals]);
+    setEntries((prev) => ({ ...prev, [newJournalName]: [] }));
+    setNewJournalName('');
+    setIsModalVisible(false);
   };
+
+  const setSelectedJournalAndEntries = () => {
+
+  }
 
   // not in use yet
   // const handleJournalClick = (journalName: string) => {
@@ -117,7 +123,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   // };
 
   const handleEntry = async () => {
+    if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
+
     const entryData = {
+      journalName: selectedJournal,
       title, 
       date, 
       location,
@@ -130,6 +139,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   
     try {
       await postJournalEntry(entryData);
+      setEntries((prev) => ({
+        ...prev,
+        [selectedJournal]: [...(prev[selectedJournal] || []), entryData]
+      }));
       setShowCreatePost(false);
       setEditingPost(null);
     } catch (error) {
@@ -174,6 +187,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         // save edited post
         const entryData = {
+          journalName: selectedJournal,
           title, 
           date, 
           location,
@@ -282,27 +296,36 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           >
             <TouchableOpacity
               style={[styles.newButton, {backgroundColor:'#A6D7E0'}]}
-              onPress={handleNewJournal}
+              onPress={() => setIsModalVisible(true)}
             >
               <Ionicons name="book-outline" size={24} color="black" />
               <Text style={styles.newButtonText}>New journal</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.journalItem}>
-              <Text style = {{fontWeight: 'bold'}}>Trip 3</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.journalItem}>
-              <Text>Trip 2</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.journalItem}>
-              <Text>Trip 1</Text>
-            </TouchableOpacity>
-
           </ScrollView>
 
         </View>
+
+        <Modal visible={isModalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput 
+                placeholder="Journal Name"
+                value={newJournalName}
+                onChangeText={setNewJournalName}
+                style={styles.modalInput}
+              />
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <TouchableOpacity onPress={handleNewJournal} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Create</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         <View style={styles.horizontalLine} />
 
@@ -330,6 +353,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         <ProfilePosts
           journalEntries={journalEntries}
+          selectedJournal={selectedJournal}
           onDelete={handleDeletePost}
           onEdit={handleEditPost}
         />
@@ -564,13 +588,48 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalInput: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  modalButton: {
+    backgroundColor: '#D0DAAC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  modalButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
   horizontalLine: {
     borderBottomWidth: 1,
     borderBottomColor: '#D3D3D3', // Light grey color
-    //marginTop: 10,
     marginBottom: 20,
     width: '100%', // Ensures it takes the full width of the screen
   },
+
   // Create post form styles
   scrollContainer: {
     flexGrow: 1,
