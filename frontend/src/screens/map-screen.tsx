@@ -12,6 +12,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { getCoordinates, getPlaceDetails } from "../services/maps-service";
 import AnimatedPlaceholderInput from '../components/animated-input-placeholder';
+import { PlaceDetailsPopup } from '../components/place-details-popup';
 
 type RootStackParamList = {
   Home: undefined;
@@ -90,6 +91,14 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
             <Ionicons name="search" size={24} color="white" />
           </TouchableOpacity>
         </View>
+
+        {/* Render the popup if details are available */}
+      {showDetails && locationDetails && (
+        <PlaceDetailsPopup
+          details={locationDetails}
+          onClose={() => setShowDetails(false)}
+        />
+      )}
       </SafeAreaView>
   );
 }

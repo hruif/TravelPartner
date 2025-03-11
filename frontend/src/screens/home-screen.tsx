@@ -3,12 +3,10 @@ import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground }
 import { Ionicons } from '@expo/vector-icons';
 import LargePost from '../components/large-post';
 import SmallPost from '../components/small-post';
-import PopupOverlay from '../components/small-post-popup';
 import { getItineraries } from '../services/itinerary-service';
 
 export default function HomeScreen({ navigation }) {
   const [itineraries, setItineraries] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null);
 
   // Fetch itineraries on mount
   useEffect(() => {
@@ -68,9 +66,6 @@ export default function HomeScreen({ navigation }) {
           />
         </View>
       </ScrollView>
-
-      {/* Popups for small posts */}
-      <PopupOverlay post={selectedPost} onClose={() => setSelectedPost(null)} />
     </View>
   );
 }
