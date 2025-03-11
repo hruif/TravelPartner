@@ -1,27 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import LargePost from '../components/large-post';
 import SmallPost from '../components/small-post';
 import PopupOverlay from '../components/small-post-popup';
+import { getItineraries } from '../services/itinerary-service';
 
 export default function HomeScreen({ navigation }) {
+  const [itineraries, setItineraries] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
 
-  const handleSmallPostPress = (postTitle) => {
-    {/* Still need to grab images from back-end user posts */}
-    const images = [
-      {}
-    ];
+  // Fetch itineraries on mount
+  useEffect(() => {
+    async function fetchItineraries() {
+      try {
+        const data = await getItineraries();
+        setItineraries(data);
+      } catch (error) {
+        console.error('Error fetching itineraries:', error);
+      }
+    }
+    fetchItineraries();
+  }, []);
 
-    { /* Still need to grab descriptions from back-end user posts */}
-    const desc = `List of user-submitted posts for ${postTitle}.`;
-    setSelectedPost({
-      title: postTitle,
-      images: images,
-      description: desc,
-    });
-  };
+  const handleItineraryPress = (itinerary) => {
+  navigation.navigate('Itinerary', {
+    screen: 'ItineraryDetails',
+    params: { itinerary },
+  });
+};
 
   return (
     <View
@@ -29,33 +36,20 @@ export default function HomeScreen({ navigation }) {
       <ScrollView contentContainerStyle={styles.container}>
         {/* Small posts */}
         <View style={styles.smallPostsSection}>
-        <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false} 
-        contentContainerStyle={styles.smallPostsContainer}
-        >
-          <SmallPost 
-            text="Arundel, England" 
-            onPress={() => handleSmallPostPress("Arundel, England")} 
-            imageSource={require('../../assets/arundel-england1.jpg')}
-          />
-          <SmallPost 
-            text="Italy" 
-            onPress={() => handleSmallPostPress("Italy")} 
-            imageSource={require('../../assets/italy1.jpg')}
-          />
-          <SmallPost 
-            text="St. Petersburg, Russia" 
-            onPress={() => handleSmallPostPress("St. Petersburg, Russia")} 
-            imageSource={require('../../assets/spbg-russia1.jpg')}
-          />
-          <SmallPost 
-            text="Norway" 
-            onPress={() => handleSmallPostPress("Norway")} 
-            imageSource={require('../../assets/norway1.jpg')}
-          />
-        </ScrollView>
-
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false} 
+            contentContainerStyle={styles.smallPostsContainer}
+          >
+            {itineraries.map((itinerary) => (
+              <SmallPost 
+                key={itinerary.uuid}
+                text={itinerary.title}
+                onPress={() => handleItineraryPress(itinerary)}
+                // Optionally, if your SmallPost supports imageSource, you could pass an image too
+              />
+            ))}
+          </ScrollView>
         </View>
 
         {/* Large posts */}
