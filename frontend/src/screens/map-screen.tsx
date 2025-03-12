@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GoogleMapComponent from '../components/google-map';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import { getCoordinates, getPlaceDetails } from "../services/maps-service";
 import AnimatedPlaceholderInput from '../components/animated-input-placeholder';
+import { PlaceDetailsPopup } from '../components/place-details-popup';
+import { addLocationToItinerary } from '../services/itinerary-service';
 
 type RootStackParamList = {
   Home: undefined;
@@ -27,13 +29,27 @@ interface Region {
   longitudeDelta: number;
 }
 
-export default function MapScreen({ navigation }: HomeScreenProps) {
+interface MapScreenProps {
+  itineraryId?: string;
+  onLocationAdded?: () => void;
+  itineraryMarkers?: { latitude: number; longitude: number; title?: string }[];
+  defaultRegion?: Region | null;
+}
+
+type CombinedMapScreenProps = HomeScreenProps & MapScreenProps;
+
+export default function MapScreen({ navigation, itineraryId, onLocationAdded, itineraryMarkers, defaultRegion }: CombinedMapScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
   const [locationDetails, setLocationDetails] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [itineraryIdState, setItineraryIdState] = useState<string | undefined>(itineraryId);
+
+  useEffect(() => {
+    setItineraryIdState(itineraryId);
+  }, [itineraryId]);
 
   // Process search query
   const handleSearch = async () => {
@@ -74,23 +90,48 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-        <GoogleMapComponent region={region} marker={marker} />
-
-        {/* Search Bar Overlay */}
-        <View style={styles.searchContainer}>
-          <AnimatedPlaceholderInput
-              style={styles.searchBar}
-              value={searchText}
-              onChangeText={setSearchText}
-              onSubmitEditing={handleSearch}
-          />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <Ionicons name="search" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+      <GoogleMapComponent region={region || defaultRegion} marker={marker} itineraryMarkers={itineraryMarkers} />
+      {/* Search Bar Overlay */}
+      <View style={styles.searchContainer}>
+        <AnimatedPlaceholderInput
+          style={styles.searchBar}
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearch}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Ionicons name="search" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      {showDetails && locationDetails && (
+        <PlaceDetailsPopup
+          details={locationDetails}
+          onClose={() => setShowDetails(false)}
+          onAddLocation={async (title, photoURI, formattedAddress) => {
+            if (!itineraryId) {
+              alert('Itinerary not set.');
+              return;
+            }
+            try {
+              await addLocationToItinerary(itineraryId, {
+                photoURI,
+                title,
+                description: '',         
+                formattedAddress,         
+              });
+              if (onLocationAdded) {
+                onLocationAdded();
+              }
+            } catch (error) {
+              console.error('Failed to add location:', error);
+              alert('Error adding location to itinerary.');
+            }
+          }}
+        />
+      )}
+    </SafeAreaView>
   );
 }
 
