@@ -22,6 +22,7 @@
 - [🐞 Bug Reporting](#-bug-reporting)
 - [🛠️ CI and Testing](#-ci-and-testing)
 - [🎨 Style Guide](#-style-guide)
+- [✅ Completed Features/Functionality](#-completed-featuresfunctionality)
 - [📜 License](#-license)
 - [📢 Acknowledgments](#-acknowledgments)
 
@@ -100,6 +101,14 @@ We use **GitHub Actions** for continuous integration.
 - **NestJS:** [Linting & Formatting](https://awesome-nestjs.com/components-and-libraries/lint.html).
 - **Python:** [PEP 8](https://peps.python.org/pep-0008/), Linter: flake8, Formatter: Black.
 - **SQL:** [SQL Style Guide](https://docs.telemetry.mozilla.org/concepts/sql_style.html), Formatter: [SQLFluff](https://sqlfluff.com/).
+
+## ✅ Completed Features/Functionality
+
+- **Interactive map** which allows users to explore travel recommendations.
+- Users can **upload photos**, tag them with location, experience type, price, rating, and  optionally a summary or personal story.
+- Users have **profiles** so they can see all of their travel diaries from each of their trips. 
+- **Filter recommendations** by budget.
+- Users can **add recommendations to their itinerary**, seeing a visual layout of their schedule.
 
 ## 📜 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
