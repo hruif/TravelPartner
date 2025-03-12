@@ -81,7 +81,23 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
             </ScrollView>
           ) : (
             <View style={styles.mapContent}>
-              <MapScreen navigation={navigation} itineraryId={itinerary.uuid} />
+              <View style={styles.mapContent}>
+                <MapScreen
+                  navigation={navigation}
+                  itineraryId={itinerary.uuid}
+                  onLocationAdded={async () => {
+                    // Switch the view back to the itinerary list
+                    setSelectedOption('Itinerary');
+                    // Refresh itinerary details by re-fetching them from the server
+                    try {
+                      const fullItinerary = await getItineraryById(itinerary.uuid);
+                      setFetchedItinerary(fullItinerary);
+                    } catch (error) {
+                      console.error('Failed to refresh itinerary details:', error);
+                    }
+                  }}
+                />
+              </View>
             </View>
           )}
         </View>
