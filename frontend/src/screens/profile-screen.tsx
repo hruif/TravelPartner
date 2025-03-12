@@ -70,10 +70,13 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
       const loadJournals = async () => {
         const storedJournals = await AsyncStorage.getItem('journals');
         if (storedJournals) {
-          setJournals(JSON.parse(storedJournals));  
+          const parsedJournals = JSON.parse(storedJournals)
+          setJournals(parsedJournals); 
+          if (parsedJournals.length > 0 && !selectedJournal) {
+            setSelectedJournal(parsedJournals[0]);
+          } 
         }
       };
-
       loadJournals(); 
     }
   }, [showCreatePost]);
@@ -99,8 +102,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   };
 
   const handleEntry = async () => {
-    if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
-
     if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
     const entryData = {
       journalName: selectedJournal,
@@ -171,7 +172,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         // save edited post
         const entryData = {
-          journalName: selectedJournal,
           journalName: selectedJournal,
           title, 
           date, 
@@ -323,27 +323,29 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         <View style={styles.horizontalLine} />
 
-        <TouchableOpacity 
-          style={[styles.newButton, { backgroundColor: '#C4E0E5' }]} 
-          onPress={() => {
-            // reset state for new post
-            setTitle('');
-            setDate(new Date());
-            setLocSearchText('');
-            setLocation(null);
-            setDescription('');
-            setPhoto(null);
-            setExperienceTypes([]);
-            setPrice(0);
-            setRating(0);
+        {/*there's a default selected journal anyways though*/} 
+        {selectedJournal && ( 
+          <TouchableOpacity 
+            style={[styles.newButton, { backgroundColor: '#C4E0E5' }]} 
+            onPress={() => {
+              // reset state for new post
+              setTitle('');
+              setDate(new Date());
+              setLocSearchText('');
+              setLocation(null);
+              setDescription('');
+              setPhoto(null);
+              setExperienceTypes([]);
+              setPrice(0);
+              setRating(0);
 
-            setShowCreatePost(true)
-          }}
-        >
-          <Ionicons name="pencil-outline" size={24} color="black" />
-          <Text style={styles.newButtonText}>Make an entry</Text>
-        </TouchableOpacity>
-
+              setShowCreatePost(true);
+            }}
+          >
+            <Ionicons name="pencil-outline" size={24} color="black" />
+            <Text style={styles.newButtonText}>Make an entry</Text>
+          </TouchableOpacity>
+        )}
 
         <ProfilePosts
           journalEntries={journalEntries}
