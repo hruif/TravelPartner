@@ -17,11 +17,12 @@
 ## 🗺️ Navigation
 - [📦 Installation](#-installation)
 - [🚀 Quick Start](#-quick-start)
-- [🛠️ Developer Guide](#-developer-guide)
 - [📝 User Guide](#-user-guide)
+- [🛠️ Developer Guide](#-developer-guide)
 - [🐞 Bug Reporting](#-bug-reporting)
 - [🛠️ CI and Testing](#-ci-and-testing)
 - [🎨 Style Guide](#-style-guide)
+- [✅ Completed Features/Functionality](#-completed-featuresfunctionality)
 - [📜 License](#-license)
 - [📢 Acknowledgments](#-acknowledgments)
 
@@ -57,12 +58,6 @@ npm start
 ```
 Scan the QR code in the terminal with **Expo Go** to launch the app on mobile.
 
-## 🛠️ Developer Guide
-For more details, refer to the **[backend](../main/backend/README.md)** and **[frontend](../main/frontend/README.md)** guides. These include:
-- Directory structures
-- Build instructions
-- Testing procedures
-
 ## 📝 User Guide
 
 ### 🌍 About Globe Gram
@@ -90,6 +85,12 @@ Globe Gram is a **social travel-planning app** that helps users plan via explori
   - Entries can be edited and deleted.
 - **Logout** from the profile screen's bottom. 
 
+## 🛠️ Developer Guide
+For more details, refer to the **[backend](../main/backend/README.md)** and **[frontend](../main/frontend/README.md)** guides. These include:
+- Directory structures
+- Build instructions
+- Testing procedures
+
 ## 🐞 Bug Reporting
 To report a bug, use **GitHub Issues**. Follow [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for effective reporting.
 
@@ -109,6 +110,21 @@ We use **GitHub Actions** for continuous integration.
 - **NestJS:** [Linting & Formatting](https://awesome-nestjs.com/components-and-libraries/lint.html).
 - **Python:** [PEP 8](https://peps.python.org/pep-0008/), Linter: flake8, Formatter: Black.
 - **SQL:** [SQL Style Guide](https://docs.telemetry.mozilla.org/concepts/sql_style.html), Formatter: [SQLFluff](https://sqlfluff.com/).
+
+## ✅ Completed Features/Functionality
+
+- **Interactive map** which allows users to explore travel recommendations.
+- Users can **upload photos**, tag them with location, experience type, price, rating, and  optionally a summary or personal story.
+- Users have **profiles** so they can see all of their travel diaries from each of their trips. 
+- **Filter recommendations** by budget.
+- Users can **add recommendations to their itinerary**, seeing a visual layout of their schedule.
+
+### Issues/Feedback Addressed
+- More frequent usage of GitHub issues for bug tracking.
+- Frontend tests and instructions added for CI.
+- Documentation edited to be more detailed and also easier to follow/understand.
+- Travel diary posting functionality fixed.
+- Keyboard stuck on travel diary issue fixed.
 
 ## 📜 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
