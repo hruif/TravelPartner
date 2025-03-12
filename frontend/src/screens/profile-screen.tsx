@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Modal,
   Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform
@@ -21,6 +21,8 @@ import { PriceInput } from '../components/price-input';
 import { ProfilePosts, Post } from '../components/profile-posts';
 
 import useAuthStore from "../stores/auth.store";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from '../services/api-client';
 
 type RootStackParamList = {
   Home: undefined;
@@ -33,15 +35,12 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const { logout } = useAuthStore();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
-3
-  // not in use yet
+
   const [journals, setJournals] = useState<any[]>([]);
   const [selectedJournal, setSelectedJournal] = useState(journals[0]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newJournalName, setNewJournalName] = useState('');
   const [entries, setEntries] = useState<{ [journal: string]: any[] }>({});
-  //const [heldJournal, setHeldJournal] = useState(null);
-  //const [showJournalOptions, setShowJournalOptions] = useState(false);
 
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
@@ -68,6 +67,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         }
       }
       fetchEntries();
+
+      const loadJournals = async () => {
+        const storedJournals = await AsyncStorage.getItem('journals');
+        if (storedJournals) {
+          setJournals(JSON.parse(storedJournals));  
+        }
+      };
+
+      loadJournals(); 
     }
   }, [showCreatePost]);
 
@@ -76,55 +84,25 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     Alert.alert('Edit Profile', 'Profile editing not implemented yet.');
   };
 
-  const handleNewJournal = () => {
-    if (newJournalName.trim() === '') return;
-    setJournals([newJournalName, ...journals]);
-    setEntries((prev) => ({ ...prev, [newJournalName]: [] }));
-    setNewJournalName('');
+  const handleNewJournal = async () => {
+    const newJournal = newJournalName; 
+    
+    let currentJournals = await AsyncStorage.getItem('journals');
+    currentJournals = currentJournals ? JSON.parse(currentJournals) : [];
+
+    currentJournals.push(newJournal);
+    await AsyncStorage.setItem('journals', JSON.stringify(currentJournals));
+
+    setJournals(currentJournals);
+
     setIsModalVisible(false);
+    setNewJournalName('');
   };
-
-  const setSelectedJournalAndEntries = () => {
-
-  }
-
-  // not in use yet
-  // const handleJournalClick = (journalName: string) => {
-  //   setSelectedJournal(journalName === selectedJournal ? null : journalName);
-  // };
-
-  // not in use yet
-  // const handleLongPress = (journal) => {
-  //   setHeldJournal(journal);
-  //   setShowJournalOptions(true);
-  // };
-
-  // not in use yet
-  // const handleTapOutside = () => {
-  //   setHeldJournal(null);
-  //   setShowJournalOptions(false);
-  // };
-
-  // not in use yet
-  // const renameJournal = (journal) => {
-  //   const newName = prompt('Enter new journal name:'); // change to modal later
-  //   if (newName) {
-  //     const updatedJournals = journalColl.map((item) => 
-  //       item.uuid === journal.uuid ? { ...item, name: newName } : item
-  //     );
-  //     setJournalColl(updatedJournals); // update state to trigger re-render
-  //   }
-  // };
-
-  // not in use yet
-  // const deleteJournal = (journal) => {
-  //   const updatedJournals = journalColl.filter((item) => item.uuid !== journal.uuid);
-  //   setJournalColl(updatedJournals); 
-  // };
 
   const handleEntry = async () => {
     if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
 
+    if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
     const entryData = {
       journalName: selectedJournal,
       title, 
@@ -138,25 +116,32 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     };
   
     try {
-      await postJournalEntry(entryData);
-      setEntries((prev) => ({
-        ...prev,
-        [selectedJournal]: [...(prev[selectedJournal] || []), entryData]
-      }));
+      const createdEntry = await postJournalEntry(entryData);
+      
+      const currentEntries = await AsyncStorage.getItem('journalEntries');
+      const updatedEntries = currentEntries ? JSON.parse(currentEntries) : [];
+
+      updatedEntries.push(createdEntry);
+      await AsyncStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
+
+      setJournalEntries(updatedEntries);
+
+      setTitle('');
+      setDescription('');
+      setPhoto(null);
+      setPrice(0);
+      setRating(0);
+      setLocation(null);
       setShowCreatePost(false);
-      setEditingPost(null);
     } catch (error) {
+      console.error('Error posting journal entry:', error.response?.data || error.message);
       Alert.alert('Error', 'Failed to publish entry. Please try again later.');
     }
   };
   
-
-  // Refresh posts after deletion
   const handleDeletePost = async (postId: string) => {
     try {
       await deleteJournalEntry(postId);
-
-      // refresh the list
       const updatedEntries = await getJournalEntries();
       setJournalEntries(updatedEntries);
     } catch (error) {
@@ -188,6 +173,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         // save edited post
         const entryData = {
           journalName: selectedJournal,
+          journalName: selectedJournal,
           title, 
           date, 
           location,
@@ -198,8 +184,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           rating,
         };
         await postJournalEntry(entryData);
-
-        // update local state with the new post and refresh the list
         const updatedEntries = await getJournalEntries();
         setJournalEntries(updatedEntries);
         setEditingPost(null);
@@ -302,8 +286,18 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
               <Text style={styles.newButtonText}>New journal</Text>
             </TouchableOpacity>
 
+            {journals.map((journal, index) => (
+              <TouchableOpacity 
+                key={index} 
+                onPress={() => setSelectedJournal(journal)} 
+                style={styles.journalItem}
+              >
+                <Text style={[selectedJournal === journal && { fontWeight: 'bold' }]}>
+                  {journal}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </ScrollView>
-
         </View>
 
         <Modal visible={isModalVisible} transparent={true} animationType="slide">

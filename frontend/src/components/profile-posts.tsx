@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 export interface Post {
   uuid: string,
+  journal: string,
   journal: string,
   title: string,
   date: string,
@@ -17,6 +17,7 @@ export interface Post {
 
 interface ProfilePostsProps {
   journalEntries: Post[];
+  selectedJournal: string | null;
   selectedJournal: string | null;
   onDelete: (id: string) => void;
   onEdit: (post: Post) => void;
