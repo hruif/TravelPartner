@@ -16,7 +16,7 @@ export class Location {
     /**
      * URI for the location's photo.
      */
-    @Property()
+    @Property({ columnType: 'varchar(1000)' })
     photoURI: string;
 
     /**

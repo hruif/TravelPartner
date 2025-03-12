@@ -18,7 +18,7 @@ CREATE TABLE "itinerary"
 CREATE TABLE "location"
   (
      "uuid"              VARCHAR(255) NOT NULL,
-     "photo_uri"         VARCHAR(255) NOT NULL,
+     "photo_uri"         VARCHAR(1000) NOT NULL,
      "title"             VARCHAR(255) NOT NULL,
      "description"       VARCHAR(255) NOT NULL,
      "formatted_address" VARCHAR(255) NOT NULL,
