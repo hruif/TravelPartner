@@ -78,6 +78,7 @@ export class DiaryEntry {
    * @param price - The price associated with the entry.
    * @param rating - The rating for the entry.
    * @param formattedAddress - The formatted address of the location.
+   * @param journal - The journal name for the entry.
    */
   constructor(
     title: string,
@@ -87,6 +88,7 @@ export class DiaryEntry {
     price: number = 0,
     rating: number = 0,
     formattedAddress?: string,
+    journal?: string,
   ) {
     this.title = title;
     this.user = user;
@@ -95,5 +97,6 @@ export class DiaryEntry {
     this.price = price;
     this.rating = rating;
     this.formattedAddress = formattedAddress;
+    this.journal = journal;
   }
 }

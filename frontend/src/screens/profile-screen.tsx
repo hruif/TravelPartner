@@ -4,7 +4,6 @@ import {
   Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
-import DateTimePicker from '@react-native-community/datetimepicker';
 
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -297,6 +296,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
                 </Text>
               </TouchableOpacity>
             ))}
+        
           </ScrollView>
         </View>
 
@@ -356,15 +356,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <Ionicons name="log-out-outline" size={24} color="white" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
-
-        {/* Render popup if a post is selected */}
-        {selectedDiaryPost && (
-          <DiaryPostPopup
-            post={selectedDiaryPost}
-            onClose={() => setSelectedDiaryPost(null)}
-            onDeletePost={handleDeletePost}
-          />
-        )}
 
       </ScrollView>
     );

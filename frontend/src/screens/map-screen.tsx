@@ -4,6 +4,7 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import React, { useState } from 'react';
 import GoogleMapComponent from '../components/google-map';
@@ -36,6 +37,9 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
 
   // Process search query
   const handleSearch = async () => {
+    // Hide the keyboard
+    Keyboard.dismiss();
+
     if (!searchText.trim()) return;
 
     const location = await getCoordinates(searchText);
@@ -77,10 +81,10 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
         {/* Search Bar Overlay */}
         <View style={styles.searchContainer}>
           <AnimatedPlaceholderInput
-            style={styles.searchBar}
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearch}
+              style={styles.searchBar}
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
           />
           <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
             <Ionicons name="search" size={24} color="white" />
@@ -112,7 +116,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 16,
-    paddingHorizontal: 10, // add padding only to the input
+    paddingHorizontal: 10,
     color: 'black',
     borderTopLeftRadius: 25,
     borderBottomLeftRadius: 25,
@@ -126,4 +130,3 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
   },
 });
-
