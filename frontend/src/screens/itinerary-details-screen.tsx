@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   StyleSheet, View, Text, ScrollView, TouchableOpacity,
-  KeyboardAvoidingView, Platform
+  KeyboardAvoidingView, Platform, ImageBackground
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +12,7 @@ import { ItineraryStackParamList } from './itinerary-stack';
 import { ItineraryLocations } from '../components/itinerary-locations';
 
 import { useItineraryMarkers } from '../components/itinerary-map-markers';
-import { getLatLngFromAddress } from '../services/maps-service';
+import { getLatLngFromAddress, getFirstImageForItineraryTitle } from '../services/maps-service';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
@@ -24,6 +24,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
 
   const { fetchedItinerary, markers, refreshItinerary } = useItineraryMarkers(itinerary.uuid);
+  const [headerImage, setHeaderImage] = useState<string | null>(null);
 
   // If we haven't fetched anything yet, fallback to the initial object
   const displayedItinerary = fetchedItinerary || itinerary;
@@ -46,23 +47,43 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
     fetchDefaultRegion();
   }, [destination]);
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const imageUrl = await getFirstImageForItineraryTitle(destination);
+        setHeaderImage(imageUrl);
+      } catch (error) {
+        console.error('Failed to get header image:', error);
+      }
+    })();
+  }, [destination]);
+
   return (
     <KeyboardAvoidingView
       style={styles.keyboardAvoidingContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
-
-        {/* Header with back button */}
+      {/* The SafeAreaView is used to account for notches, but you can control its padding */}
+      <SafeAreaView edges={['left', 'right']} style={styles.container}>
+      
+        {/* Header with home button and title at bottom left */}
         <View style={styles.header}>
+          {headerImage && (
+            <ImageBackground
+              source={{ uri: headerImage }}
+              style={StyleSheet.absoluteFill}
+              resizeMode="cover"
+            />
+          )}
           <TouchableOpacity
-            style={styles.backButton}
+            style={styles.homeButton}
             onPress={() => navigation.navigate('Home')}
           >
-            <Ionicons name="arrow-back" size={24} color="#000" />
+            <Ionicons name="home" size={24} color="#fff" />
           </TouchableOpacity>
           <Text style={styles.headerText}>Your Trip to {destination}</Text>
         </View>
+
 
         {/* Horizontal tabs: Itinerary / Map */}
         <View style={styles.optionsContainer}>
@@ -104,7 +125,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
         <View style={styles.content}>
           {selectedOption === 'Itinerary' ? (
             <ScrollView style={styles.itineraryScrollView}>
-              <ItineraryLocations locations={locations} />
+              <ItineraryLocations locations={locations} itineraryId={itinerary.uuid } refreshItinerary={refreshItinerary}/>
             </ScrollView>
           ) : (
             <View style={styles.mapContent}>
@@ -113,9 +134,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
                 itineraryId={itinerary.uuid}
                 itineraryMarkers={markers}
                 onLocationAdded={async () => {
-                  // 1) Re-fetch itinerary and rebuild markers
                   await refreshItinerary();
-                  // 2) Switch back to the itinerary tab
                   setSelectedOption('Itinerary');
                 }}
                 defaultRegion={defaultRegion} 
@@ -133,21 +152,25 @@ const styles = StyleSheet.create({
   keyboardAvoidingContainer: { flex: 1 },
   container: { flex: 1, backgroundColor: '#fff' },
   header: {
-    position: 'relative',
+    height: '20%',
     backgroundColor: '#f0f0f0',
-    paddingVertical: 20,
-    alignItems: 'center',
+    position: 'relative',
   },
-  backButton: {
+  homeButton: {
     position: 'absolute',
-    top: 10,
+    top: 40,
     left: 10,
     zIndex: 2,
     padding: 5,
   },
   headerText: {
+    position: 'absolute',
+    bottom: 12, 
+    left: 12,
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#fff', 
+    zIndex: 2,
   },
   optionsContainer: {
     height: 50,

@@ -34,8 +34,8 @@ const GoogleMapComponent: React.FC<GoogleMapComponentProps> = ({
   const hardCodedDefaultRegion: Region = {
     latitude: -3.745,
     longitude: -38.523,
-    latitudeDelta: 5.0,      // Zoomed out default
-    longitudeDelta: 5.0,     // Zoomed out default
+    latitudeDelta: 5.0,    
+    longitudeDelta: 5.0,    
   };
 
   const finalRegion = region ?? defaultRegion ?? hardCodedDefaultRegion;

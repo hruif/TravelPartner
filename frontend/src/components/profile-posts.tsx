@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 export interface Post {
   uuid: string,
   journal: string,
-  journal: string,
   title: string,
   date: string,
   location: { lat: any; lng: any; place_id: any } | null,
@@ -17,7 +16,6 @@ export interface Post {
 
 interface ProfilePostsProps {
   journalEntries: Post[];
-  selectedJournal: string | null;
   selectedJournal: string | null;
   onDelete: (id: string) => void;
   onEdit: (post: Post) => void;

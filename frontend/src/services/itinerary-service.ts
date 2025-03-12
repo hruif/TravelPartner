@@ -29,8 +29,17 @@ export async function deleteItinerary(postId: string) {
 
 export async function getItineraryById(itineraryId: string) {
   const response = await apiClient.get(`/itineraries/${itineraryId}`);
-  return response.data; 
+  const data = response.data;
+  if (data && data.locations) {
+    // Transform each location so that it has an 'id' property based on its uuid
+    data.locations = data.locations.map((loc: any) => ({
+      ...loc,
+      id: loc.uuid,
+    }));
+  }
+  return data;
 }
+
 
 interface AddLocationData {
   photoURI: string;
@@ -43,4 +52,37 @@ export async function addLocationToItinerary(itineraryId: string, locationData: 
   const response = await apiClient.post(`/itineraries/${itineraryId}/location`, locationData);
 
   return response.data;
+}
+
+export async function deleteLocationFromItinerary(itineraryId: string, locationId: string) {
+  try {
+    const response = await apiClient.delete(
+      `/itineraries/${itineraryId}/location/${locationId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Failed to delete location from itinerary:', error);
+    throw error;
+  }
+}
+
+export async function deleteItineraryAndAllLocations(itineraryId: string): Promise<void> {
+  const itinerary = await getItineraryById(itineraryId);
+  if (!itinerary) {
+    throw new Error(`No itinerary found for id=${itineraryId}`);
+  }
+
+  const locations = itinerary.locations || [];
+  await Promise.all(
+    locations.map((loc: any) => {
+      if (!loc.id) {
+        console.warn(`Location missing id; skipping delete for location:`, loc);
+        return null;
+      }
+      return deleteLocationFromItinerary(itineraryId, loc.id);
+    })
+  );
+
+  // 3) Delete the itinerary itself
+  await apiClient.delete(`/itineraries/${itineraryId}`);
 }

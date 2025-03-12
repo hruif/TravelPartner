@@ -19,6 +19,7 @@ export function ItineraryCreation({ destination, setDestination, onStartTrip, on
       >
         <Ionicons name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
+      <Text style={styles.headerTitle}>Let's Plan!</Text>
       <View style={styles.plannerContent}>
         <Text style={styles.plannerLabel}>Where to?</Text>
         <TextInput 
@@ -43,19 +44,27 @@ const styles = StyleSheet.create({
   plannerContainer: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'center',
     padding: 20,
-    paddingTop: 50,
+    paddingTop: 50, 
   },
   backButtonMinimal: {
     position: 'absolute',
-    top: 10,   // adjust from 47 to 10
+    top: 10,
     left: 10,
     zIndex: 10,
     padding: 5,
   },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    alignSelf: 'center',
+    marginTop: 20, 
+    marginBottom: 10,
+  },
   plannerContent: {
     marginBottom: 40,
+    marginTop: 20, 
   },
   plannerLabel: {
     fontSize: 24,
@@ -82,3 +91,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+export default ItineraryCreation;
