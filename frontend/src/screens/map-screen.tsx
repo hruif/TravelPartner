@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Keyboard,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GoogleMapComponent from '../components/google-map';
 import { StackScreenProps } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,14 +29,24 @@ interface Region {
   longitudeDelta: number;
 }
 
-export default function MapScreen({ navigation }: HomeScreenProps) {
+interface MapScreenProps {
+  itineraryId?: string;
+}
+
+type CombinedMapScreenProps = HomeScreenProps & MapScreenProps;
+
+export default function MapScreen({ navigation, itineraryId }: CombinedMapScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
   const [locationDetails, setLocationDetails] = useState<any>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [searchPerformed, setSearchPerformed] = useState(false);
-  const [itineraryId, setItineraryId] = useState<string>('SOME_ITINERARY_UUID'); 
+  const [itineraryIdState, setItineraryIdState] = useState<string | undefined>(itineraryId);
+
+  useEffect(() => {
+    setItineraryIdState(itineraryId);
+  }, [itineraryId]);
 
   // Process search query
   const handleSearch = async () => {
@@ -96,26 +106,35 @@ export default function MapScreen({ navigation }: HomeScreenProps) {
 
         {/* Render the popup if details are available */}
         {showDetails && locationDetails && (
-          <PlaceDetailsPopup
-            details={locationDetails}
-            onClose={() => setShowDetails(false)}
-            onAddLocation={async (title, photoURI) => {
-              try {
-                // Post to /itineraries/{id}/location
-                await addLocationToItinerary(itineraryId, {
-                  photoURI,
-                  title,
-                  description: '',          // optional
-                  formattedAddress: '',      // optional
-                });
-                alert('Location added to itinerary!');
-              } catch (error) {
-                console.error('Failed to add location:', error);
-                alert('Error adding location to itinerary.');
-              }
-            }}
-          />
-        )}
+        <PlaceDetailsPopup
+          details={locationDetails}
+          onClose={() => setShowDetails(false)}
+          onAddLocation={async (title, photoURI) => {
+            if (!itineraryIdState) {
+              alert('Itinerary not set.');
+              return;
+            }
+            try {
+              console.log("Sending to /itineraries/" + itineraryIdState + "/location with data:", {
+                photoURI,
+                title,
+                description: '',
+                formattedAddress: '',
+              });
+              await addLocationToItinerary(itineraryIdState, {
+                photoURI,
+                title,
+                description: '',
+                formattedAddress: '',
+              });
+              alert('Location added to itinerary!');
+            } catch (error) {
+              console.error('Failed to add location:', error);
+              alert('Error adding location to itinerary.');
+            }
+          }}
+        />
+      )}
       </SafeAreaView>
   );
 }

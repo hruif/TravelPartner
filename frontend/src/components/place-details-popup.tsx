@@ -1,4 +1,3 @@
-// place-details-popup.tsx
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   popup: {
-    height: screenHeight * 0.5, // Half the screen height
+    height: screenHeight * 0.5,
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -113,8 +112,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   image: {
-    width: '100%', // Fill horizontal space
-    height: 150,   // Adjust height as needed
+    width: '100%',
+    height: 250,
     borderRadius: 10,
     marginBottom: 10,
   },

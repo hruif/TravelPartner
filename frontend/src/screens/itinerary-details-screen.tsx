@@ -100,7 +100,10 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
             </View>
           ) : (
             <View style={styles.mapContent}>
-              <MapScreen navigation={undefined} route={undefined} />
+              <MapScreen 
+                  navigation={navigation}
+                  itineraryId={itinerary.uuid}
+                />
             </View>
           )}
         </View>
