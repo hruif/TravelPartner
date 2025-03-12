@@ -22,6 +22,7 @@ import { ProfilePosts, Post } from '../components/profile-posts';
 import useAuthStore from "../stores/auth.store";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import apiClient from '../services/api-client';
+import { clearLocalJournals } from '../components/clear-local-journals';
 
 type RootStackParamList = {
   Home: undefined;
@@ -356,6 +357,18 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           <Ionicons name="log-out-outline" size={24} color="white" />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity 
+            style={styles.clearButton} 
+            onPress={async () => {
+              await clearLocalJournals();
+              // Optionally, also clear your local state if needed:
+              setJournals([]);
+              setJournalEntries([]);
+            }}
+          >
+            <Text style={styles.clearButtonText}>Clear Local Journals</Text>
+          </TouchableOpacity>
 
       </ScrollView>
     );
@@ -762,5 +775,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
+  },
+  clearButton: {
+    alignSelf: 'center',
+    padding: 5,
+    marginVertical: 10,
+  },
+  clearButtonText: {
+    fontSize: 12,
+    color: '#555',
+    textDecorationLine: 'underline',
   },
 });

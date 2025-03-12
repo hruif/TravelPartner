@@ -99,7 +99,19 @@ export default function HomeScreen({ navigation }) {
           />
           <LargePost 
             imageSource={require('../../assets/tokyo1.jpg')}
-            title="Tokyo" 
+            title="Tokyo, Japan" 
+          />
+          <LargePost 
+            imageSource={require('../../assets/spbg-russia1.jpg')}
+            title="St. Petersburg, Russia" 
+          />
+          <LargePost 
+            imageSource={require('../../assets/norway1.jpg')}
+            title="Norway" 
+          />
+          <LargePost 
+            imageSource={require('../../assets/italy1.jpg')}
+            title="Italy" 
           />
         </View>
       </ScrollView>
