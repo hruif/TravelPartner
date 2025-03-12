@@ -33,11 +33,12 @@ interface MapScreenProps {
   itineraryId?: string;
   onLocationAdded?: () => void;
   itineraryMarkers?: { latitude: number; longitude: number; title?: string }[];
+  defaultRegion?: Region | null;
 }
 
 type CombinedMapScreenProps = HomeScreenProps & MapScreenProps;
 
-export default function MapScreen({ navigation, itineraryId, onLocationAdded, itineraryMarkers }: CombinedMapScreenProps) {
+export default function MapScreen({ navigation, itineraryId, onLocationAdded, itineraryMarkers, defaultRegion }: CombinedMapScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -91,7 +92,7 @@ export default function MapScreen({ navigation, itineraryId, onLocationAdded, it
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <GoogleMapComponent region={region} marker={marker} itineraryMarkers={itineraryMarkers} />
+      <GoogleMapComponent region={region || defaultRegion} marker={marker} itineraryMarkers={itineraryMarkers} />
       {/* Search Bar Overlay */}
       <View style={styles.searchContainer}>
         <AnimatedPlaceholderInput

@@ -1,5 +1,4 @@
-// itinerary-details-screen.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet, View, Text, ScrollView, TouchableOpacity,
   KeyboardAvoidingView, Platform
@@ -13,12 +12,14 @@ import { ItineraryStackParamList } from './itinerary-stack';
 import { ItineraryLocations } from '../components/itinerary-locations';
 
 import { useItineraryMarkers } from '../components/itinerary-map-markers';
+import { getLatLngFromAddress } from '../services/maps-service';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
 export default function ItineraryDetailsScreen({ navigation, route }: ItineraryDetailsScreenProps) {
   const { itinerary } = route.params;
   const destination = itinerary.title;
+  const [defaultRegion, setDefaultRegion] = useState(null);
 
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
 
@@ -27,6 +28,23 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
   // If we haven't fetched anything yet, fallback to the initial object
   const displayedItinerary = fetchedItinerary || itinerary;
   const locations = displayedItinerary.locations || [];
+
+  useEffect(() => {
+    async function fetchDefaultRegion() {
+      try {
+        const coords = await getLatLngFromAddress(destination); // assuming destination is the itinerary title or derived address
+        setDefaultRegion({
+          latitude: coords.lat,
+          longitude: coords.lng,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      } catch (error) {
+        console.error('Failed to geocode itinerary title:', error);
+      }
+    }
+    fetchDefaultRegion();
+  }, [destination]);
 
   return (
     <KeyboardAvoidingView
@@ -100,6 +118,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
                   // 2) Switch back to the itinerary tab
                   setSelectedOption('Itinerary');
                 }}
+                defaultRegion={defaultRegion} 
               />
             </View>
           )}
