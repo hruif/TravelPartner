@@ -17,7 +17,7 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   // Construct image URLs from each photo's photo_reference.
   const imageUrls: string[] =
     details.photos?.map((photo: any) => {
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=YOUR_API_KEY`;
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=AIzaSyBwDfYSVR0oQWqoFR7hOPgqK_JChCNlSoI`;
     }) || [];
 
   // Grab the first image (if any)

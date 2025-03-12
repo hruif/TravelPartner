@@ -1,61 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, ScrollView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+// itinerary-details-screen.tsx
+import React, { useState } from 'react';
+import {
+  StyleSheet, View, Text, ScrollView, TouchableOpacity,
+  KeyboardAvoidingView, Platform
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+
 import MapScreen from './map-screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ItineraryStackParamList } from './itinerary-stack';
-import { getItineraryById } from '../services/itinerary-service';
 import { ItineraryLocations } from '../components/itinerary-locations';
-import { getLatLngFromAddress } from '../services/maps-service';
+
+import { useItineraryMarkers } from '../components/itinerary-map-markers';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
 export default function ItineraryDetailsScreen({ navigation, route }: ItineraryDetailsScreenProps) {
-  const { itinerary } = route.params;   
+  const { itinerary } = route.params;
   const destination = itinerary.title;
 
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
-  const [fetchedItinerary, setFetchedItinerary] = useState<any>(null);
-  const [itineraryMarkers, setItineraryMarkers] = useState<any[]>([]);
 
-  useEffect(() => {
-    async function fetchItinerary() {
-      // 1. Get the itinerary from your backend
-      const fullItinerary = await getItineraryById(itinerary.uuid);
-      
-      // 2. For each location, call getLatLngFromAddress to get lat/lng
-      const markers = await Promise.all(
-        fullItinerary.locations.map(async (loc: any) => {
-          if (loc.formattedAddress) {
-            try {
-              const coords = await getLatLngFromAddress(loc.formattedAddress);
-              return {
-                latitude: coords.lat,
-                longitude: coords.lng,
-                title: loc.title || 'Untitled',
-              };
-            } catch (err) {
-              console.error('Failed geocoding address:', loc.formattedAddress, err);
-              return null;
-            }
-          }
-          return null;
-        })
-      );
-      
-      // 3. Filter out any nulls (in case geocoding failed)
-      const validMarkers = markers.filter((m) => m !== null);
-      
-      // 4. Store the itinerary and the markers in state
-      setFetchedItinerary(fullItinerary);
-      setItineraryMarkers(validMarkers);
-    }
-    
-    if (itinerary.uuid) {
-      fetchItinerary();
-    }
-  }, [itinerary.uuid]);
+  const { fetchedItinerary, markers, refreshItinerary } = useItineraryMarkers(itinerary.uuid);
+
+  // If we haven't fetched anything yet, fallback to the initial object
   const displayedItinerary = fetchedItinerary || itinerary;
   const locations = displayedItinerary.locations || [];
 
@@ -65,6 +34,8 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
+
+        {/* Header with back button */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -75,6 +46,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
           <Text style={styles.headerText}>Your Trip to {destination}</Text>
         </View>
 
+        {/* Horizontal tabs: Itinerary / Map */}
         <View style={styles.optionsContainer}>
           <ScrollView
             horizontal
@@ -85,7 +57,12 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
               style={styles.optionButton}
               onPress={() => setSelectedOption('Itinerary')}
             >
-              <Text style={[styles.optionText, selectedOption === 'Itinerary' && styles.selectedOptionText]}>
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedOption === 'Itinerary' && styles.selectedOptionText
+                ]}
+              >
                 Itinerary
               </Text>
             </TouchableOpacity>
@@ -93,13 +70,19 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
               style={styles.optionButton}
               onPress={() => setSelectedOption('Map')}
             >
-              <Text style={[styles.optionText, selectedOption === 'Map' && styles.selectedOptionText]}>
+              <Text
+                style={[
+                  styles.optionText,
+                  selectedOption === 'Map' && styles.selectedOptionText
+                ]}
+              >
                 Map
               </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
 
+        {/* Content area */}
         <View style={styles.content}>
           {selectedOption === 'Itinerary' ? (
             <ScrollView style={styles.itineraryScrollView}>
@@ -107,23 +90,21 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
             </ScrollView>
           ) : (
             <View style={styles.mapContent}>
-              <MapScreen 
-                  navigation={navigation}
-                  itineraryId={itinerary.uuid}
-                  onLocationAdded={async () => {
-                    setSelectedOption('Itinerary');
-                    try {
-                      const fullItinerary = await getItineraryById(itinerary.uuid);
-                      setFetchedItinerary(fullItinerary);
-                    } catch (error) {
-                      console.error('Failed to refresh itinerary details:', error);
-                    }
-                  }}
-                  itineraryMarkers={itineraryMarkers}
+              <MapScreen
+                navigation={navigation}
+                itineraryId={itinerary.uuid}
+                itineraryMarkers={markers}
+                onLocationAdded={async () => {
+                  // 1) Re-fetch itinerary and rebuild markers
+                  await refreshItinerary();
+                  // 2) Switch back to the itinerary tab
+                  setSelectedOption('Itinerary');
+                }}
               />
             </View>
           )}
         </View>
+
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -170,11 +151,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'black',
   },
-  content: { 
-    flex: 1
+  content: {
+    flex: 1,
   },
   mapContent: {
-    flex: 1 
+    flex: 1,
   },
   itineraryScrollView: {
     flex: 1,
