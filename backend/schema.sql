@@ -51,4 +51,5 @@ ALTER TABLE "location"
 
 ALTER TABLE "diary_entry"
   ADD CONSTRAINT "diary_entry_user_uuid_foreign" FOREIGN KEY ("user_uuid")
-  REFERENCES "user" ("uuid") ON UPDATE CASCADE;  
+  REFERENCES "user" ("uuid") ON UPDATE CASCADE;
+  

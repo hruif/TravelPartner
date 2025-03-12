@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { createClient, Client } from '@google/maps';
 
 @Injectable()
 export class MapsService {
   private client: Client;
 
-  constructor() {
+  constructor(private readonly httpService: HttpService) {
     this.client = createClient({
       key: process.env.GOOGLE_PLACES_API_KEY || '',
       Promise: Promise,
@@ -58,5 +59,15 @@ export class MapsService {
       .asPromise();
 
     return response.json.results;
+  }
+
+  /*
+   * This method will take an incomplete search input and return potential autocomplete results.
+   * @param search: string
+   */
+  async getAutocomplete(input: string) {
+    const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${input}&key=${this.client.key}`;
+    const response = await this.httpService.get(url).toPromise();
+    return response.data;
   }
 }

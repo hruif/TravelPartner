@@ -15,6 +15,11 @@ export class MapsController {
     return this.mapsService.searchPlaces(query);
   }
 
+  @Get('autocomplete')
+  async getAutocomplete(@Query('input') input: string) {
+    return this.mapsService.getAutocomplete(input);
+  }
+
   @Get('place-details')
   async getPlaceDetails(@Query('placeId') placeId: string) {
     return this.mapsService.getPlaceDetails(placeId);

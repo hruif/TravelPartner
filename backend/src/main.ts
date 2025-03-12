@@ -7,14 +7,17 @@ import {AllExceptionsFilter} from "./dev-filter";
 
 declare const module: any;
 
-async function bootstrap() {
-  dotenvConfig(); // Load .env before anything else
+dotenvConfig(); // Load .env before anything else
 
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
 app.useGlobalFilters(new AllExceptionsFilter());
 
   app.useGlobalPipes(new ValidationPipe());
+
+  // Enable CORS
+  app.enableCors();
 
   // Setup swagger
   const config = new DocumentBuilder()
