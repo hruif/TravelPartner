@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { deleteLocationFromItinerary } from '../services/itinerary-service';
 
 export interface Location {
   id?: string;
@@ -10,15 +11,25 @@ export interface Location {
 
 interface ItineraryLocationsProps {
   locations: Location[];
+  itineraryId: string;
+  refreshItinerary: () => Promise<void>;
 }
 
 interface LocationItemProps {
+  itineraryId: string;
   location: Location;
   index: number;
   isLast: boolean;
+  refreshItinerary: () => Promise<void>;
 }
 
-const LocationItem: React.FC<LocationItemProps> = ({ location, index, isLast }) => {
+const LocationItem: React.FC<LocationItemProps> = ({
+  itineraryId,
+  location,
+  index,
+  isLast,
+  refreshItinerary,
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -30,7 +41,7 @@ const LocationItem: React.FC<LocationItemProps> = ({ location, index, isLast }) 
         </View>
         {!isLast && <View style={styles.verticalLine} />}
       </View>
-      {/* Content Column: Two sub-columns – text (title + triple dots + menu) and image */}
+      {/* Content Column */}
       <View style={styles.locationContent}>
         <View style={styles.textContainer}>
           <Text style={styles.locationTitle}>
@@ -46,13 +57,19 @@ const LocationItem: React.FC<LocationItemProps> = ({ location, index, isLast }) 
             <View style={styles.menuOptions}>
               <TouchableOpacity
                 style={styles.menuOption}
-                onPress={() => console.log('Edit pressed')}
-              >
-                <Text style={styles.menuOptionText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.menuOption}
-                onPress={() => console.log('Delete pressed')}
+                onPress={async () => {
+                  if (!location.id) {
+                    console.error("Location ID is missing");
+                    return;
+                  }
+                  try {
+                    await deleteLocationFromItinerary(itineraryId, location.id);
+                    // Refresh itinerary state after deletion
+                    await refreshItinerary();
+                  } catch (err) {
+                    console.error('Error deleting location:', err);
+                  }
+                }}
               >
                 <Text style={[styles.menuOptionText, { color: 'red' }]}>Delete</Text>
               </TouchableOpacity>
@@ -71,7 +88,11 @@ const LocationItem: React.FC<LocationItemProps> = ({ location, index, isLast }) 
   );
 };
 
-export const ItineraryLocations: React.FC<ItineraryLocationsProps> = ({ locations }) => {
+export const ItineraryLocations: React.FC<ItineraryLocationsProps> = ({
+  itineraryId,
+  locations,
+  refreshItinerary,
+}) => {
   return (
     <View style={styles.locationsContainer}>
       {locations.length > 0 ? (
@@ -81,6 +102,8 @@ export const ItineraryLocations: React.FC<ItineraryLocationsProps> = ({ location
             location={loc}
             index={index}
             isLast={index === locations.length - 1}
+            itineraryId={itineraryId}
+            refreshItinerary={refreshItinerary}
           />
         ))
       ) : (
@@ -98,7 +121,7 @@ const styles = StyleSheet.create({
   },
   locationItemContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start', // Align content to the top
+    alignItems: 'flex-start',
     marginBottom: 10,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -131,7 +154,7 @@ const styles = StyleSheet.create({
   },
   locationContent: {
     flex: 1,
-    flexDirection: 'row', // Two columns: left for text/menu, right for image
+    flexDirection: 'row',
     justifyContent: 'space-between',
   },
   textContainer: {
@@ -142,7 +165,7 @@ const styles = StyleSheet.create({
   locationTitle: {
     fontSize: 16,
     color: '#333',
-    marginBottom: 4, // Spacing between title and triple dots
+    marginBottom: 4,
   },
   menuButton: {
     marginTop: 2,
@@ -151,7 +174,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
     backgroundColor: '#fff',
     padding: 4,
-    // Removed border styles so no outline is shown for the menu
   },
   menuOption: {
     paddingVertical: 2,

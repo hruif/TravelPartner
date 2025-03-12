@@ -125,7 +125,7 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
         <View style={styles.content}>
           {selectedOption === 'Itinerary' ? (
             <ScrollView style={styles.itineraryScrollView}>
-              <ItineraryLocations locations={locations} />
+              <ItineraryLocations locations={locations} itineraryId={itinerary.uuid } refreshItinerary={refreshItinerary}/>
             </ScrollView>
           ) : (
             <View style={styles.mapContent}>
