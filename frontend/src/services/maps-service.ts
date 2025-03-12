@@ -26,3 +26,17 @@ export const getPlaceDetails = async (placeId: string) => {
         return null;
     }
 };
+
+export async function getLatLngFromAddress(address: string) {
+    const response = await apiClient.get('/maps/geocode', {
+      params: { address },
+    });
+    
+    const data = response.data;
+    if (data && data.length > 0) {
+      const location = data[0].geometry.location;
+      return { lat: location.lat, lng: location.lng };
+    }
+
+    throw new Error('No geocode results found');
+  }
