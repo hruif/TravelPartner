@@ -6,6 +6,7 @@ import MapScreen from './map-screen';
 import { StackScreenProps } from '@react-navigation/stack';
 import { ItineraryStackParamList } from './itinerary-stack';
 import { getItineraryById } from '../services/itinerary-service';
+import { ItineraryLocations } from '../components/itinerary-locations';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
@@ -14,12 +15,9 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
   const destination = itinerary.title;
 
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
-
-  // We'll store the fetched itinerary details (including locations) in state
   const [fetchedItinerary, setFetchedItinerary] = useState<any>(null);
 
   useEffect(() => {
-    // If we have a UUID, fetch the latest itinerary data from the server
     if (itinerary.uuid) {
       (async () => {
         try {
@@ -32,7 +30,6 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
     }
   }, [itinerary.uuid]);
 
-  // If we haven't fetched anything yet, fallback to the initial object
   const displayedItinerary = fetchedItinerary || itinerary;
   const locations = displayedItinerary.locations || [];
 
@@ -42,7 +39,6 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <SafeAreaView edges={['top', 'left', 'right']} style={styles.container}>
-        {/* Header with back button */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -53,7 +49,6 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
           <Text style={styles.headerText}>Your Trip to {destination}</Text>
         </View>
 
-        {/* Horizontal options */}
         <View style={styles.optionsContainer}>
           <ScrollView
             horizontal
@@ -79,31 +74,14 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
           </ScrollView>
         </View>
 
-        {/* Content area */}
         <View style={styles.content}>
           {selectedOption === 'Itinerary' ? (
-            <View style={styles.itineraryContent}>
-              <Text style={styles.itineraryText}>
-                Itinerary details for {destination}:
-              </Text>
-              <View style={styles.locationsContainer}>
-                {locations.length > 0 ? (
-                  locations.map((loc: any, index: number) => (
-                    <Text key={loc.id || index} style={styles.locationItem}>
-                      {index + 1}. {loc.name || 'Untitled location'}
-                    </Text>
-                  ))
-                ) : (
-                  <Text>No locations found for this itinerary.</Text>
-                )}
-              </View>
-            </View>
+            <ScrollView style={styles.itineraryScrollView}>
+              <ItineraryLocations locations={locations} />
+            </ScrollView>
           ) : (
             <View style={styles.mapContent}>
-              <MapScreen 
-                  navigation={navigation}
-                  itineraryId={itinerary.uuid}
-                />
+              <MapScreen navigation={navigation} itineraryId={itinerary.uuid} />
             </View>
           )}
         </View>
@@ -153,24 +131,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'black',
   },
-  content: { flex: 1 },
-  itineraryContent: {
-    flex: 1,
-    padding: 20,
-  },
-  itineraryText: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 10,
-  },
-  locationsContainer: {
-    marginTop: 10,
-  },
-  locationItem: {
-    fontSize: 14,
-    marginBottom: 5,
+  content: { 
+    flex: 1
   },
   mapContent: {
+    flex: 1 
+  },
+  itineraryScrollView: {
     flex: 1,
+    padding: 20,
   },
 });

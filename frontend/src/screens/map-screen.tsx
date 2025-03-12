@@ -31,11 +31,12 @@ interface Region {
 
 interface MapScreenProps {
   itineraryId?: string;
+  onLocationAdded?: () => void;
 }
 
 type CombinedMapScreenProps = HomeScreenProps & MapScreenProps;
 
-export default function MapScreen({ navigation, itineraryId }: CombinedMapScreenProps) {
+export default function MapScreen({ navigation, itineraryId, onLocationAdded }: CombinedMapScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -87,47 +88,41 @@ export default function MapScreen({ navigation, itineraryId }: CombinedMapScreen
   };
 
   return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="auto" />
-        <GoogleMapComponent region={region} marker={marker} />
-
-        {/* Search Bar Overlay */}
-        <View style={styles.searchContainer}>
-          <AnimatedPlaceholderInput
-              style={styles.searchBar}
-              value={searchText}
-              onChangeText={setSearchText}
-              onSubmitEditing={handleSearch}
-          />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <Ionicons name="search" size={24} color="white" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Render the popup if details are available */}
-        {showDetails && locationDetails && (
+    <SafeAreaView style={styles.container}>
+      <StatusBar style="auto" />
+      <GoogleMapComponent region={region} marker={marker} />
+      {/* Search Bar Overlay */}
+      <View style={styles.searchContainer}>
+        <AnimatedPlaceholderInput
+          style={styles.searchBar}
+          value={searchText}
+          onChangeText={setSearchText}
+          onSubmitEditing={handleSearch}
+        />
+        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+          <Ionicons name="search" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+      {showDetails && locationDetails && (
         <PlaceDetailsPopup
           details={locationDetails}
           onClose={() => setShowDetails(false)}
           onAddLocation={async (title, photoURI) => {
-            if (!itineraryIdState) {
+            if (!itineraryId) {
               alert('Itinerary not set.');
               return;
             }
             try {
-              console.log("Sending to /itineraries/" + itineraryIdState + "/location with data:", {
+              await addLocationToItinerary(itineraryId, {
                 photoURI,
                 title,
                 description: '',
                 formattedAddress: '',
               });
-              await addLocationToItinerary(itineraryIdState, {
-                photoURI,
-                title,
-                description: '',
-                formattedAddress: '',
-              });
-              alert('Location added to itinerary!');
+              // Instead of alerting, call the callback:
+              if (onLocationAdded) {
+                onLocationAdded();
+              }
             } catch (error) {
               console.error('Failed to add location:', error);
               alert('Error adding location to itinerary.');
@@ -135,7 +130,7 @@ export default function MapScreen({ navigation, itineraryId }: CombinedMapScreen
           }}
         />
       )}
-      </SafeAreaView>
+    </SafeAreaView>
   );
 }
 
