@@ -45,8 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    paddingTop: 50, // adjust this if needed
-    // Removed justifyContent: 'center' to align content at the top
+    paddingTop: 50, 
   },
   backButtonMinimal: {
     position: 'absolute',
@@ -60,12 +59,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
     alignSelf: 'center',
-    marginTop: 20, // Adjusted to position the title below the back button
+    marginTop: 20, 
     marginBottom: 10,
   },
   plannerContent: {
     marginBottom: 40,
-    marginTop: 20, // add margin to separate from header
+    marginTop: 20, 
   },
   plannerLabel: {
     fontSize: 24,
