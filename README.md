@@ -17,8 +17,8 @@
 ## 🗺️ Navigation
 - [📦 Installation](#-installation)
 - [🚀 Quick Start](#-quick-start)
-- [🛠️ Developer Guide](#-developer-guide)
 - [📝 User Guide](#-user-guide)
+- [🛠️ Developer Guide](#-developer-guide)
 - [🐞 Bug Reporting](#-bug-reporting)
 - [🛠️ CI and Testing](#-ci-and-testing)
 - [🎨 Style Guide](#-style-guide)
@@ -58,12 +58,6 @@ npm start
 ```
 Scan the QR code in the terminal with **Expo Go** to launch the app on mobile.
 
-## 🛠️ Developer Guide
-For more details, refer to the **[backend](../main/backend/README.md)** and **[frontend](../main/frontend/README.md)** guides. These include:
-- Directory structures
-- Build instructions
-- Testing procedures
-
 ## 📝 User Guide
 
 ### 🌍 About Globe Gram
@@ -81,6 +75,12 @@ Globe Gram is a **social travel-planning app** that helps users explore destinat
   - Add a title, description, and upload photos.
   - Choose to share publicly, with friends, or keep private.
 - **Return to Home** via the Home tab and **Logout** anytime.
+
+## 🛠️ Developer Guide
+For more details, refer to the **[backend](../main/backend/README.md)** and **[frontend](../main/frontend/README.md)** guides. These include:
+- Directory structures
+- Build instructions
+- Testing procedures
 
 ## 🐞 Bug Reporting
 To report a bug, use **GitHub Issues**. Follow [Mozilla's Bug Writing Guidelines](https://bugzilla.mozilla.org/page.cgi?id=bug-writing.html) for effective reporting.
