@@ -1,9 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 export interface Post {
   uuid: string,
+  journal: string,
+  journal: string,
   title: string,
   date: string,
   location: { lat: any; lng: any; place_id: any } | null,
@@ -16,15 +17,24 @@ export interface Post {
 
 interface ProfilePostsProps {
   journalEntries: Post[];
+  selectedJournal: string | null;
+  selectedJournal: string | null;
   onDelete: (id: string) => void;
   onEdit: (post: Post) => void;
 }
 
-export function ProfilePosts({ journalEntries, onDelete, onEdit }: ProfilePostsProps) {
+export function ProfilePosts({ journalEntries, selectedJournal, onDelete, onEdit }: ProfilePostsProps) {
+  const filteredEntries = journalEntries.filter(entry => entry.journal === selectedJournal);
+  console.log("Selected Journal:", selectedJournal);
+  console.log("Entries:", journalEntries);
+  console.log("Filtered Entries:", filteredEntries);
+  for (let i = 0; i < journalEntries.length; i++) {
+    console.log(journalEntries[i].journal);
+  }
   return (
     <View style={styles.profilePostsSection}>
-      {journalEntries.length > 0 ? (
-        journalEntries.map((entry) => (
+      {filteredEntries.length > 0 ? (
+        filteredEntries.map((entry) => (
           <View style={styles.postContainer} key={entry.uuid}>
             <View style={styles.header}>
               {entry.title && (

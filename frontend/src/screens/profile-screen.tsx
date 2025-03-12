@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity, Image,
-  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform, FlatList, Button
+  View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Modal,
+  Alert, Keyboard, KeyboardAvoidingView, TouchableWithoutFeedback, ScrollView, Platform
 } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 
 import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import { Ionicons } from '@expo/vector-icons';
 
 import { getCoordinates } from '../services/maps-service';
@@ -16,9 +18,10 @@ import { ExperienceTypesSelector } from '../components/experience-types';
 import { PriceInput } from '../components/price-input';
 
 import { ProfilePosts, Post } from '../components/profile-posts';
-import { DiaryPostPopup } from '../components/profile-post-popup';
 
 import useAuthStore from "../stores/auth.store";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import apiClient from '../services/api-client';
 
 type RootStackParamList = {
   Home: undefined;
@@ -32,11 +35,11 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [journalEntries, setJournalEntries] = useState<any[]>([]);
 
-  // not in use yet
-  //const [journalColl, setJournalColl] = useState<any[]>([]);
-  //const [heldJournal, setHeldJournal] = useState(null);
-  //const [showJournalOptions, setShowJournalOptions] = useState(false);
-  //const [selectedJournal, setSelectedJournal] = useState(journalColl[0]);
+  const [journals, setJournals] = useState<any[]>([]);
+  const [selectedJournal, setSelectedJournal] = useState(journals[0]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newJournalName, setNewJournalName] = useState('');
+  const [entries, setEntries] = useState<{ [journal: string]: any[] }>({});
 
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
@@ -63,6 +66,15 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
         }
       }
       fetchEntries();
+
+      const loadJournals = async () => {
+        const storedJournals = await AsyncStorage.getItem('journals');
+        if (storedJournals) {
+          setJournals(JSON.parse(storedJournals));  
+        }
+      };
+
+      loadJournals(); 
     }
   }, [showCreatePost]);
 
@@ -71,52 +83,27 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     Alert.alert('Edit Profile', 'Profile editing not implemented yet.');
   };
 
-   // not in use yet; currently hard coding instead of using journal coll
-  const handleNewJournal = () => {
-  //   const newJournal = {
-  //     uuid: Math.random().toString(), // elaborate later
-  //     title: 'New Journal',
-  //   };
+  const handleNewJournal = async () => {
+    const newJournal = newJournalName; 
+    
+    let currentJournals = await AsyncStorage.getItem('journals');
+    currentJournals = currentJournals ? JSON.parse(currentJournals) : [];
 
-  //   setJournalColl((prevColl) => [newJournal, ...prevColl]); 
+    currentJournals.push(newJournal);
+    await AsyncStorage.setItem('journals', JSON.stringify(currentJournals));
+
+    setJournals(currentJournals);
+
+    setIsModalVisible(false);
+    setNewJournalName('');
   };
 
-  // not in use yet
-  // const handleJournalClick = (journalName: string) => {
-  //   setSelectedJournal(journalName === selectedJournal ? null : journalName);
-  // };
-
-  // not in use yet
-  // const handleLongPress = (journal) => {
-  //   setHeldJournal(journal);
-  //   setShowJournalOptions(true);
-  // };
-
-  // not in use yet
-  // const handleTapOutside = () => {
-  //   setHeldJournal(null);
-  //   setShowJournalOptions(false);
-  // };
-
-  // not in use yet
-  // const renameJournal = (journal) => {
-  //   const newName = prompt('Enter new journal name:'); // change to modal later
-  //   if (newName) {
-  //     const updatedJournals = journalColl.map((item) => 
-  //       item.uuid === journal.uuid ? { ...item, name: newName } : item
-  //     );
-  //     setJournalColl(updatedJournals); // update state to trigger re-render
-  //   }
-  // };
-
-  // not in use yet
-  // const deleteJournal = (journal) => {
-  //   const updatedJournals = journalColl.filter((item) => item.uuid !== journal.uuid);
-  //   setJournalColl(updatedJournals); 
-  // };
-
   const handleEntry = async () => {
+    if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
+
+    if (!selectedJournal) return; // later make it so if journal exists, always select leftmost as default
     const entryData = {
+      journalName: selectedJournal,
       title, 
       date, 
       location,
@@ -128,21 +115,32 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
     };
   
     try {
-      await postJournalEntry(entryData);
+      const createdEntry = await postJournalEntry(entryData);
+      
+      const currentEntries = await AsyncStorage.getItem('journalEntries');
+      const updatedEntries = currentEntries ? JSON.parse(currentEntries) : [];
+
+      updatedEntries.push(createdEntry);
+      await AsyncStorage.setItem('journalEntries', JSON.stringify(updatedEntries));
+
+      setJournalEntries(updatedEntries);
+
+      setTitle('');
+      setDescription('');
+      setPhoto(null);
+      setPrice(0);
+      setRating(0);
+      setLocation(null);
       setShowCreatePost(false);
-      setEditingPost(null);
     } catch (error) {
+      console.error('Error posting journal entry:', error.response?.data || error.message);
       Alert.alert('Error', 'Failed to publish entry. Please try again later.');
     }
   };
   
-
-  // Refresh posts after deletion
   const handleDeletePost = async (postId: string) => {
     try {
       await deleteJournalEntry(postId);
-
-      // refresh the list
       const updatedEntries = await getJournalEntries();
       setJournalEntries(updatedEntries);
     } catch (error) {
@@ -173,6 +171,8 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         // save edited post
         const entryData = {
+          journalName: selectedJournal,
+          journalName: selectedJournal,
           title, 
           date, 
           location,
@@ -183,8 +183,6 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           rating,
         };
         await postJournalEntry(entryData);
-
-        // update local state with the new post and refresh the list
         const updatedEntries = await getJournalEntries();
         setJournalEntries(updatedEntries);
         setEditingPost(null);
@@ -281,27 +279,47 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
           >
             <TouchableOpacity
               style={[styles.newButton, {backgroundColor:'#A6D7E0'}]}
-              onPress={handleNewJournal}
+              onPress={() => setIsModalVisible(true)}
             >
               <Ionicons name="book-outline" size={24} color="black" />
               <Text style={styles.newButtonText}>New journal</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.journalItem}>
-              <Text >Trip 3</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.journalItem}>
-              <Text>Trip 2</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.journalItem}>
-              <Text>Trip 1</Text>
-            </TouchableOpacity>
-
+            {journals.map((journal, index) => (
+              <TouchableOpacity 
+                key={index} 
+                onPress={() => setSelectedJournal(journal)} 
+                style={styles.journalItem}
+              >
+                <Text style={[selectedJournal === journal && { fontWeight: 'bold' }]}>
+                  {journal}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        
           </ScrollView>
-
         </View>
+
+        <Modal visible={isModalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TextInput 
+                placeholder="Journal Name"
+                value={newJournalName}
+                onChangeText={setNewJournalName}
+                style={styles.modalInput}
+              />
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <TouchableOpacity onPress={handleNewJournal} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Create</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.modalButton}>
+                  <Text style={styles.modalButtonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         <View style={styles.horizontalLine} />
 
@@ -329,6 +347,7 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
         <ProfilePosts
           journalEntries={journalEntries}
+          selectedJournal={selectedJournal}
           onDelete={handleDeletePost}
           onEdit={handleEditPost}
         />
@@ -554,13 +573,48 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginRight: 10,
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+  },
+  modalContent: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalInput: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#aaa',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+  },
+  modalButton: {
+    backgroundColor: '#D0DAAC',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  modalButtonText: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
   horizontalLine: {
     borderBottomWidth: 1,
     borderBottomColor: '#D3D3D3', // Light grey color
-    //marginTop: 10,
     marginBottom: 20,
     width: '100%', // Ensures it takes the full width of the screen
   },
+
   // Create post form styles
   scrollContainer: {
     flexGrow: 1,
