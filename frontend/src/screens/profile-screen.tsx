@@ -777,7 +777,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   clearButton: {
-    alignSelf: 'center',
+    alignSelf: 'flex-start',
     padding: 5,
     marginVertical: 10,
   },
