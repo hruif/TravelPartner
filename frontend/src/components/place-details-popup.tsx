@@ -1,6 +1,15 @@
-// place-details-popup.tsx
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  View, 
+  Text, 
+  ScrollView, 
+  StyleSheet, 
+  Image, 
+  TouchableOpacity, 
+  Modal, 
+  Pressable, 
+  Dimensions 
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 interface PlaceDetailsPopupProps {
@@ -14,6 +23,8 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   onClose,
   onAddLocation,
 }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   // Construct image URLs from each photo's photo_reference.
   const imageUrls: string[] =
     details.photos?.map((photo: any) => {
@@ -25,56 +36,75 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
 
   const handleAddPress = () => {
     if (onAddLocation) {
-      // Pass the formatted address (if available)
       onAddLocation(details.name || 'Untitled', firstImageUrl, details.formatted_address || '');
     }
   };
 
   return (
-    <View style={styles.overlay}>
-      <View style={styles.popup}>
-        {/* Header Row */}
-        <View style={styles.headerRow}>
-          <TouchableOpacity style={styles.plusButton} onPress={handleAddPress}>
-            <Ionicons name="add" size={24} color="#fff" />
-          </TouchableOpacity>
-          <Text style={styles.placeName}>
-            {details.name || 'Unknown Place'}
-          </Text>
-          <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-            <Ionicons name="close" size={24} color="#000" />
-          </TouchableOpacity>
+    <>
+      <View style={styles.popupContainer}>
+        <View style={styles.popup}>
+          {/* Header Row */}
+          <View style={styles.headerRow}>
+            <TouchableOpacity style={styles.plusButton} onPress={handleAddPress}>
+              <Ionicons name="add" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text style={styles.placeName}>
+              {details.name || 'Unknown Place'}
+            </Text>
+            <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+              <Ionicons name="close" size={24} color="#000" />
+            </TouchableOpacity>
+          </View>
+          {/* Vertical Images Scroll */}
+          <ScrollView
+            style={styles.imagesContainer}
+            contentContainerStyle={styles.imagesContentContainer}
+          >
+            {imageUrls.length > 0 ? (
+              imageUrls.map((url, index) => (
+                <TouchableOpacity key={index} onPress={() => setSelectedImage(url)}>
+                  <Image source={{ uri: url }} style={styles.image} />
+                </TouchableOpacity>
+              ))
+            ) : (
+              <Text style={styles.noImagesText}>No images available.</Text>
+            )}
+          </ScrollView>
         </View>
-        {/* Vertical Images Scroll */}
-        <ScrollView
-          style={styles.imagesContainer}
-          contentContainerStyle={styles.imagesContentContainer}
-        >
-          {imageUrls.length > 0 ? (
-            imageUrls.map((url, index) => (
-              <Image key={index} source={{ uri: url }} style={styles.image} />
-            ))
-          ) : (
-            <Text style={styles.noImagesText}>No images available.</Text>
-          )}
-        </ScrollView>
       </View>
-    </View>
+      {/* Expanded Image Modal */}
+      <Modal
+        visible={!!selectedImage}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSelectedImage(null)}
+      >
+        <Pressable style={styles.fullScreenOverlay} onPress={() => setSelectedImage(null)}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: selectedImage! }}
+              style={styles.expandedImage}
+              resizeMode="contain"
+            />
+          </View>
+        </Pressable>
+      </Modal>
+    </>
   );
 };
 
 const screenHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-  overlay: {
+  popupContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0,0.3)',
   },
   popup: {
-    height: screenHeight * 0.5,  // Takes up half the screen
+    height: screenHeight * 0.5,  // Popup takes up half the screen
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
@@ -124,4 +154,22 @@ const styles = StyleSheet.create({
     color: 'gray',
     textAlign: 'center',
   },
+  fullScreenOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageContainer: {
+    width: '90%',
+    height: '90%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  expandedImage: {
+    width: '100%',
+    height: '100%',
+  },
 });
+
+export default PlaceDetailsPopup;
