@@ -110,6 +110,13 @@ We use **GitHub Actions** for continuous integration.
 - **Filter recommendations** by budget.
 - Users can **add recommendations to their itinerary**, seeing a visual layout of their schedule.
 
+### Issues/Feedback Addressed
+- More frequent usage of GitHub issues for bug tracking.
+- Frontend tests and instructions added for CI.
+- Documentation edited to be more detailed and also easier to follow/understand.
+- Travel diary posting functionality fixed.
+- Keyboard stuck on travel diary issue fixed.
+
 ## 📜 License
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
