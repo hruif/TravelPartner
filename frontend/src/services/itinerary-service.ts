@@ -65,3 +65,24 @@ export async function deleteLocationFromItinerary(itineraryId: string, locationI
     throw error;
   }
 }
+
+export async function deleteItineraryAndAllLocations(itineraryId: string): Promise<void> {
+  const itinerary = await getItineraryById(itineraryId);
+  if (!itinerary) {
+    throw new Error(`No itinerary found for id=${itineraryId}`);
+  }
+
+  const locations = itinerary.locations || [];
+  await Promise.all(
+    locations.map((loc: any) => {
+      if (!loc.id) {
+        console.warn(`Location missing id; skipping delete for location:`, loc);
+        return null;
+      }
+      return deleteLocationFromItinerary(itineraryId, loc.id);
+    })
+  );
+
+  // 3) Delete the itinerary itself
+  await apiClient.delete(`/itineraries/${itineraryId}`);
+}

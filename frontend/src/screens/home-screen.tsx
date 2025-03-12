@@ -75,6 +75,8 @@ export default function HomeScreen({ navigation }) {
                 key={itinerary.uuid}
                 text={itinerary.title}
                 onPress={() => handleItineraryPress(itinerary)}
+                itineraryId={itinerary.uuid}
+                fetchItineraries={fetchItineraries}
                 imageSource={
                   itineraryImages[itinerary.uuid]
                     ? { uri: itineraryImages[itinerary.uuid] }
