@@ -379,7 +379,10 @@ export default function TravelDiaryScreen({ navigation }: JournalScreenProps) {
 
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={() => setShowCreatePost(false)}
+              onPress={() => {
+                setShowCreatePost(false);
+                setEditingPost(null);
+              }}
             >
               <Text style={styles.cancelButtonText}>Cancel</Text>
             </TouchableOpacity>
