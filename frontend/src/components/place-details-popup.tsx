@@ -1,3 +1,4 @@
+// place-details-popup.tsx
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -5,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 interface PlaceDetailsPopupProps {
   details: any;
   onClose: () => void;
-  onAddLocation?: (title: string, photoURI: string) => void; 
+  onAddLocation?: (title: string, photoURI: string, formattedAddress: string) => void; 
 }
 
 export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
@@ -16,7 +17,7 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
   // Construct image URLs from each photo's photo_reference.
   const imageUrls: string[] =
     details.photos?.map((photo: any) => {
-      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=AIzaSyBwDfYSVR0oQWqoFR7hOPgqK_JChCNlSoI`;
+      return `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=YOUR_API_KEY`;
     }) || [];
 
   // Grab the first image (if any)
@@ -24,7 +25,8 @@ export const PlaceDetailsPopup: React.FC<PlaceDetailsPopupProps> = ({
 
   const handleAddPress = () => {
     if (onAddLocation) {
-      onAddLocation(details.name || 'Untitled', firstImageUrl);
+      // Pass the formatted address (if available)
+      onAddLocation(details.name || 'Untitled', firstImageUrl, details.formatted_address || '');
     }
   };
 
@@ -72,7 +74,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
   },
   popup: {
-    height: screenHeight * 0.5,
+    height: screenHeight * 0.5,  // Takes up half the screen
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

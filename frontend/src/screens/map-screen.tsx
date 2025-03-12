@@ -32,11 +32,12 @@ interface Region {
 interface MapScreenProps {
   itineraryId?: string;
   onLocationAdded?: () => void;
+  itineraryMarkers?: { latitude: number; longitude: number; title?: string }[];
 }
 
 type CombinedMapScreenProps = HomeScreenProps & MapScreenProps;
 
-export default function MapScreen({ navigation, itineraryId, onLocationAdded }: CombinedMapScreenProps) {
+export default function MapScreen({ navigation, itineraryId, onLocationAdded, itineraryMarkers }: CombinedMapScreenProps) {
   const [searchText, setSearchText] = useState('');
   const [region, setRegion] = useState<Region | null>(null);
   const [marker, setMarker] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -90,7 +91,7 @@ export default function MapScreen({ navigation, itineraryId, onLocationAdded }: 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <GoogleMapComponent region={region} marker={marker} />
+      <GoogleMapComponent region={region} marker={marker} itineraryMarkers={itineraryMarkers} />
       {/* Search Bar Overlay */}
       <View style={styles.searchContainer}>
         <AnimatedPlaceholderInput
@@ -107,7 +108,7 @@ export default function MapScreen({ navigation, itineraryId, onLocationAdded }: 
         <PlaceDetailsPopup
           details={locationDetails}
           onClose={() => setShowDetails(false)}
-          onAddLocation={async (title, photoURI) => {
+          onAddLocation={async (title, photoURI, formattedAddress) => {
             if (!itineraryId) {
               alert('Itinerary not set.');
               return;
@@ -116,10 +117,9 @@ export default function MapScreen({ navigation, itineraryId, onLocationAdded }: 
               await addLocationToItinerary(itineraryId, {
                 photoURI,
                 title,
-                description: '',
-                formattedAddress: '',
+                description: '',         
+                formattedAddress,         
               });
-              // Instead of alerting, call the callback:
               if (onLocationAdded) {
                 onLocationAdded();
               }

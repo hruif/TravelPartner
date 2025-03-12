@@ -7,6 +7,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { ItineraryStackParamList } from './itinerary-stack';
 import { getItineraryById } from '../services/itinerary-service';
 import { ItineraryLocations } from '../components/itinerary-locations';
+import { getLatLngFromAddress } from '../services/maps-service';
 
 type ItineraryDetailsScreenProps = StackScreenProps<ItineraryStackParamList, 'ItineraryDetails'>;
 
@@ -16,20 +17,45 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
 
   const [selectedOption, setSelectedOption] = useState<'Itinerary' | 'Map'>('Itinerary');
   const [fetchedItinerary, setFetchedItinerary] = useState<any>(null);
+  const [itineraryMarkers, setItineraryMarkers] = useState<any[]>([]);
 
   useEffect(() => {
+    async function fetchItinerary() {
+      // 1. Get the itinerary from your backend
+      const fullItinerary = await getItineraryById(itinerary.uuid);
+      
+      // 2. For each location, call getLatLngFromAddress to get lat/lng
+      const markers = await Promise.all(
+        fullItinerary.locations.map(async (loc: any) => {
+          if (loc.formattedAddress) {
+            try {
+              const coords = await getLatLngFromAddress(loc.formattedAddress);
+              return {
+                latitude: coords.lat,
+                longitude: coords.lng,
+                title: loc.title || 'Untitled',
+              };
+            } catch (err) {
+              console.error('Failed geocoding address:', loc.formattedAddress, err);
+              return null;
+            }
+          }
+          return null;
+        })
+      );
+      
+      // 3. Filter out any nulls (in case geocoding failed)
+      const validMarkers = markers.filter((m) => m !== null);
+      
+      // 4. Store the itinerary and the markers in state
+      setFetchedItinerary(fullItinerary);
+      setItineraryMarkers(validMarkers);
+    }
+    
     if (itinerary.uuid) {
-      (async () => {
-        try {
-          const fullItinerary = await getItineraryById(itinerary.uuid);
-          setFetchedItinerary(fullItinerary);
-        } catch (error) {
-          console.error('Failed to fetch itinerary details:', error);
-        }
-      })();
+      fetchItinerary();
     }
   }, [itinerary.uuid]);
-
   const displayedItinerary = fetchedItinerary || itinerary;
   const locations = displayedItinerary.locations || [];
 
@@ -81,14 +107,11 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
             </ScrollView>
           ) : (
             <View style={styles.mapContent}>
-              <View style={styles.mapContent}>
-                <MapScreen
+              <MapScreen 
                   navigation={navigation}
                   itineraryId={itinerary.uuid}
                   onLocationAdded={async () => {
-                    // Switch the view back to the itinerary list
                     setSelectedOption('Itinerary');
-                    // Refresh itinerary details by re-fetching them from the server
                     try {
                       const fullItinerary = await getItineraryById(itinerary.uuid);
                       setFetchedItinerary(fullItinerary);
@@ -96,8 +119,8 @@ export default function ItineraryDetailsScreen({ navigation, route }: ItineraryD
                       console.error('Failed to refresh itinerary details:', error);
                     }
                   }}
-                />
-              </View>
+                  itineraryMarkers={itineraryMarkers}
+              />
             </View>
           )}
         </View>
